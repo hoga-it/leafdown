@@ -21,7 +21,9 @@ server <- function(input, output) {
   spdfs_list <- list(states, states2)
 
   observeEvent(input$drill_down, {
-    #TODO
+    print("hi")
+    all_ids <- c(1:11)
+    leaflet::leafletProxy("leafdown") %>% showGroup(all_ids)
   })
 
   observeEvent(input$drill_up, {
@@ -29,9 +31,11 @@ server <- function(input, output) {
   })
 
 
+
+
   output$leafdown <- renderLeaflet({
     req(spdfs_list)
-    my_leafdown <- Leafdown$new(spdfs_list)
+    my_leafdown <- leafdown::Leafdown$new(spdfs_list)
     data <- my_leafdown$get_current_data()
     data$y <- 1:51
     my_leafdown$add_data(data)
@@ -41,7 +45,7 @@ server <- function(input, output) {
       data$NAME_1, data$y
     ) %>% lapply(htmltools::HTML)
 
-    my_leafdown$draw_leafdown(
+    my_leafdown$draw_leafdown("leafdown", input,
       fillColor = ~leaflet::colorNumeric("Greens", y)(y),
       weight = 2,
       opacity = 1,
