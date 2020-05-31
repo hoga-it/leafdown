@@ -9,6 +9,7 @@ Leafdown <- R6::R6Class("Leafdown",
     .curr_map_level = NULL,
     .curr_proxy = NULL,
     .curr_selection = NULL,
+    .map_output_id = NULL,
     add_click_observer = function (input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
@@ -36,18 +37,27 @@ Leafdown <- R6::R6Class("Leafdown",
       } else {
         stop("`$.curr_selection` is read only", call. = FALSE)
       }
+    },
+    map_output_id = function(value) {
+      if (missing(value)) {
+        private$.map_output_id
+      } else {
+        stop("`$map_output_id` is read only", call. = FALSE)
+      }
     }
   ),
   public = list(
-    initialize = function(spdfs_list) {
+    initialize = function(spdfs_list, map_output_id, input) {
       private$.spdfs_list <- spdfs_list
       private$.curr_map_level <- 1
       private$.curr_selection <- c()
+      private$.map_output_id <- map_output_id
+      private$add_click_observer(input, map_output_id)
     },
-    draw_leafdown = function(map_output_id, input, ...) {
+    draw_leafdown = function(...) {
       curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
       curr_spdf@data <- private$.curr_data
-      private$.curr_proxy = leaflet::leafletProxy(map_output_id)
+      private$.curr_proxy = leaflet::leafletProxy(private$.map_output_id)
 
       all_ids <- c()
       for(pol in curr_spdf@polygons) {
@@ -60,8 +70,6 @@ Leafdown <- R6::R6Class("Leafdown",
           highlight = highlightOptions(bringToFront = T, weight = 4))
 
       private$.curr_proxy %>% hideGroup(all_ids)
-
-      private$add_click_observer(input, map_output_id)
 
       map
     },
