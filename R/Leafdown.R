@@ -1,9 +1,12 @@
 #' Leafdown R6 Class
 #'
 #' @importFrom magrittr "%>%"
+#' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
-    .spdfs_list = NULL
+    .spdfs_list = NULL,
+    .curr_data = NULL,
+    .curr_map_level = NULL
   ),
   active = list(
     spdfs_list = function(value) {
@@ -17,40 +20,19 @@ Leafdown <- R6::R6Class("Leafdown",
   public = list(
     initialize = function(spdfs_list) {
       private$.spdfs_list <- spdfs_list
+      private$.curr_map_level <- 1
     },
-    create_leafdown = function(map_level = 1, ...) {
-      curr_spdf <- private$.spdfs_list[[map_level]]
-      additional_args <- list(...)
+    draw_leafdown = function(...) {
+      curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
+      curr_spdf@data <- private$.curr_data
       leaflet::leaflet(curr_spdf) %>%
         leaflet::addPolygons(...)
+    },
+    get_current_data = function () {
+      private$.spdfs_list[[private$.curr_map_level]]@data
+    },
+    add_data = function (data) {
+      private$.curr_data <- data
     }
   )
 )
-
-
-
-###
-# states <- readRDS("inst/extdata/states.RDS")
-# states2 <- readRDS("inst/extdata/states2.RDS")
-# spdfs_list <- list(
-#   states,
-#   states2
-# )
-#
-# my_leafdown <- Leafdown$new(spdfs_list)
-# my_leafdown$create_leafdown(
-#   map_level = 1,
-#   weight = 2,
-#   opacity = 1,
-#   color = "green",
-#   dashArray = "3",
-#   fillOpacity = 0.7
-# )
-# my_leafdown$create_leafdown(
-#   map_level = 2,
-#   weight = 2,
-#   opacity = 1,
-#   color = "green",
-#   dashArray = "3",
-#   fillOpacity = 0.7
-# )
