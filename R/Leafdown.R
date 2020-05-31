@@ -10,6 +10,7 @@ Leafdown <- R6::R6Class("Leafdown",
     .curr_proxy = NULL,
     .curr_selection = NULL,
     .map_output_id = NULL,
+    .curr_spdf = NULL,
     add_click_observer = function (input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
@@ -52,32 +53,37 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- 1
       private$.curr_selection <- c()
       private$.map_output_id <- map_output_id
+      private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
       private$add_click_observer(input, map_output_id)
     },
     draw_leafdown = function(...) {
-      curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
+      curr_spdf <- private$.curr_spdf
       curr_spdf@data <- private$.curr_data
       private$.curr_proxy = leaflet::leafletProxy(private$.map_output_id)
-
       all_ids <- c()
       for(pol in curr_spdf@polygons) {
         all_ids <- c(all_ids, pol@ID)
       }
-
       map <- leaflet::leaflet(curr_spdf) %>%
         leaflet::addPolygons(layerId = ~all_ids, ...) %>% addPolylines(
           group = all_ids, stroke = TRUE, weight = 4,color = "#FFCC00",
           highlight = highlightOptions(bringToFront = T, weight = 4))
-
       private$.curr_proxy %>% hideGroup(all_ids)
-
       map
     },
     get_current_data = function () {
-      private$.spdfs_list[[private$.curr_map_level]]@data
+      private$.curr_spdf@data
     },
     add_data = function (data) {
       private$.curr_data <- data
+    },
+    drill_down = function() {
+      parents_gid <- private$.spdfs_list[[private$.curr_map_level]]@data$GID_1
+      selected_parents_gid <- parents_gid[as.numeric(private$.curr_selection)]
+      spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
+      spdf_new <- spdf_new[spdf_new@data$GID_1 %in% selected_parents_gid,]
+      private$.curr_spdf <- spdf_new
+      private$.curr_map_level <- private$.curr_map_level + 1
     }
   )
 )

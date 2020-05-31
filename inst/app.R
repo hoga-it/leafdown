@@ -19,9 +19,13 @@ server <- function(input, output) {
   states <- readRDS("extdata/us1-0005.RDS")
   states2 <- readRDS("extdata/states2.RDS")
   spdfs_list <- list(states, states2)
+  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
 
+  rv <- reactiveValues()
+  rv$update_leafdown <- 0
   observeEvent(input$drill_down, {
-    #TODO
+    my_leafdown$drill_down()
+    rv$update_leafdown <- rv$update_leafdown + 1
   })
 
   observeEvent(input$drill_up, {
@@ -29,28 +33,15 @@ server <- function(input, output) {
   })
 
 
-
-
   output$leafdown <- renderLeaflet({
     req(spdfs_list)
-    my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
+    rv$update_leafdown
     data <- my_leafdown$get_current_data()
-    data$y <- 1:51
+    data$y <- 1:nrow(data)
     my_leafdown$add_data(data)
-    #print(data)
-    labels <- sprintf(
-      "<strong>%s</strong><br/>%g AA-Expertise / mi<sup>2</sup>",
-      data$NAME_1, data$y
-    ) %>% lapply(htmltools::HTML)
-
     my_leafdown$draw_leafdown(
       fillColor = ~leaflet::colorNumeric("Greens", y)(y),
-      weight = 2,
-      opacity = 1,
-      color = "green",
-      dashArray = "3",
-      label = labels,
-      fillOpacity = 0.7
+      weight = 2, fillOpacity = 0.7, color = "green"
     )
   })
 }
