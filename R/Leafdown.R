@@ -16,7 +16,8 @@ Leafdown <- R6::R6Class("Leafdown",
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
         if(clicked_id %in% private$.curr_selection) {
           private$.curr_proxy %>% hideGroup(clicked_id)
-          private$.curr_selection <- private$.curr_selection[-which(private$.curr_selection == clicked_id)]
+          pos_clicked_id <- which(private$.curr_selection == clicked_id)
+          private$.curr_selection <- private$.curr_selection[-pos_clicked_id]
         } else {
           private$.curr_proxy %>% showGroup(clicked_id)
           private$.curr_selection <- c(private$.curr_selection, clicked_id)
@@ -44,6 +45,13 @@ Leafdown <- R6::R6Class("Leafdown",
         private$.map_output_id
       } else {
         stop("`$map_output_id` is read only", call. = FALSE)
+      }
+    },
+    curr_map_level = function(value) {
+      if (missing(value)) {
+        private$.curr_map_level
+      } else {
+        stop("`$curr_map_level` is read only", call. = FALSE)
       }
     }
   ),
