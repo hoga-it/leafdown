@@ -11,16 +11,18 @@ Leafdown <- R6::R6Class("Leafdown",
     .curr_selection = NULL,
     .map_output_id = NULL,
     .curr_spdf = NULL,
+    .selected_parents = NULL,
     add_click_observer = function (input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
-        if(clicked_id %in% private$.curr_selection) {
+        current_selection <- private$.curr_selection[[private$.curr_map_level]]
+        if(clicked_id %in% current_selection) {
           private$.curr_proxy %>% hideGroup(clicked_id)
           pos_clicked_id <- which(private$.curr_selection == clicked_id)
-          private$.curr_selection <- private$.curr_selection[-pos_clicked_id]
+          private$.curr_selection[[private$.curr_map_level]] <- current_selection[-pos_clicked_id]
         } else {
           private$.curr_proxy %>% showGroup(clicked_id)
-          private$.curr_selection <- c(private$.curr_selection, clicked_id)
+          private$.curr_selection[[private$.curr_map_level]] <- c(current_selection, clicked_id)
         }
       })
     }
@@ -35,7 +37,7 @@ Leafdown <- R6::R6Class("Leafdown",
     },
     curr_selection = function(value) {
       if (missing(value)) {
-        private$.curr_selection
+        private$.curr_selection[[private$.curr_map_level]]
       } else {
         stop("`$.curr_selection` is read only", call. = FALSE)
       }
@@ -59,10 +61,11 @@ Leafdown <- R6::R6Class("Leafdown",
     initialize = function(spdfs_list, map_output_id, input) {
       private$.spdfs_list <- spdfs_list
       private$.curr_map_level <- 1
-      private$.curr_selection <- c()
+      private$.curr_selection <- list(c())
       private$.map_output_id <- map_output_id
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
       private$add_click_observer(input, map_output_id)
+      private$.selected_parents <- c()
     },
     draw_leafdown = function(...) {
       curr_spdf <- private$.curr_spdf
@@ -72,31 +75,40 @@ Leafdown <- R6::R6Class("Leafdown",
       for(pol in curr_spdf@polygons) {
         all_ids <- c(all_ids, pol@ID)
       }
+      print(private$.curr_selection)
       map <- leaflet::leaflet(curr_spdf) %>%
         leaflet::addPolygons(layerId = ~all_ids, ...) %>% addPolylines(
           group = all_ids, stroke = TRUE, weight = 4,color = "#FFCC00",
           highlight = highlightOptions(bringToFront = T, weight = 4))
-      private$.curr_proxy %>% hideGroup(all_ids)
+      private$.curr_proxy %>% hideGroup(all_ids) %>% showGroup(private$.curr_selection[[private$.curr_map_level]])
+
       map
     },
     get_current_data = function () {
       private$.curr_spdf@data
     },
     add_data = function (data) {
+      # TODO: check if all cols of private$.curr_spdf@data are matched in the given @data
+      # -> the given @data should contain all columns from private$.curr_spdf@data (plus y)
+      # data[, names(private$.curr_spdf@data)] == private$.curr_spdf@data
+
       private$.curr_data <- data
     },
     drill_down = function() {
-      parents_gid <- private$.spdfs_list[[private$.curr_map_level]]@data$GID_1
-      selected_parents_gid <- parents_gid[as.numeric(private$.curr_selection)]
+      # TODO: check whether we can drill_down further
+      parents <- private$.spdfs_list[[private$.curr_map_level]]
+      private$.selected_parents <- parents[as.numeric(private$.curr_selection[[private$.curr_map_level]]),]
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
-      spdf_new <- spdf_new[spdf_new@data$GID_1 %in% selected_parents_gid,]
+      spdf_new <- spdf_new[spdf_new@data$GID_1 %in% private$.selected_parents@data$GID_1,]
+
       private$.curr_spdf <- spdf_new
       private$.curr_map_level <- private$.curr_map_level + 1
+      private$.curr_selection[[private$.curr_map_level]] <- character(0)
+    },
+    drill_up = function() {
+      # TODO: check whether we can drill_up further
+      private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
+      private$.curr_map_level <- private$.curr_map_level - 1
     }
   )
 )
-
-
-
-
-

@@ -23,13 +23,15 @@ server <- function(input, output) {
 
   rv <- reactiveValues()
   rv$update_leafdown <- 0
+
   observeEvent(input$drill_down, {
     my_leafdown$drill_down()
     rv$update_leafdown <- rv$update_leafdown + 1
   })
 
   observeEvent(input$drill_up, {
-    #TODO
+    my_leafdown$drill_up()
+    rv$update_leafdown <- rv$update_leafdown + 1
   })
 
 
