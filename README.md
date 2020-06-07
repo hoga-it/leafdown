@@ -45,3 +45,5 @@ ger1 <- getData("GADM", country = "Germany", level = 1)
 ger2 <- getData("GADM", country = "Germany", level = 2)
 spdfs_list <- list(ger1, ger2)
 ```
+
+TODO: Add further stuff

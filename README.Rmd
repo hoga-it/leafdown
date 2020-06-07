@@ -58,9 +58,6 @@ ger2 <- readRDS("inst/extdata/gadm36_DEU_2_sp.rds")
 spdfs_list <- list(ger1, ger2)
 ```
 
-```{r}
-
-```
-
+TODO: Add further stuff
 
 
