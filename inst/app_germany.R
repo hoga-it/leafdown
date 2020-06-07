@@ -5,6 +5,14 @@ library(dplyr)
 library(readr)
 library(stringr)
 
+create_labels <- function(data, map_level) {
+  labels <- sprintf(
+    "<strong>%s</strong><br/>%g € per capita</sup>",
+    data[, paste0("NAME_", map_level)], data$GDP_2014
+  )
+  labels %>% lapply(htmltools::HTML)
+}
+
 # Load data and spdfs ----------------------------------------------------------
 ger1 <- readRDS("extdata/gadm36_DEU_1_sp.rds")
 ger2 <- readRDS("extdata/gadm36_DEU_2_sp.rds")
@@ -16,12 +24,18 @@ ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Würzburg (Kreisfreie Stadt)"
 )
 spdfs_list <- list(ger1, ger2)
-gpd_states <- read.csv2("extdata/gdp2014_germany_1.csv", fileEncoding = "UTF-8",
-                        stringsAsFactors = FALSE)
-gpd_admin_districts <- read.csv2("extdata/gdp2014_germany_2.csv", fileEncoding = "UTF-8",
-                        stringsAsFactors = FALSE)
-gpd_admin_districts$Admin_District <- str_replace(gpd_admin_districts$Admin_District,
-                                                  ", Stadt", "")
+gpd_states <- read.csv2("extdata/gdp2014_germany_1.csv",
+  fileEncoding = "UTF-8",
+  stringsAsFactors = FALSE
+)
+gpd_admin_districts <- read.csv2("extdata/gdp2014_germany_2.csv",
+  fileEncoding = "UTF-8",
+  stringsAsFactors = FALSE
+)
+gpd_admin_districts$Admin_District <- str_replace(
+  gpd_admin_districts$Admin_District,
+  ", Stadt", ""
+)
 
 
 # Define UI for leafdown app
@@ -58,20 +72,23 @@ server <- function(input, output) {
     req(spdfs_list)
     rv$update_leafdown
     data <- my_leafdown$get_current_data()
-    if (my_leafdown$curr_map_level == 1) {
+    curr_map_level <- my_leafdown$curr_map_level
+    if (curr_map_level == 1) {
       data <- data %>% left_join(gpd_states, by = c("NAME_1" = "Federal_State"))
     } else {
       data <- data %>% left_join(gpd_admin_districts, by = c("NAME_2" = "Admin_District"))
     }
     my_leafdown$add_data(data)
+    labels <- create_labels(data, curr_map_level)
     map <- my_leafdown$draw_leafdown(
-      fillColor = ~ leaflet::colorNumeric("Greens", GDP_2014)(GDP_2014),
-      weight = 2, fillOpacity = 0.7, color = "green"
+      fillColor = ~ leaflet::colorNumeric("Blues", GDP_2014)(GDP_2014),
+      weight = 2, fillOpacity = 0.8, color = "grey", label = labels
     )
     map <- map %>%
-      addLegend("bottomright", pal = leaflet::colorNumeric("Greens", data$GDP_2014),
-                values = ~GDP_2014, title = "GDP (2014)",
-                labFormat = labelFormat(prefix = "€"), opacity = 1)
+      addLegend("bottomright", pal = leaflet::colorNumeric("Blues", data$GDP_2014),
+        values = ~GDP_2014, title = "GDP per capita (2014)",
+        labFormat = labelFormat(prefix = "€"), opacity = 1
+      )
   })
 }
 
