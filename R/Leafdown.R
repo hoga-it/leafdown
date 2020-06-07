@@ -12,17 +12,18 @@ Leafdown <- R6::R6Class("Leafdown",
     .map_output_id = NULL,
     .curr_spdf = NULL,
     .selected_parents = NULL,
-    add_click_observer = function (input, map_output_id) {
+    .all_poly_ids = NULL,
+    add_click_observer = function(input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
-        current_selection <- private$.curr_selection[[private$.curr_map_level]]
-        if(clicked_id %in% current_selection) {
+        req(clicked_id)
+        curr_selection <- private$.curr_selection[[private$.curr_map_level]]
+        if (clicked_id %in% curr_selection) {
           private$.curr_proxy %>% hideGroup(clicked_id)
-          pos_clicked_id <- which(private$.curr_selection == clicked_id)
-          private$.curr_selection[[private$.curr_map_level]] <- current_selection[-pos_clicked_id]
+          private$.curr_selection[[private$.curr_map_level]] <- curr_selection[!curr_selection == clicked_id]
         } else {
           private$.curr_proxy %>% showGroup(clicked_id)
-          private$.curr_selection[[private$.curr_map_level]] <- c(current_selection, clicked_id)
+          private$.curr_selection[[private$.curr_map_level]] <- c(curr_selection, clicked_id)
         }
       })
     }
@@ -70,37 +71,47 @@ Leafdown <- R6::R6Class("Leafdown",
     draw_leafdown = function(...) {
       curr_spdf <- private$.curr_spdf
       curr_spdf@data <- private$.curr_data
-      private$.curr_proxy = leaflet::leafletProxy(private$.map_output_id)
-      all_ids <- c()
-      for(pol in curr_spdf@polygons) {
-        all_ids <- c(all_ids, pol@ID)
+      private$.curr_proxy <- leaflet::leafletProxy(private$.map_output_id)
+      all_poly_ids <- c()
+      for (pol in curr_spdf@polygons) {
+        all_poly_ids <- c(all_poly_ids, pol@ID)
       }
-      print(private$.curr_selection)
+      private$.all_poly_ids <- all_poly_ids
       map <- leaflet::leaflet(curr_spdf) %>%
-        leaflet::addPolygons(layerId = ~all_ids, ...) %>% addPolylines(
-          group = all_ids, stroke = TRUE, weight = 4,color = "#FFCC00",
-          highlight = highlightOptions(bringToFront = T, weight = 4))
-      private$.curr_proxy %>% hideGroup(all_ids) %>% showGroup(private$.curr_selection[[private$.curr_map_level]])
-
+        leaflet::addPolygons(layerId = ~all_poly_ids, ...) %>%
+        addPolylines(
+          group = all_poly_ids, stroke = TRUE, weight = 4, color = "#FFCC00",
+          highlight = highlightOptions(bringToFront = T, weight = 4)
+        )
+      private$.curr_proxy %>%
+        hideGroup(all_poly_ids) %>%
+        showGroup(private$.curr_selection[[private$.curr_map_level]])
       map
     },
-    get_current_data = function () {
+    get_current_data = function() {
       private$.curr_spdf@data
     },
-    add_data = function (data) {
+    add_data = function(data) {
       # TODO: check if all cols of private$.curr_spdf@data are matched in the given @data
       # -> the given @data should contain all columns from private$.curr_spdf@data (plus y)
       # data[, names(private$.curr_spdf@data)] == private$.curr_spdf@data
-
       private$.curr_data <- data
     },
     drill_down = function() {
       # TODO: check whether we can drill_down further
-      parents <- private$.spdfs_list[[private$.curr_map_level]]
-      private$.selected_parents <- parents[as.numeric(private$.curr_selection[[private$.curr_map_level]]),]
-      spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
-      spdf_new <- spdf_new[spdf_new@data$GID_1 %in% private$.selected_parents@data$GID_1,]
 
+      # Information about parent polygons
+      parents <- private$.spdfs_list[[private$.curr_map_level]]
+      all_poly_ids_parents <- private$.all_poly_ids
+      curr_selection_parents <- private$.curr_selection[[private$.curr_map_level]]
+      index_sel_parents <- all_poly_ids_parents %in% curr_selection_parents
+      private$.selected_parents <- parents[index_sel_parents, ]
+
+      # spdf_new contains the child polygons of the selected parents
+      spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
+      spdf_new <- spdf_new[spdf_new@data$GID_1 %in% private$.selected_parents@data$GID_1, ]
+
+      # Update leafdown object
       private$.curr_spdf <- spdf_new
       private$.curr_map_level <- private$.curr_map_level + 1
       private$.curr_selection[[private$.curr_map_level]] <- character(0)
