@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of leafdown is to ...
+The goal of leafdown is to provide drill down functionality for leaflet choropleaths.
 
 ## Installation
 
@@ -40,21 +40,27 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(leafdown)
-## basic example code
+library(raster)   
+library(shiny)
+library(leaflet)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
+Get spdfs
+``` {r data_no_eval, eval = FALSE}
+ger1 <- getData("GADM", country = "Germany", level = 1)
+ger2 <- getData("GADM", country = "Germany", level = 2)
+spdfs_list <- list(ger1, ger2)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r data_eval, echo=FALSE}
+ger1 <- readRDS("inst/extdata/gadm36_DEU_1_sp.rds")
+ger2 <- readRDS("inst/extdata/gadm36_DEU_2_sp.rds")
+spdfs_list <- list(ger1, ger2)
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+```{r}
+
+```
+
+
+
