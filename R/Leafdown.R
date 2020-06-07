@@ -57,6 +57,13 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("`$curr_map_level` is read only", call. = FALSE)
       }
     }
+    curr_spdf = function(value) {
+      if (missing(value)) {
+        private$.curr_spdf
+      } else {
+        stop("`$curr_spdf` is read only", call. = FALSE)
+      }
+    }
   ),
   public = list(
     initialize = function(spdfs_list, map_output_id, input) {
