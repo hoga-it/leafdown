@@ -12,6 +12,7 @@ Leafdown <- R6::R6Class("Leafdown",
     .map_output_id = NULL,
     .curr_spdf = NULL,
     .selected_parents = NULL,
+    .unselected_parents = NULL,
     .all_poly_ids = NULL,
     add_click_observer = function(input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
@@ -56,7 +57,7 @@ Leafdown <- R6::R6Class("Leafdown",
       } else {
         stop("`$curr_map_level` is read only", call. = FALSE)
       }
-    }
+    },
     curr_spdf = function(value) {
       if (missing(value)) {
         private$.curr_spdf
@@ -90,6 +91,23 @@ Leafdown <- R6::R6Class("Leafdown",
           group = all_poly_ids, stroke = TRUE, weight = 4, color = "#FFCC00",
           highlight = highlightOptions(bringToFront = T, weight = 4)
         )
+      if (private$.curr_map_level != 1) {
+        # If there are inactive parent polygons then draw them as grey background
+        if (length(private$.unselected_parents@polygons) > 0) {
+          map <- map %>%
+            addPolylines(
+              data = private$.unselected_parents,
+              stroke = F, weight = 2, color="#929292",
+              highlight = highlightOptions(bringToFront = T)
+            ) %>%
+            addPolygons(
+              data = private$.unselected_parents,
+              fillOpacity = 0.4,
+              color = "#A4A4A5",
+              weight = 1
+            )
+        }
+      }
       private$.curr_proxy %>%
         hideGroup(all_poly_ids) %>%
         showGroup(private$.curr_selection[[private$.curr_map_level]])
@@ -113,6 +131,7 @@ Leafdown <- R6::R6Class("Leafdown",
       curr_selection_parents <- private$.curr_selection[[private$.curr_map_level]]
       index_sel_parents <- all_poly_ids_parents %in% curr_selection_parents
       private$.selected_parents <- parents[index_sel_parents, ]
+      private$.unselected_parents <- parents[!index_sel_parents, ]
 
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
@@ -127,6 +146,7 @@ Leafdown <- R6::R6Class("Leafdown",
       # TODO: check whether we can drill_up further
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
       private$.curr_map_level <- private$.curr_map_level - 1
+      private$.unselected_parents <- NULL
     }
   )
 )
