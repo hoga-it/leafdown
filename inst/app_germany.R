@@ -85,7 +85,9 @@ server <- function(input, output) {
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels
     )
     map <- map %>%
-      addLegend("bottomright", pal = leaflet::colorNumeric("Blues", data$GDP_2014),
+      addLegend("bottomright",
+                pal = leaflet::colorNumeric("Blues",
+                                            data[!is.na(data$GDP_2014), "GDP_2014"]),
         values = ~GDP_2014, title = "GDP per capita (2014)",
         labFormat = labelFormat(prefix = "€"), opacity = 1
       )
