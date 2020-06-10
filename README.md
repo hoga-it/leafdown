@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 The goal of leafdown is to provide drill down functionality for leaflet
-choropleaths.
+choropleths.
 
 ## Installation
 
@@ -26,24 +26,12 @@ And the development version from [GitHub](https://github.com/) with:
 devtools::install_github("hoga-it/leafdown")
 ```
 
-## Example
+## Features
 
-This is a basic example which shows you how to solve a common problem:
+  - Adds drill-down functionality for leaflet choropleths maps.
+  - Allows selection of regions / shapes in map.
+  - Easy to use and well integrated into syntax of leaflet r package.
 
-``` r
-library(leafdown)
-library(raster)   
-#> Loading required package: sp
-library(shiny)
-library(leaflet)
-```
+## Current limitations
 
-Get spdfs
-
-``` r
-ger1 <- getData("GADM", country = "Germany", level = 1)
-ger2 <- getData("GADM", country = "Germany", level = 2)
-spdfs_list <- list(ger1, ger2)
-```
-
-TODO: Add further stuff
+  - Drill-down only available for two map levels.
