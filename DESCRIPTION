@@ -19,4 +19,6 @@ Imports:
     R6,
     leaflet,
     magrittr,
-    checkmate
+    checkmate,
+    shiny,
+    shinytest
