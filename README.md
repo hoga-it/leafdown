@@ -1,6 +1,4 @@
 
-<<<<<<< HEAD
-=======
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # leafdown
@@ -37,4 +35,3 @@ devtools::install_github("hoga-it/leafdown")
 ## Current limitations
 
   - Drill-down only available for two map levels.
->>>>>>> pkgdown_website

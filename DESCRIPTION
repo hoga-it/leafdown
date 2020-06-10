@@ -24,7 +24,7 @@ Imports:
     checkmate,
     shiny,
     shinytest,
-    shinyjs
+    shinyjs,
     magrittr
 VignetteBuilder: knitr
 
