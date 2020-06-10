@@ -28,9 +28,8 @@ test_that("Changed values in data throws error", {
   data <- my_leafdown$get_current_data()
 
   # change data
-  # random col and row for change
-  col <- floor(runif(1, min=1, max=dim(data)[2]))
-  row <- floor(runif(1, min=1, max=dim(data)[1]))
+  col <- 1
+  row <- 42
   data[row, col] <- NA
 
   expect_error(my_leafdown$add_data(data), "You cannot change the existing data. Only add to it")
