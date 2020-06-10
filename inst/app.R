@@ -1,9 +1,10 @@
 library(shiny)
 library(leaflet)
 library(leafdown)
+library(shinyjs)
 # Define UI for leafdown app
 ui <- shiny::fluidPage(
-
+  useShinyjs(),
   # App title
   headerPanel("Drillable map with leafdown"),
 
@@ -17,7 +18,7 @@ ui <- shiny::fluidPage(
 # Define server for leafdown app
 server <- function(input, output) {
   states <- readRDS("extdata/us1-0005.RDS")
-  states2 <- readRDS("extdata/states2.RDS")
+  states2 <- readRDS("extdata/us2-0005.RDS")
   spdfs_list <- list(states, states2)
   my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
 
@@ -33,7 +34,6 @@ server <- function(input, output) {
     my_leafdown$drill_up()
     rv$update_leafdown <- rv$update_leafdown + 1
   })
-
 
   output$leafdown <- renderLeaflet({
     req(spdfs_list)

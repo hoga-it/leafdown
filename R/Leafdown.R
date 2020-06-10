@@ -1,6 +1,7 @@
 #' Leafdown R6 Class
 #'
 #' @importFrom magrittr "%>%"
+#' @import checkmate
 #' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
@@ -50,13 +51,20 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("`$map_output_id` is read only", call. = FALSE)
       }
     },
+    curr_data = function(value) {
+      if (missing(value)) {
+        private$.curr_data
+      } else {
+        stop("`$.curr_data` is read only", call. = FALSE)
+      }
+    },
     curr_map_level = function(value) {
       if (missing(value)) {
         private$.curr_map_level
       } else {
         stop("`$curr_map_level` is read only", call. = FALSE)
       }
-    }
+    },
     curr_spdf = function(value) {
       if (missing(value)) {
         private$.curr_spdf
@@ -67,13 +75,25 @@ Leafdown <- R6::R6Class("Leafdown",
   ),
   public = list(
     initialize = function(spdfs_list, map_output_id, input) {
-      private$.spdfs_list <- spdfs_list
+      # TODO: check spdfs_list
+
+      # check map_output_id
+      checkmate::assert_character(map_output_id, min.chars = 1)
+
+      # check 'input' reactive vals from shiny
+      if(!is.reactivevalues(input)) {
+        stop("The given 'input' argument must be the 'input' from the shiny app")
+      }
+
       private$.curr_map_level <- 1
       private$.curr_selection <- list(c())
+      private$.selected_parents <- c()
+
+      private$.spdfs_list <- spdfs_list
       private$.map_output_id <- map_output_id
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
+
       private$add_click_observer(input, map_output_id)
-      private$.selected_parents <- c()
     },
     draw_leafdown = function(...) {
       curr_spdf <- private$.curr_spdf
@@ -99,13 +119,32 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_spdf@data
     },
     add_data = function(data) {
-      # TODO: check if all cols of private$.curr_spdf@data are matched in the given @data
-      # -> the given @data should contain all columns from private$.curr_spdf@data (plus y)
-      # data[, names(private$.curr_spdf@data)] == private$.curr_spdf@data
+      # check if the given data is correct:
+      # It has to be the same as the old data.
+      # Optionally value column(s) can be added
+      if(!is.list(data)) {
+        stop("The given data must be a list")
+      }
+      if(!all(names(private$.curr_spdf@data) %in% names(data))) {
+        stop("You cannot remove columns from the existing data. Only add to it")
+      }
+      if(!identical(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data)) {
+        stop("You cannot change the existing data. Only add to it")
+      }
+
       private$.curr_data <- data
     },
     drill_down = function() {
-      # TODO: check whether we can drill_down further
+      # check whether we can drill_down further (just 2 levels for now)
+      if(private$.curr_map_level == 2) {
+        shinyjs::alert("The lowest level is reached. Cannot drill lower!")
+        return()
+      }
+      # check for selection
+      if(is.null(private$.curr_selection[[private$.curr_map_level]])) {
+        shinyjs::alert("Please select the area to drill down!")
+        return()
+      }
 
       # Information about parent polygons
       parents <- private$.spdfs_list[[private$.curr_map_level]]
@@ -124,7 +163,12 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_selection[[private$.curr_map_level]] <- character(0)
     },
     drill_up = function() {
-      # TODO: check whether we can drill_up further
+      # check whether we can drill_up further
+      if(private$.curr_map_level <= 1) {
+        shinyjs::alert("The highest level is reached. Cannot drill higher!")
+        return()
+      }
+      # Update leafdown object
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
       private$.curr_map_level <- private$.curr_map_level - 1
     }
