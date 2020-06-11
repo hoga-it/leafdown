@@ -41,7 +41,7 @@ devtools::install_github("hoga-it/leafdown")
 ## Features
 
 - Adds drill-down functionality for leaflet choropleths maps.
-- Allows selection of regions / shapes in map.
+- Allows the selection of regions / shapes.
 - Easy to use and well integrated into syntax of leaflet r package.
 
 
