@@ -47,6 +47,18 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/shiny_test_vignette.html">shiny_test</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="news/index.html">Changelog</a>
 </li>
@@ -67,8 +79,9 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#leafdown" class="anchor"></a>leafdown</h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
-<p>The goal of leafdown is to provide drill down functionality for leaflet choropleaths.</p>
+
+<p>The goal of leafdown is to provide drill down functionality for leaflet choropleths.</p>
+<p><img src="inst/readme_files/select_drilldown.png"></p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -78,19 +91,14 @@
 <div class="sourceCode" id="cb2"><pre class="r"><span class="co"># install.packages("devtools")</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"hoga-it/leafdown"</span>)</pre></div>
 </div>
-<div id="example" class="section level2">
+<div id="features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">leafdown</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">raster</span>)
-<span class="co">#&gt; Loading required package: sp</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shiny</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">leaflet</span>)</pre></div>
-<p>Get spdfs</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="no">ger1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(<span class="st">"GADM"</span>, <span class="kw">country</span> <span class="kw">=</span> <span class="st">"Germany"</span>, <span class="kw">level</span> <span class="kw">=</span> <span class="fl">1</span>)
-<span class="no">ger2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(<span class="st">"GADM"</span>, <span class="kw">country</span> <span class="kw">=</span> <span class="st">"Germany"</span>, <span class="kw">level</span> <span class="kw">=</span> <span class="fl">2</span>)
-<span class="no">spdfs_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">ger1</span>, <span class="no">ger2</span>)</pre></div>
+<a href="#features" class="anchor"></a>Features</h2>
+<ul>
+<li>Adds drill-down functionality for leaflet choropleths maps.</li>
+<li>Allows selection of regions / shapes in map.</li>
+<li>Easy to use and well integrated into syntax of leaflet r package.</li>
+</ul>
 </div>
 </div>
   </div>
@@ -99,7 +107,8 @@
     <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>License: <a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<li>
+<a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a> | file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
@@ -111,7 +120,14 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://travis-ci.com/hoga-it/leafdown"><img src="https://travis-ci.com/hoga-it/leafdown.svg?branch=master" alt="Travis build status"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
