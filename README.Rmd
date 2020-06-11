@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 # leafdown
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis build status](https://travis-ci.com/hoga-it/leafdown.svg?branch=master)](https://travis-ci.com/hoga-it/leafdown)
 <!-- badges: end -->
 
 The goal of leafdown is to provide drill down functionality for leaflet choropleths.
