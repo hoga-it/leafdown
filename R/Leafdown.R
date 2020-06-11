@@ -144,10 +144,10 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("The given data must be a list")
       }
       if(!all(names(private$.curr_spdf@data) %in% names(data))) {
-        stop("You cannot remove columns from the existing data. Only add to it")
+        stop("You cannot remove columns from the existing meta-data. Only add to it")
       }
-      if(!identical(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data)) {
-        stop("You cannot change the existing data. Only add to it")
+      if(!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+        stop("You cannot change the existing meta-data. Only add to it")
       }
 
       private$.curr_data <- data

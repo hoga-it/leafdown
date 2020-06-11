@@ -20,7 +20,7 @@ test_that("Add 'Null' as data throws error", {
 test_that("Add empty List as data throws error", {
   my_leafdown <- init_leafdown()
 
-  expect_error(my_leafdown$add_data(list()), "You cannot remove columns from the existing data. Only add to it")
+  expect_error(my_leafdown$add_data(list()), "You cannot remove columns from the existing meta-data. Only add to it")
 })
 
 test_that("Changed values in data throws error", {
@@ -32,7 +32,7 @@ test_that("Changed values in data throws error", {
   row <- 42
   data[row, col] <- NA
 
-  expect_error(my_leafdown$add_data(data), "You cannot change the existing data. Only add to it")
+  expect_error(my_leafdown$add_data(data), "You cannot change the existing meta-data. Only add to it")
 })
 
 test_that("Missing columns in data throws error", {
@@ -44,7 +44,7 @@ test_that("Missing columns in data throws error", {
   col <- floor(runif(1, min=1, max=dim(data)[2]))
   data <- data[, -col]
 
-  expect_error(my_leafdown$add_data(data), "You cannot remove columns from the existing data. Only add to it")
+  expect_error(my_leafdown$add_data(data), "You cannot remove columns from the existing meta-data. Only add to it")
 })
 
 test_that("Missing row in data throws error", {
@@ -56,6 +56,6 @@ test_that("Missing row in data throws error", {
   row <- floor(runif(1, min=1, max=dim(data)[1]))
   data <- data[-row, ]
 
-  expect_error(my_leafdown$add_data(data), "You cannot change the existing data. Only add to it")
+  expect_error(my_leafdown$add_data(data), "You cannot change the existing meta-data. Only add to it")
 })
 
