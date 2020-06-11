@@ -27,4 +27,7 @@
 #' @source
 #' Landatlas (www.landatlas.de). Ausgabe 2018.
 #' Hrsg.: Thuenen-Institut fuer Laendliche Raeume - Braunschweig 2018.
+#'
+#' Note that in this package we have slightly adapted some names of the
+#' administrative districts for a better match.
 "gdp_2014_admin_districts"
