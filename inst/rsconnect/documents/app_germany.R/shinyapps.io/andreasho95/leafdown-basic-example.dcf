@@ -1,0 +1,13 @@
+name: leafdown-basic-example
+title: leafdown-basic-example
+username:
+account: andreasho95
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2441564
+bundleId: 3257195
+url: https://andreasho95.shinyapps.io/leafdown-basic-example/
+when: 1591884251.59293
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: app.R|extdata

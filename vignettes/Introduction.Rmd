@@ -118,7 +118,23 @@ server <- function(input, output) {
 shinyApp(ui, server)
 ```
 
+<style>
+.shiny-app-frame {
+  position: relative;
+  height: 1200px;
+}
+.shiny-app-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+</style>
 
+<br>
+<div class="shiny-app-frame"> 
+<iframe src="https://andreasho95.shinyapps.io/leafdown-basic-example/">
+</iframe>
+</div>
 
 
 
