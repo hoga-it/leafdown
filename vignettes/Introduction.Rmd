@@ -19,6 +19,7 @@ library(leafdown)
 library(leaflet)
 library(shiny)
 library(dplyr)
+library(shinyjs)
 ```
 
 Get spdf
@@ -70,6 +71,7 @@ create_labels <- function(data, map_level) {
 # Define UI for leafdown app
 ui <- shiny::fluidPage(
   tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+  useShinyjs(),
   # App title
   headerPanel("Drillable map with leafdown"),
   # Main
@@ -121,7 +123,7 @@ shinyApp(ui, server)
 <style>
 .shiny-app-frame {
   position: relative;
-  height: 1200px;
+  height: 700px;
 }
 .shiny-app-frame iframe {
   width: 100%;

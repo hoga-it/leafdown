@@ -3,6 +3,7 @@ library(leaflet)
 library(shiny)
 library(dplyr)
 library(shinycssloaders)
+library(shinyjs)
 
 ger1 <- raster::getData(country = "Germany", level = 1)
 ger2 <- raster::getData(country = "Germany", level = 2)
@@ -27,6 +28,7 @@ create_labels <- function(data, map_level) {
 ui <- shiny::fluidPage(
   tags$style(HTML(".leaflet-container {background: #ffffff;}")),
   # Main
+  useShinyjs(),
   actionButton("drill_down", "Drill Down"),
   actionButton("drill_up", "Drill Up"),
   withSpinner(leafletOutput("leafdown", height = 600), type = 8)
