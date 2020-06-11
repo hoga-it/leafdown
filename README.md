@@ -14,7 +14,7 @@ status](https://travis-ci.com/hoga-it/leafdown.svg?branch=master)](https://travi
 The goal of leafdown is to provide drill down functionality for leaflet
 choropleths.
 
-<img src="inst/readme_files/select_drilldown.png">
+<img src='man/figures/select_drilldown.PNG'/>
 
 ## Installation
 
