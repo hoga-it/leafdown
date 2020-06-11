@@ -14,6 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+In this article we would like to give an example of how to create a very simple 
+drill-down map with `leafdown`. \
+The goal is to create a map that shows the GDP (gross domestic product) of the 
+federal states of Germany and additionally allows the user to drill-down
+to the administrative districts.
+
+Let's first load the libraries we are going to use for this app. \
+
 ```{r setup, message=FALSE}
 library(leafdown)
 library(leaflet)
@@ -22,15 +30,25 @@ library(dplyr)
 library(shinyjs)
 ```
 
-Get spdf
+(Note that the `shinyjs` package is loaded for some automatic messages that the 
+`leafdown` map can return to the user of the shiny app. More on this later.)
+
+
+## SpatialPolygonsDataFrames
+
+`leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions we would like to show.
+
+For obtaining those spdfs we can use the `getData` function of the `raster` package.
+If we select "Germany" as country, level 1 will contain the spdf for the federal states
+and level 2 the spdf the administrative districts.
 ```{r}
 ger1 <- raster::getData(country = "Germany", level = 1)
 ger2 <- raster::getData(country = "Germany", level = 2)
 ```
 
-Preprocessing of spdfs
+The spdf for level 2 does not display all German umlauts correctly. Therefore we replace 
+some names accordingly so that we can assign our data correctly later on.
 ```{r}
-# Correct Umlaute
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
   "München (Kreisfreie Stadt)",
@@ -39,12 +57,30 @@ ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
 )
 ```
 
+Let's now build our `spdfs_list` which we can provide to `leafdown` in our shiny app.
+It is important that `spdfs_list` is ordered such that the spdf of highest map level 
+(in our case the federal states) is the first element.
+
+```
+list (spdfs_list)
+│   
+└───spdf (spdf of first map level)
+│
+└───spdf (spdf of second map level)
+
+```
+
 ```{r}
 spdfs_list <- list(ger1, ger2)
 ```
 
 
-Data
+## Data
+
+For this app we will use the data sets that come with the `leaflet`.
+The data frame `gdp_2014_federal_states`  contains the GPD of the the year 2014 for the federal 
+states and `gdp_2014_admin_districts` for the administrative districts.
+
 ```{r}
 head(gdp_2014_federal_states)
 ```
@@ -53,35 +89,66 @@ head(gdp_2014_federal_states)
 head(gdp_2014_admin_districts)
 ```
 
+(For more information on the data please see `?gdp_2014_federal_states` or
+`?gdp_2014_admin_districts` respectively)
 
-App
+## Shiny App
 
-```{r}
-create_labels <- function(data, map_level) {
-  labels <- sprintf(
-    "<strong>%s</strong><br/>%g € per capita</sup>",
-    data[, paste0("NAME_", map_level)], data$GDP_2014
-  )
-  labels %>% lapply(htmltools::HTML)
-}
-```
+Let's define a very basic UI containing only two buttons for drill-down and 
+drill-up and the leaflet UI element in which we can render our `leafdown` map.
 
-
+### UI
 ```{r, eval=FALSE}
-# Define UI for leafdown app
 ui <- shiny::fluidPage(
   tags$style(HTML(".leaflet-container {background: #ffffff;}")),
   useShinyjs(),
-  # App title
-  headerPanel("Drillable map with leafdown"),
-  # Main
   actionButton("drill_down", "Drill Down"),
   actionButton("drill_up", "Drill Up"),
   leafletOutput("leafdown", height = 600),
 )
 ```
 
-Define server for leafdown app
+### Server
+
+#### Leafdown workflow
+
+As usual for R6 classes, we create a new object of our `Leafdown` class using the
+`new()` method.
+To create a new `Leafdown` object we have to specify the:
+- `spdfs_list`
+- `map_output_id` which is the output_id we specify for our `leafdown` map in our shiny app
+- `input` which is the input from the shiny app
+
+TODO: Print the data like current data etc.
+```{r, eval=FALSE}
+my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = input)
+```
+
+```{r, eval=FALSE}
+data <- my_leafdown$get_current_data()
+```
+
+Then we can add new data to the existing meta-data.
+It is important that the columns of the data frame retrieved from `$get_current_data()` 
+are unchanged and no rows are removed. So we should only add column e.g. using a left join.
+
+```{r, eval=FALSE}
+new_data <- do_something(data)
+```
+
+
+```{r, eval=FALSE}
+my_leafdown$add_data(new_data)
+```
+
+```{r, eval=FALSE}
+my_leafdown$draw_leafdown()
+```
+
+TO DO: Explain drill-down and drill up functionality
+
+
+#### Server Function
 ```{r, eval=FALSE}
 server <- function(input, output) {
   my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
@@ -102,20 +169,20 @@ server <- function(input, output) {
     data <- my_leafdown$get_current_data()
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
-      data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+      new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
     } else {
-      data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
+      new_data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
     }
-    my_leafdown$add_data(data)
-    labels <- create_labels(data, curr_map_level)
+    my_leafdown$add_data(new_data)
     map <- my_leafdown$draw_leafdown(
       fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014),
-      weight = 2, fillOpacity = 0.8, color = "grey", label = labels
+      weight = 2, fillOpacity = 0.8, color = "grey"
     )
   })
 }
 ```
 
+### Run App
 ```{r, eval=FALSE}
 shinyApp(ui, server)
 ```
