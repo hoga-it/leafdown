@@ -11,7 +11,7 @@
 #' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
-    #' @field spdfs_list The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.
+    #' @field spdfs_list The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
     .spdfs_list = NULL,
     # map_proxy The proxy from the leaflet map. Used for smoother redrawing.
     .map_proxy = NULL,
@@ -21,7 +21,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @field curr_data The spdf-metadata from the currently used shapes AND the corresponding values.
     .curr_data = NULL,
     #' @field curr_map_level The current map level.
-    #' This corresponds to the position of the shapes in the \code{\link{spdfs_list}}.
+    #' This corresponds to the position of the shapes in the \code{spdfs_list}.
     #' (i.e The highest-level is 1, the next is 2 and so on...)
     .curr_map_level = NULL,
     #' @field curr_selection The selected shapes of the current level. They will be highlighted on the map.
@@ -39,7 +39,7 @@ Leafdown <- R6::R6Class("Leafdown",
 
     #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the selection.
-    #' Once a shape is clicked, it is added to the \code{\link{.curr_selection}} (or removed from it).
+    #' Once a shape is clicked, it is added to the \code{.curr_selection} (or removed from it).
     #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
     init_click_observer = function(input, map_output_id) {
       shiny::observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
@@ -103,7 +103,7 @@ Leafdown <- R6::R6Class("Leafdown",
   public = list(
     #' @description
     #' Initializes the leafdown object.
-    #' This will not draw the map. Add data first and call \code{\link{draw_leafdown}} to draw the map.
+    #' This will not draw the map. Add data first and call \code{draw_leafdown}}to draw the map.
     #' @param spdfs_list The spdfs of all map levels. This cannot be changed later
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app
@@ -170,7 +170,7 @@ Leafdown <- R6::R6Class("Leafdown",
     },
     #' @description
     #' Returns the metadata of the shapes from the current maplevel.
-    #' This may differ from what is displayed if \code{\link{drill_down}} was called but \code{\link{draw_leafdown}} wasn't (yet)
+    #' This may differ from what is displayed if \code{drill_down} was called but \code{draw_leafdown} wasn't (yet)
     #'
     #' @return The current meta-data
     get_current_metadata = function() {
@@ -200,8 +200,8 @@ Leafdown <- R6::R6Class("Leafdown",
     #' Drills down to the lower level if:
     #' - there is a lower level (for now there are only two levels)
     #' - at least one shape is selected to drill down on
-    #' !This will not redraw the map! Also call \code{\link{add_data}} to add data for the new level and then
-    #'   \code{\link{draw_leafdown}} to redraw the map on the new level
+    #' !This will not redraw the map! Also call \code{add_data} to add data for the new level and then
+    #'   \code{draw_leafdown} to redraw the map on the new level
     drill_down = function() {
       # check whether we can drill_down further (just 2 levels for now)
       if(private$.curr_map_level == 2) {
@@ -234,8 +234,8 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Drills up to the higher level if:
     #' - there is a higher level (for now there are only two levels)
-    #' !This will not redraw the map! Also call \code{\link{add_data}} to add data for the new level and then
-    #'   \code{\link{draw_leafdown}} to redraw the map on the new level
+    #' !This will not redraw the map! Also call \code{add_data} to add data for the new level and then
+    #'   \code{draw_leafdown} to redraw the map on the new level
     drill_up = function() {
       # check whether we can drill_up further
       if(private$.curr_map_level <= 1) {

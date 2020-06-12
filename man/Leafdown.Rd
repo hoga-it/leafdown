@@ -13,14 +13,14 @@ This class acts as a wrapper around the leaflet map. It allows the user to:
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.}
+\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.}
 
 \item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
 \item{\code{curr_data}}{The spdf-metadata from the currently used shapes AND the corresponding values.}
 
 \item{\code{curr_map_level}}{The current map level.
-This corresponds to the position of the shapes in the \code{\link{spdfs_list}}.
+This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...)}
 
 \item{\code{curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
@@ -45,14 +45,14 @@ curr_poly_ids The ids of all polygons of the current map level.}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Initializes the observer for the maps _shape_click events. This is needed for the selection.
-Once a shape is clicked, it is added to the \code{\link{.curr_selection}} (or removed from it).
+Once a shape is clicked, it is added to the \code{.curr_selection} (or removed from it).
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
 
 
-Initializes the leafdown object.
-This will not draw the map. Add data first and call \code{\link{draw_leafdown}} to draw the map.
+
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(spdfs_list, map_output_id, input)}\if{html}{\out{</div>}}
 }
@@ -71,6 +71,7 @@ This will not draw the map. Add data first and call \code{\link{draw_leafdown}} 
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-draw_leafdown"></a>}}
+\if{latex}{\out{\hypertarget{method-draw_leafdown}{}}}
 \subsection{Method \code{draw_leafdown()}}{
 Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.
 \subsection{Usage}{
@@ -87,9 +88,10 @@ Draws the leaflet map on the current map level. All unselected parents will be d
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_current_metadata"></a>}}
+\if{latex}{\out{\hypertarget{method-get_current_metadata}{}}}
 \subsection{Method \code{get_current_metadata()}}{
 Returns the metadata of the shapes from the current maplevel.
-This may differ from what is displayed if \code{\link{drill_down}} was called but \code{\link{draw_leafdown}} wasn't (yet)
+This may differ from what is displayed if \code{drill_down} was called but \code{draw_leafdown} wasn't (yet)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$get_current_metadata()}\if{html}{\out{</div>}}
 }
@@ -100,6 +102,7 @@ The current meta-data
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_data"></a>}}
+\if{latex}{\out{\hypertarget{method-add_data}{}}}
 \subsection{Method \code{add_data()}}{
 Sets the data of the current shapes. This includes the meta-data AND the values given by the user.
 These values can be used to draw differently colored shapes.
@@ -117,12 +120,13 @@ These values can be used to draw differently colored shapes.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-drill_down"></a>}}
+\if{latex}{\out{\hypertarget{method-drill_down}{}}}
 \subsection{Method \code{drill_down()}}{
 Drills down to the lower level if:
 - there is a lower level (for now there are only two levels)
 - at least one shape is selected to drill down on
-!This will not redraw the map! Also call \code{\link{add_data}} to add data for the new level and then
-  \code{\link{draw_leafdown}} to redraw the map on the new level
+!This will not redraw the map! Also call \code{add_data} to add data for the new level and then
+  \code{draw_leafdown} to redraw the map on the new level
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$drill_down()}\if{html}{\out{</div>}}
 }
@@ -130,11 +134,12 @@ Drills down to the lower level if:
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-drill_up"></a>}}
+\if{latex}{\out{\hypertarget{method-drill_up}{}}}
 \subsection{Method \code{drill_up()}}{
 Drills up to the higher level if:
 - there is a higher level (for now there are only two levels)
-!This will not redraw the map! Also call \code{\link{add_data}} to add data for the new level and then
-  \code{\link{draw_leafdown}} to redraw the map on the new level
+!This will not redraw the map! Also call \code{add_data} to add data for the new level and then
+  \code{draw_leafdown} to redraw the map on the new level
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$drill_up()}\if{html}{\out{</div>}}
 }
@@ -142,6 +147,7 @@ Drills up to the higher level if:
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
