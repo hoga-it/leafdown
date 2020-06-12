@@ -40,8 +40,8 @@ devtools::install_github("hoga-it/leafdown")
 ```
 ## Features
 
-- Adds drill-down functionality for leaflet choropleths maps.
+- Adds drill-down functionality for [leaflet choropleths](https://rstudio.github.io/leaflet/choropleths.html) maps.
 - Allows the selection of regions / shapes.
-- Easy to use and well integrated into syntax of leaflet r package.
+- Easy to use and well integrated into syntax of the [leaflet](https://rstudio.github.io/leaflet/) R package. 
 
 
