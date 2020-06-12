@@ -8,7 +8,6 @@
 #' - convenient functions to connect the map to graphs
 #'
 #' @importFrom magrittr "%>%"
-#' @import checkmate
 #' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
@@ -43,7 +42,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' Once a shape is clicked, it is added to the \code{\link{.curr_selection}} (or removed from it).
     #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
     init_click_observer = function(input, map_output_id) {
-      observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
+      shiny::observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
         req(clicked_id)
         curr_selection <- private$.curr_selection[[private$.curr_map_level]]
@@ -115,7 +114,7 @@ Leafdown <- R6::R6Class("Leafdown",
       checkmate::assert_character(map_output_id, min.chars = 1)
 
       # check 'input' reactive vals from shiny
-      if(!is.reactivevalues(input)) {
+      if(!shiny::is.reactivevalues(input)) {
         stop("The given 'input' argument must be the 'input' from the shiny app")
       }
 
