@@ -24,7 +24,7 @@ This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...)}
 
 \item{\code{curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
-Calling \code{\link{drill_down}} will drill down on these selected shapes.}
+Calling \code{drill_down} will drill down on these selected shapes.}
 
 \item{\code{curr_spdf}}{The spdfs of the current map level.
 curr_poly_ids The ids of all polygons of the current map level.}

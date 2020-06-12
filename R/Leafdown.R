@@ -25,7 +25,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' (i.e The highest-level is 1, the next is 2 and so on...)
     .curr_map_level = NULL,
     #' @field curr_selection The selected shapes of the current level. They will be highlighted on the map.
-    #' Calling \code{\link{drill_down}} will drill down on these selected shapes.
+    #' Calling \code{drill_down} will drill down on these selected shapes.
     .curr_selection = NULL,
     #' @field curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
