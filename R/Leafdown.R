@@ -1,30 +1,55 @@
 #' Leafdown R6 Class
+#' This class acts as a wrapper around the leaflet map. It allows the user to:
+#' - select shapes
+#' - drill down on these selected shapes
+#' - drill up
+#' - convenient functions to connect the map to graphs
 #'
 #' @importFrom magrittr "%>%"
 #' @import checkmate
 #' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
+    #' @field .spdfs_list The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.
     .spdfs_list = NULL,
-    .curr_data = NULL,
-    .curr_map_level = NULL,
-    .curr_proxy = NULL,
-    .curr_selection = NULL,
+    #' @field .map_proxy The proxy from the leaflet map. Used for smoother redrawing.
+    .map_proxy = NULL,
+    #' @field .map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     .map_output_id = NULL,
+
+    #' @field .curr_data The spdf-metadata from the currently used shapes AND the corresponding values.
+    .curr_data = NULL,
+    #' @field .curr_map_level The current map level.
+    #' This corresponds to the position of the shapes in the \code{\link{spdfs_list}}.
+    #' (i.e The highest-level is 1, the next is 2 and so on...)
+    .curr_map_level = NULL,
+    #' @field .curr_selection The selected shapes of the current level. They will be highlighted on the map.
+    #' Calling \code{\link{drill_down}} will drill down on these selected shapes.
+    .curr_selection = NULL,
+    #' @field .curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
+    #' @field .curr_poly_ids The ids of all polygons of the current map level.
+    .curr_poly_ids = NULL,
+
+    #' @field .selected_parents The selected shapes from the higher level.
     .selected_parents = NULL,
+    #' @field .unselected_parents All shapes from the higher level which are not selected. They will be drawn in gray.
     .unselected_parents = NULL,
-    .all_poly_ids = NULL,
-    add_click_observer = function(input, map_output_id) {
+
+    #' @description
+    #' Initializes the observer for the maps _shape_click events. This is needed for the selection.
+    #' Once a shape is clicked, it is added to the \link{.curr_selection} (or removed from it).
+    #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
+    init_click_observer = function(input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
         req(clicked_id)
         curr_selection <- private$.curr_selection[[private$.curr_map_level]]
         if (clicked_id %in% curr_selection) {
-          private$.curr_proxy %>% hideGroup(clicked_id)
+          private$.map_proxy %>% hideGroup(clicked_id)
           private$.curr_selection[[private$.curr_map_level]] <- curr_selection[!curr_selection == clicked_id]
         } else {
-          private$.curr_proxy %>% showGroup(clicked_id)
+          private$.map_proxy %>% showGroup(clicked_id)
           private$.curr_selection[[private$.curr_map_level]] <- c(curr_selection, clicked_id)
         }
       })
@@ -75,6 +100,12 @@ Leafdown <- R6::R6Class("Leafdown",
     }
   ),
   public = list(
+    #' @description
+    #' Initializes the leafdown object.
+    #' This will not draw the map. Add data first and call \code{\link{draw_leafdown}} to draw the map.
+    #' @param spdfs_list The spdfs of all map levels. This cannot be changed later
+    #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
+    #' @param input The \code{input} from the shiny app
     initialize = function(spdfs_list, map_output_id, input) {
       # TODO: check spdfs_list
 
@@ -94,17 +125,20 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.map_output_id <- map_output_id
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
 
-      private$add_click_observer(input, map_output_id)
+      private$init_click_observer(input, map_output_id)
     },
+    #' @description
+    #' Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.
+    #' @param ... Additional arguments given to \code{leaflet::addPolygons}
     draw_leafdown = function(...) {
       curr_spdf <- private$.curr_spdf
       curr_spdf@data <- private$.curr_data
-      private$.curr_proxy <- leaflet::leafletProxy(private$.map_output_id)
+      private$.map_proxy <- leaflet::leafletProxy(private$.map_output_id)
       all_poly_ids <- c()
       for (pol in curr_spdf@polygons) {
         all_poly_ids <- c(all_poly_ids, pol@ID)
       }
-      private$.all_poly_ids <- all_poly_ids
+      private$.curr_poly_ids <- all_poly_ids
       map <- leaflet::leaflet(curr_spdf) %>%
         leaflet::addPolygons(layerId = ~all_poly_ids, ...) %>%
         addPolylines(
@@ -112,7 +146,7 @@ Leafdown <- R6::R6Class("Leafdown",
           highlight = highlightOptions(bringToFront = T, weight = 4)
         )
       if (private$.curr_map_level != 1) {
-        # If there are inactive parent polygons then draw them as grey background
+        # If there are unselected parent polygons then draw them as gray background
         if (length(private$.unselected_parents@polygons) > 0) {
           map <- map %>%
             addPolylines(
@@ -128,18 +162,27 @@ Leafdown <- R6::R6Class("Leafdown",
             )
         }
       }
-      private$.curr_proxy %>%
+      private$.map_proxy %>%
         hideGroup(all_poly_ids) %>%
         showGroup(private$.curr_selection[[private$.curr_map_level]])
       map
     },
-    get_current_data = function() {
+    #' @description
+    #' Returns the metadata of the shapes from the current maplevel.
+    #' This may differ from what is displayed if \code{\link{drill_down}} was called but \code{\link{draw_leafdown}} wasn't (yet)
+    #'
+    #' @return The current meta-data
+    get_current_metadata = function() {
       private$.curr_spdf@data
     },
+    #' @description
+    #' Sets the data of the current shapes. This includes the meta-data AND the values given by the user.
+    #' These values can be used to draw differently colored shapes.
+    #' @param data: The new data existing of the meta-data and the values to display in the map(color)
     add_data = function(data) {
-      # check if the given data is correct:
-      # It has to be the same as the old data.
-      # Optionally value column(s) can be added
+      # check if the given data contains the correct metadata:
+      # - The metadata has to be the same as the old metadata
+      # - Optionally value column(s) can be added
       if(!is.list(data)) {
         stop("The given data must be a list")
       }
@@ -152,13 +195,19 @@ Leafdown <- R6::R6Class("Leafdown",
 
       private$.curr_data <- data
     },
+    #' @description
+    #' Drills down to the lower level if:
+    #' - there is a lower level (for now there are only two levels)
+    #' - at least one shape is selected to drill down on
+    #' !This will not redraw the map! Also call \code{\link{add_data}} to add data for the new level and then
+    #'   \code{\link{draw_leafdown}} to redraw the map on the new level
     drill_down = function() {
       # check whether we can drill_down further (just 2 levels for now)
       if(private$.curr_map_level == 2) {
         shinyjs::alert("The lowest level is reached. Cannot drill lower!")
         return()
       }
-      # check for selection
+      # check for selection (we can only drill_down if there are shapes selected)
       if(is.null(private$.curr_selection[[private$.curr_map_level]])) {
         shinyjs::alert("Please select the area to drill down!")
         return()
@@ -166,7 +215,7 @@ Leafdown <- R6::R6Class("Leafdown",
 
       # Information about parent polygons
       parents <- private$.spdfs_list[[private$.curr_map_level]]
-      all_poly_ids_parents <- private$.all_poly_ids
+      all_poly_ids_parents <- private$.curr_poly_ids
       curr_selection_parents <- private$.curr_selection[[private$.curr_map_level]]
       index_sel_parents <- all_poly_ids_parents %in% curr_selection_parents
       private$.selected_parents <- parents[index_sel_parents, ]
@@ -181,6 +230,11 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- private$.curr_map_level + 1
       private$.curr_selection[[private$.curr_map_level]] <- character(0)
     },
+    #' @description
+    #' Drills up to the higher level if:
+    #' - there is a higher level (for now there are only two levels)
+    #' !This will not redraw the map! Also call \code{\link{add_data}} to add data for the new level and then
+    #'   \code{\link{draw_leafdown}} to redraw the map on the new level
     drill_up = function() {
       # check whether we can drill_up further
       if(private$.curr_map_level <= 1) {
