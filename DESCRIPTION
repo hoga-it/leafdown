@@ -19,6 +19,7 @@ Suggests:
     knitr,
     rmarkdown
 RoxygenNote: 7.1.0
+Depends: R (>= 3.5.0)
 Imports: 
     R6,
     leaflet,
