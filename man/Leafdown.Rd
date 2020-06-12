@@ -2,80 +2,32 @@
 % Please edit documentation in R/Leafdown.R
 \name{Leafdown}
 \alias{Leafdown}
-\title{Leafdown R6 Class
-This class acts as a wrapper around the leaflet map. It allows the user to:
-- select shapes
-- drill down on these selected shapes
-- drill up
-- convenient functions to connect the map to graphs}
+\title{Leafdown R6 Class}
 \description{
-Leafdown R6 Class
 This class acts as a wrapper around the leaflet map. It allows the user to:
 - select shapes
 - drill down on these selected shapes
 - drill up
 - convenient functions to connect the map to graphs
-
-Leafdown R6 Class
-This class acts as a wrapper around the leaflet map. It allows the user to:
-- select shapes
-- drill down on these selected shapes
-- drill up
-- convenient functions to connect the map to graphs
-}
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{.spdfs_list}}{The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.}
-
-\item{\code{.map_proxy}}{The proxy from the leaflet map. Used for smoother redrawing.}
-
-\item{\code{.map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
-
-\item{\code{.curr_data}}{The spdf-metadata from the currently used shapes AND the corresponding values.}
-
-\item{\code{.curr_map_level}}{The current map level.
-This corresponds to the position of the shapes in the \code{\link{spdfs_list}}.
-(i.e The highest-level is 1, the next is 2 and so on...)}
-
-\item{\code{.curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
-Calling \code{\link{drill_down}} will drill down on these selected shapes.}
-
-\item{\code{.curr_spdf}}{The spdfs of the current map level.}
-
-\item{\code{.curr_poly_ids}}{The ids of all polygons of the current map level.}
-
-\item{\code{.selected_parents}}{The selected shapes from the higher level.}
-
-\item{\code{.unselected_parents}}{All shapes from the higher level which are not selected. They will be drawn in gray.}
-}
-\if{html}{\out{</div>}}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{.spdfs_list}}{The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.}
+\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.}
 
-\item{\code{.map_proxy}}{The proxy from the leaflet map. Used for smoother redrawing.}
+\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
-\item{\code{.map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+\item{\code{curr_data}}{The spdf-metadata from the currently used shapes AND the corresponding values.}
 
-\item{\code{.curr_data}}{The spdf-metadata from the currently used shapes AND the corresponding values.}
-
-\item{\code{.curr_map_level}}{The current map level.
+\item{\code{curr_map_level}}{The current map level.
 This corresponds to the position of the shapes in the \code{\link{spdfs_list}}.
 (i.e The highest-level is 1, the next is 2 and so on...)}
 
-\item{\code{.curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
+\item{\code{curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
 Calling \code{\link{drill_down}} will drill down on these selected shapes.}
 
-\item{\code{.curr_spdf}}{The spdfs of the current map level.}
-
-\item{\code{.curr_poly_ids}}{The ids of all polygons of the current map level.}
-
-\item{\code{.selected_parents}}{The selected shapes from the higher level.}
-
-\item{\code{.unselected_parents}}{All shapes from the higher level which are not selected. They will be drawn in gray.}
+\item{\code{curr_spdf}}{The spdfs of the current map level.
+curr_poly_ids The ids of all polygons of the current map level.}
 }
 \if{html}{\out{</div>}}
 }
@@ -96,7 +48,7 @@ Calling \code{\link{drill_down}} will drill down on these selected shapes.}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Initializes the observer for the maps _shape_click events. This is needed for the selection.
-Once a shape is clicked, it is added to the \link{.curr_selection} (or removed from it).
+Once a shape is clicked, it is added to the \code{\link{.curr_selection}} (or removed from it).
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
 
 
@@ -162,7 +114,7 @@ These values can be used to draw differently colored shapes.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{data:}}{The new data existing of the meta-data and the values to display in the map(color)}
+\item{\code{data}}{The new data existing of the meta-data and the values to display in the map(color)}
 }
 \if{html}{\out{</div>}}
 }

@@ -12,35 +12,35 @@
 #' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
-    #' @field .spdfs_list The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.
+    #' @field spdfs_list The spdfs of all map levels. This is set in \code{\link{initialize}} and cannot be changed afterwards.
     .spdfs_list = NULL,
-    #' @field .map_proxy The proxy from the leaflet map. Used for smoother redrawing.
+    # map_proxy The proxy from the leaflet map. Used for smoother redrawing.
     .map_proxy = NULL,
-    #' @field .map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
+    #' @field map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     .map_output_id = NULL,
 
-    #' @field .curr_data The spdf-metadata from the currently used shapes AND the corresponding values.
+    #' @field curr_data The spdf-metadata from the currently used shapes AND the corresponding values.
     .curr_data = NULL,
-    #' @field .curr_map_level The current map level.
+    #' @field curr_map_level The current map level.
     #' This corresponds to the position of the shapes in the \code{\link{spdfs_list}}.
     #' (i.e The highest-level is 1, the next is 2 and so on...)
     .curr_map_level = NULL,
-    #' @field .curr_selection The selected shapes of the current level. They will be highlighted on the map.
+    #' @field curr_selection The selected shapes of the current level. They will be highlighted on the map.
     #' Calling \code{\link{drill_down}} will drill down on these selected shapes.
     .curr_selection = NULL,
-    #' @field .curr_spdf The spdfs of the current map level.
+    #' @field curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
-    #' @field .curr_poly_ids The ids of all polygons of the current map level.
+    #' curr_poly_ids The ids of all polygons of the current map level.
     .curr_poly_ids = NULL,
 
-    #' @field .selected_parents The selected shapes from the higher level.
+    # selected_parents The selected shapes from the higher level.
     .selected_parents = NULL,
-    #' @field .unselected_parents All shapes from the higher level which are not selected. They will be drawn in gray.
+    # unselected_parents All shapes from the higher level which are not selected. They will be drawn in gray.
     .unselected_parents = NULL,
 
     #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the selection.
-    #' Once a shape is clicked, it is added to the \link{.curr_selection} (or removed from it).
+    #' Once a shape is clicked, it is added to the \code{\link{.curr_selection}} (or removed from it).
     #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
     init_click_observer = function(input, map_output_id) {
       observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
@@ -180,7 +180,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Sets the data of the current shapes. This includes the meta-data AND the values given by the user.
     #' These values can be used to draw differently colored shapes.
-    #' @param data: The new data existing of the meta-data and the values to display in the map(color)
+    #' @param data The new data existing of the meta-data and the values to display in the map(color)
     add_data = function(data) {
       # check if the given data contains the correct metadata:
       # - The metadata has to be the same as the old metadata
