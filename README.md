@@ -11,7 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://travis-ci.com/hoga-it/leafdown.svg?branch=master)](https://travis-ci.com/hoga-it/leafdown)
 <!-- badges: end -->
 
-The goal of leafdown is to provide drill down functionality for leaflet
+The goal of leafdown is to provide drilldown functionality for leaflet
 choropleths.
 
 <img src='man/figures/select_drilldown.PNG'/>
@@ -34,7 +34,7 @@ devtools::install_github("hoga-it/leafdown")
 
 ## Features
 
-  - Adds drill-down functionality for [leaflet
+  - Adds drilldown functionality for [leaflet
     choropleths](https://rstudio.github.io/leaflet/choropleths.html)
     maps.
   - Allows the selection of regions / shapes.
