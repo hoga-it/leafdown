@@ -93,7 +93,6 @@ Calling \code{\link{drill_down}} will drill down on these selected shapes.}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Initializes the observer for the maps _shape_click events. This is needed for the selection.
 Once a shape is clicked, it is added to the \link{.curr_selection} (or removed from it).
@@ -120,7 +119,6 @@ This will not draw the map. Add data first and call \code{\link{draw_leafdown}} 
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-draw_leafdown"></a>}}
-\if{latex}{\out{\hypertarget{method-draw_leafdown}{}}}
 \subsection{Method \code{draw_leafdown()}}{
 Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.
 \subsection{Usage}{
@@ -137,7 +135,6 @@ Draws the leaflet map on the current map level. All unselected parents will be d
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_current_metadata"></a>}}
-\if{latex}{\out{\hypertarget{method-get_current_metadata}{}}}
 \subsection{Method \code{get_current_metadata()}}{
 Returns the metadata of the shapes from the current maplevel.
 This may differ from what is displayed if \code{\link{drill_down}} was called but \code{\link{draw_leafdown}} wasn't (yet)
@@ -151,7 +148,6 @@ The current meta-data
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-add_data"></a>}}
-\if{latex}{\out{\hypertarget{method-add_data}{}}}
 \subsection{Method \code{add_data()}}{
 Sets the data of the current shapes. This includes the meta-data AND the values given by the user.
 These values can be used to draw differently colored shapes.
@@ -169,7 +165,6 @@ These values can be used to draw differently colored shapes.
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-drill_down"></a>}}
-\if{latex}{\out{\hypertarget{method-drill_down}{}}}
 \subsection{Method \code{drill_down()}}{
 Drills down to the lower level if:
 - there is a lower level (for now there are only two levels)
@@ -183,7 +178,6 @@ Drills down to the lower level if:
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-drill_up"></a>}}
-\if{latex}{\out{\hypertarget{method-drill_up}{}}}
 \subsection{Method \code{drill_up()}}{
 Drills up to the higher level if:
 - there is a higher level (for now there are only two levels)
@@ -196,7 +190,6 @@ Drills up to the higher level if:
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
