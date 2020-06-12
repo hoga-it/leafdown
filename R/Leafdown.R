@@ -1,4 +1,6 @@
 #' Leafdown R6 Class
+#'
+#' @description
 #' This class acts as a wrapper around the leaflet map. It allows the user to:
 #' - select shapes
 #' - drill down on these selected shapes
