@@ -32,7 +32,7 @@ library(shinyjs)
 ```
 
 (Note that the `shinyjs` package is loaded for some automatic messages that the 
-`leafdown` map can return to the user of the shiny app. More on that later...)
+`leafdown` map can return to the user of the shiny app.)
 
 
 ## SpatialPolygonsDataFrames
@@ -95,18 +95,18 @@ head(gdp_2014_admin_districts)
 
 
 
-### Leafdown workflow
+## Leafdown workflow
 In this part we give a sketch of the `leafdown` workflow.
 
 As usual for R6 classes, we create a new object of our `Leafdown` class using the
-`new()` method.
-To create a new `Leafdown` object we have to specify the:
+`new()` method. \
+Here we have to specify the:
 
 - `spdfs_list`: The list containing the spdfs of both map levels.
 - `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
 - `input`: The `input` from the shiny app
 
-#### Initialization
+### Initialization
 ```{r}
 input <- reactiveValues(foo = "bar") # a little helper as we are not in a shiny session
 my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = input)
@@ -117,7 +117,7 @@ Using the method `$get_current_metadata()` we can obtain the metadata of the (ac
 polygons of the current map level.
 As metadata we refer to the data that describe the polygons such as region names, 
 region ids etc.
-(Specifically we refer to metadata to what is obtained by calling e.g. `ger1@data`)
+(Essentially we refer to metadata as what is obtained by calling e.g. `ger1@data`)
 
 ```{r}
 data <- my_leafdown$get_current_metadata()
@@ -144,16 +144,19 @@ print(head(my_leafdown$curr_data))
 ```
 
 
-Finally we can draw our leafdown map. The arguments specified are internally directly 
-handed over to `leaflet` such that we can use all of this great customization capabilities.
+Finally we can draw our leafdown map. The specified arguments are internally 
+handed over to the `addPolygons` of `leaflet` such that we can use all this great 
+customization options
 The `$draw_leafdown()` method returns a normal `leaflet` object. Therefore we 
 can also add markers or a map background as in the "basic" leaflet maps.
 
 ```{r, eval=FALSE}
-my_leafdown$draw_leafdown() # %>% addTiles()
+my_leafdown$draw_leafdown(
+  fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
+) # %>% addTiles()
 ```
 
-#### Drilldown
+### Drilldown
 
 Using the `$drill_down` method we can now drill down to the admin districts of
 the selected federal states.
@@ -194,13 +197,15 @@ my_leafdown$drill_down()
 data <- my_leafdown$get_current_metadata()
 data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
 my_leafdown$add_data(new_data)
-my_leafdown$draw_leafdown()
+my_leafdown$draw_leafdown(
+  fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
+)
 ```
 
 
 
 
-#### Drillup
+### Drillup
 
 TO DO: Explain drill-down and drill up functionality
 Drilldown
