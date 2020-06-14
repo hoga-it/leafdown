@@ -5,9 +5,9 @@ account: andreasho95
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2441564
-bundleId: 3257310
+bundleId: 3267653
 url: https://andreasho95.shinyapps.io/leafdown-basic-example/
-when: 1591885505.21459
+when: 1592129412.13272
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: app.R|extdata

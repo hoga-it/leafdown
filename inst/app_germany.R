@@ -62,7 +62,10 @@ server <- function(input, output) {
     labels <- create_labels(data, curr_map_level)
     map <- my_leafdown$draw_leafdown(
       fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014),
-      weight = 2, fillOpacity = 0.8, color = "grey", label = labels
+      weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
+      highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7,
+                                   bringToFront = FALSE)
+
     )
   })
 }

@@ -161,15 +161,26 @@ The goal is to create a map that shows the GDP (gross domestic product) of the f
 <h4 class="hasAnchor">
 <a href="#leafdown-workflow" class="anchor"></a>Leafdown workflow</h4>
 <p>As usual for R6 classes, we create a new object of our <code>Leafdown</code> class using the <code>new()</code> method. To create a new <code>Leafdown</code> object we have to specify the: - <code>spdfs_list</code> - <code>map_output_id</code> which is the output_id we specify for our <code>leafdown</code> map in our shiny app - <code>input</code> which is the input from the shiny app</p>
+<p>TODO: Print the data like current data etc.</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">my_leafdown</span> <span class="kw">&lt;-</span> <span class="no">Leafdown</span>$<span class="fu">new</span>(<span class="no">spdfs_list</span>, <span class="kw">map_output_id</span> <span class="kw">=</span> <span class="st">"leafdown"</span>, <span class="kw">input</span> <span class="kw">=</span> <span class="no">input</span>)</pre></body></html></div>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_data</span>()</pre></body></html></div>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">add_data</span>(<span class="no">new_data</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">draw_leafdown</span>()</pre></body></html></div>
+<p>Then we can add new data to the existing meta-data. It is important that the columns of the data frame retrieved from <code>$get_current_data()</code> are unchanged and no rows are removed. So we should only add column e.g. using a left join.</p>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="fu">do_something</span>(<span class="no">data</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">add_data</span>(<span class="no">new_data</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">draw_leafdown</span>()</pre></body></html></div>
+<p>TO DO: Explain drill-down and drill up functionality</p>
 </div>
 <div id="server-function" class="section level4">
 <h4 class="hasAnchor">
 <a href="#server-function" class="anchor"></a>Server Function</h4>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">create_labels</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">data</span>, <span class="no">map_level</span>) {
+  <span class="no">labels</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(
+    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g € per capita&lt;/sup&gt;"</span>,
+    <span class="no">data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"NAME_"</span>, <span class="no">map_level</span>)], <span class="no">data</span>$<span class="no">GDP_2014</span>
+  )
+  <span class="no">labels</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="kw pkg">htmltools</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>)
+}</pre></body></html></div>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
   <span class="no">my_leafdown</span> <span class="kw">&lt;-</span> <span class="no">Leafdown</span>$<span class="fu">new</span>(<span class="no">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="no">input</span>)
   <span class="no">update_leafdown</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveVal.html">reactiveVal</a></span>(<span class="fl">0</span>)
 
@@ -185,17 +196,22 @@ The goal is to create a map that shows the GDP (gross domestic product) of the f
 
   <span class="no">output</span>$<span class="no">leafdown</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-shiny.html">renderLeaflet</a></span>({
     <span class="fu">update_leafdown</span>()
-    <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_data</span>()
+    <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_metadata</span>()
     <span class="no">curr_map_level</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_map_level</span>
     <span class="kw">if</span> (<span class="no">curr_map_level</span> <span class="kw">==</span> <span class="fl">1</span>) {
-      <span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))
+      <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))
     } <span class="kw">else</span> {
-      <span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(<span class="no">gdp_2014_admin_districts</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_2"</span> <span class="kw">=</span> <span class="st">"Admin_District"</span>))
+      <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join.html">left_join</a></span>(<span class="no">gdp_2014_admin_districts</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_2"</span> <span class="kw">=</span> <span class="st">"Admin_District"</span>))
     }
-    <span class="no">my_leafdown</span>$<span class="fu">add_data</span>(<span class="no">new_data</span>)
+
+    <span class="no">my_leafdown</span>$<span class="fu">add_data</span>(<span class="no">data</span>)
+    <span class="no">labels</span> <span class="kw">&lt;-</span> <span class="fu">create_labels</span>(<span class="no">data</span>, <span class="no">curr_map_level</span>)
     <span class="no">map</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">draw_leafdown</span>(
       <span class="kw">fillColor</span> <span class="kw">=</span> ~ <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorNumeric</a></span>(<span class="st">"Blues"</span>, <span class="no">GDP_2014</span>)(<span class="no">GDP_2014</span>),
-      <span class="kw">weight</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">fillOpacity</span> <span class="kw">=</span> <span class="fl">0.8</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"grey"</span>
+      <span class="kw">weight</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">fillOpacity</span> <span class="kw">=</span> <span class="fl">0.8</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"grey"</span>, <span class="kw">label</span> <span class="kw">=</span> <span class="no">labels</span>,
+      <span class="kw">highlight</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html">highlightOptions</a></span>(<span class="kw">weight</span> <span class="kw">=</span> <span class="fl">5</span>, <span class="kw">color</span> <span class="kw">=</span> <span class="st">"#666"</span>, <span class="kw">fillOpacity</span> <span class="kw">=</span> <span class="fl">0.7</span>,
+                                   <span class="kw">bringToFront</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+
     )
   })
 }</pre></body></html></div>
@@ -204,7 +220,7 @@ The goal is to create a map that shows the GDP (gross domestic product) of the f
 <div id="run-app" class="section level3">
 <h3 class="hasAnchor">
 <a href="#run-app" class="anchor"></a>Run App</h3>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
 <style>
 .shiny-app-frame {
   position: relative;
