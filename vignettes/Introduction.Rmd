@@ -16,9 +16,10 @@ knitr::opts_chunk$set(
 
 In this article we would like to give an example of how to create a very simple 
 drill-down map with `leafdown`. \
-The goal is to create a map that shows the GDP (gross domestic product) of the 
-federal states of Germany and additionally allows the user to drill-down
-to the administrative districts.
+The goal is to create a map that:
+
+-  shows the GDP (gross domestic product) of the federal states of Germany 
+-  the user to drill-down to the administrative districts.
 
 Let's first load the libraries we are going to use for this app. \
 
@@ -31,23 +32,23 @@ library(shinyjs)
 ```
 
 (Note that the `shinyjs` package is loaded for some automatic messages that the 
-`leafdown` map can return to the user of the shiny app. More on this later.)
+`leafdown` map can return to the user of the shiny app. More on that later...)
 
 
 ## SpatialPolygonsDataFrames
 
 `leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions we would like to show.
 
-For obtaining those spdfs we can use the `getData` function of the `raster` package.
-If we select "Germany" as country, level 1 will contain the spdf for the federal states
+For obtaining those spdfs we can use e.g. the `getData` function of the `raster` package.
+If we select "Germany" as country, level 1 contains the spdf for the federal states
 and level 2 the spdf the administrative districts.
 ```{r}
 ger1 <- raster::getData(country = "Germany", level = 1)
 ger2 <- raster::getData(country = "Germany", level = 2)
 ```
 
-The spdf for level 2 does not display all German umlauts correctly. Therefore we replace 
-some names accordingly so that we can assign our data correctly later on.
+The spdf for level 2 does not display all German umlauts correctly. Therefore we adapt 
+some names so that we can assign our data easier later on.
 ```{r}
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
@@ -78,7 +79,7 @@ spdfs_list <- list(ger1, ger2)
 ## Data
 
 For this app we will use the data sets that come with the `leaflet`.
-The data frame `gdp_2014_federal_states`  contains the GPD of the the year 2014 for the federal 
+The data.frame `gdp_2014_federal_states`  contains the GPD of 2014 for the federal 
 states and `gdp_2014_admin_districts` for the administrative districts.
 
 ```{r}
@@ -92,10 +93,131 @@ head(gdp_2014_admin_districts)
 (For more information on the data please see `?gdp_2014_federal_states` or
 `?gdp_2014_admin_districts` respectively)
 
+
+
+### Leafdown workflow
+In this part we give a sketch of the `leafdown` workflow.
+
+As usual for R6 classes, we create a new object of our `Leafdown` class using the
+`new()` method.
+To create a new `Leafdown` object we have to specify the:
+
+- `spdfs_list`: The list containing the spdfs of both map levels.
+- `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
+- `input`: The `input` from the shiny app
+
+#### Initialization
+```{r}
+input <- reactiveValues(foo = "bar") # a little helper as we are not in a shiny session
+my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = input)
+```
+
+In the next step we add data to our map.
+Using the method `$get_current_metadata()` we can obtain the metadata of the (active)
+polygons of the current map level.
+As metadata we refer to the data that describe the polygons such as region names, 
+region ids etc.
+(Specifically we refer to metadata to what is obtained by calling e.g. `ger1@data`)
+
+```{r}
+data <- my_leafdown$get_current_metadata()
+print(head(data))
+```
+
+Now we can add new columns (with data we want to show in our app) to the existing metadata.
+e.g. by using a left join.
+It is important that the initial metadata of the data.frame retrieved from `$get_current_data()` 
+are unchanged and no rows are removed.
+
+```{r}
+new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+```
+
+After creating our new data set we give this to our `my_leafdown` with the `$add_data` method.
+```{r}
+my_leafdown$add_data(new_data)
+```
+
+The current data of `my_leafdown` can be retrieved using the `curr_data` attribute.
+```{r}
+print(head(my_leafdown$curr_data))
+```
+
+
+Finally we can draw our leafdown map. The arguments specified are internally directly 
+handed over to `leaflet` such that we can use all of this great customization capabilities.
+The `$draw_leafdown()` method returns a normal `leaflet` object. Therefore we 
+can also add markers or a map background as in the "basic" leaflet maps.
+
+```{r, eval=FALSE}
+my_leafdown$draw_leafdown() # %>% addTiles()
+```
+
+#### Drilldown
+
+Using the `$drill_down` method we can now drill down to the admin districts of
+the selected federal states.
+
+```{r, eval=FALSE}
+my_leafdown$drill_down()
+```
+
+
+This will update the currently active spdf (`my_leafdown$curr_spdf`).
+This spdf will only contain polygons and corresponding metadata for regions
+which parents were selected in the upper (previous) map level.
+Example:
+
+- We selected the federal states "Bavaria" and "Hesse" in the first map level
+- After the drilldown the currently active spdf will then only contain the 
+admin districts of "Bavaria" and "Hesse" but non of the other federal states.
+
+Note that the initial `spdf_list` (`my_leafdown$spdfs_list`) remains unchanged
+such that we can drill down and up multiple times without the need of specifying
+`spdf_list` again.
+
+The updated metadata can then again retrieved via `$get_current_metadata()`.
+```{r eval = FALSE}
+my_leafdown$drill_down()
+data <- my_leafdown$get_current_metadata()
+print(head(data))
+```
+
+```{r echo=FALSE}
+print(head(ger2@data))
+```
+
+
+Now we can again add new data as described above and draw the our map.
+```{r, eval=FALSE}
+my_leafdown$drill_down()
+data <- my_leafdown$get_current_metadata()
+data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
+my_leafdown$add_data(new_data)
+my_leafdown$draw_leafdown()
+```
+
+
+
+
+#### Drillup
+
+TO DO: Explain drill-down and drill up functionality
+Drilldown
+
+- updates the spdf and the metadata
+- at the new map level the new spdf only contains polygons and data of regions 
+which parents were selected in the upper map level. 
+- Note that the initial spdf_list remains unchanged.
+
+```{r}
+new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+```
+
 ## Shiny App
 
-Let's define a very basic UI containing only two buttons for drill-down and 
-drill-up and the leaflet UI element in which we can render our `leafdown` map.
+Let's now define a very basic UI with only two buttons for drilldown and 
+drillup and the `leaflet` UI element in which we can render our `leafdown` map.
 
 ### UI
 ```{r, eval=FALSE}
@@ -109,46 +231,6 @@ ui <- shiny::fluidPage(
 ```
 
 ### Server
-
-#### Leafdown workflow
-
-As usual for R6 classes, we create a new object of our `Leafdown` class using the
-`new()` method.
-To create a new `Leafdown` object we have to specify the:
-- `spdfs_list`
-- `map_output_id` which is the output_id we specify for our `leafdown` map in our shiny app
-- `input` which is the input from the shiny app
-
-TODO: Print the data like current data etc.
-```{r, eval=FALSE}
-my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = input)
-```
-
-```{r, eval=FALSE}
-data <- my_leafdown$get_current_data()
-```
-
-Then we can add new data to the existing meta-data.
-It is important that the columns of the data frame retrieved from `$get_current_data()` 
-are unchanged and no rows are removed. So we should only add column e.g. using a left join.
-
-```{r, eval=FALSE}
-new_data <- do_something(data)
-```
-
-
-```{r, eval=FALSE}
-my_leafdown$add_data(new_data)
-```
-
-```{r, eval=FALSE}
-my_leafdown$draw_leafdown()
-```
-
-TO DO: Explain drill-down and drill up functionality
-
-
-#### Server Function
 
 ```{r}
 create_labels <- function(data, map_level) {
