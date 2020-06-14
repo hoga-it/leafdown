@@ -43,7 +43,7 @@ server <- function(input, output) {
   output$leafdown <- renderLeaflet({
     req(spdfs_list)
     rv$update_leafdown
-    data <- my_leafdown$get_current_data()
+    data <- my_leafdown$get_current_metadata()
     data$y <- 1:nrow(data)
     my_leafdown$add_data(data)
     my_leafdown$draw_leafdown(

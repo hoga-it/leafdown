@@ -50,13 +50,14 @@ server <- function(input, output) {
 
   output$leafdown <- renderLeaflet({
     update_leafdown()
-    data <- my_leafdown$get_current_data()
+    data <- my_leafdown$get_current_metadata()
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
       data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
     } else {
       data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
     }
+
     my_leafdown$add_data(data)
     labels <- create_labels(data, curr_map_level)
     map <- my_leafdown$draw_leafdown(
