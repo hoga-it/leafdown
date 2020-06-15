@@ -204,7 +204,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #'   \code{draw_leafdown} to redraw the map on the new level
     drill_down = function() {
       # check whether we can drill_down further (just 2 levels for now)
-      if(private$.curr_map_level == 2) {
+      if(private$.curr_map_level == length(private$.spdfs_list)) {
         shinyjs::alert("The lowest level is reached. Cannot drill lower!")
         return()
       }
