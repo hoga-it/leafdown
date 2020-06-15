@@ -54,6 +54,13 @@ Leafdown <- R6::R6Class("Leafdown",
           private$.curr_selection[[private$.curr_map_level]] <- c(curr_selection, clicked_id)
         }
       })
+    },
+
+    #' @description
+    #' Check whether the given spdf_element is a valid element of a spdf_list.
+    #' I.e it must be a s4 class of type SpatialPolygonsDataFrame.
+    check_spdf_list_element = function (spdf_element) {
+      return(isS4(spdf_element) && class(spdf_element)[1] == "SpatialPolygonsDataFrame")
     }
   ),
   active = list(
@@ -109,7 +116,18 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @param input The \code{input} from the shiny app
     initialize = function(spdfs_list, map_output_id, input) {
       # TODO: check spdfs_list
-
+      if(!is.list(spdfs_list)) {
+        stop("The given spdfs_list must be a list")
+      }
+      if(length(spdfs_list) > 2) {
+        stop("Leafdown currently supports only two map levels. The given spdf_list can therefore only contain two elements.")
+      }
+      for(i in length(spdfs_list)) {
+        is_valid <- private$check_spdf_list_element(spdfs_list[[i]])
+        if(!is_valid) {
+          stop("The given spdfs_list must contain s4 classes of type SpatialPolygonsDataFrame")
+        }
+      }
       # check map_output_id
       checkmate::assert_character(map_output_id, min.chars = 1)
 
@@ -184,8 +202,8 @@ Leafdown <- R6::R6Class("Leafdown",
       # check if the given data contains the correct metadata:
       # - The metadata has to be the same as the old metadata
       # - Optionally value column(s) can be added
-      if(!is.list(data)) {
-        stop("The given data must be a list")
+      if(!is.data.frame(data)) {
+        stop("The given data must be a data.frame")
       }
       if(!all(names(private$.curr_spdf@data) %in% names(data))) {
         stop("You cannot remove columns from the existing meta-data. Only add to it")
@@ -204,7 +222,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #'   \code{draw_leafdown} to redraw the map on the new level
     drill_down = function() {
       # check whether we can drill_down further (just 2 levels for now)
-      if(private$.curr_map_level == 2) {
+      if(private$.curr_map_level == length(private$.spdfs_list)) {
         shinyjs::alert("The lowest level is reached. Cannot drill lower!")
         req(FALSE)
       }

@@ -14,13 +14,13 @@ test_that("Add data correctly", {
 
 test_that("Add 'Null' as data throws error", {
   my_leafdown <- init_leafdown()
-  expect_error(my_leafdown$add_data(NULL), "The given data must be a list")
+  expect_error(my_leafdown$add_data(NULL), "The given data must be a data.frame")
 })
 
 test_that("Add empty List as data throws error", {
   my_leafdown <- init_leafdown()
 
-  expect_error(my_leafdown$add_data(list()), "You cannot remove columns from the existing meta-data. Only add to it")
+  expect_error(my_leafdown$add_data(data.frame()), "You cannot remove columns from the existing meta-data. Only add to it")
 })
 
 test_that("Changed values in data throws error", {
