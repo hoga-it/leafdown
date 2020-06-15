@@ -184,8 +184,8 @@ Leafdown <- R6::R6Class("Leafdown",
       # check if the given data contains the correct metadata:
       # - The metadata has to be the same as the old metadata
       # - Optionally value column(s) can be added
-      if(!is.list(data)) {
-        stop("The given data must be a list")
+      if(!is.data.frame(data)) {
+        stop("The given data must be a data.frame")
       }
       if(!all(names(private$.curr_spdf@data) %in% names(data))) {
         stop("You cannot remove columns from the existing meta-data. Only add to it")
