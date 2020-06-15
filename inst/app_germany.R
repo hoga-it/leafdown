@@ -40,7 +40,7 @@ gpd_admin_districts$Admin_District <- str_replace(
 
 # Define UI for leafdown app
 ui <- shiny::fluidPage(
-
+  shinyjs::useShinyjs(),
   # App title
   headerPanel("Drillable map with leafdown"),
 
