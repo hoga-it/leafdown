@@ -224,12 +224,12 @@ Leafdown <- R6::R6Class("Leafdown",
       # check whether we can drill_down further (just 2 levels for now)
       if(private$.curr_map_level == length(private$.spdfs_list)) {
         shinyjs::alert("The lowest level is reached. Cannot drill lower!")
-        return()
+        req(FALSE)
       }
       # check for selection (we can only drill_down if there are shapes selected)
       if(is.null(private$.curr_selection[[private$.curr_map_level]])) {
         shinyjs::alert("Please select the area to drill down!")
-        return()
+        req(FALSE)
       }
 
       # Information about parent polygons
@@ -258,7 +258,7 @@ Leafdown <- R6::R6Class("Leafdown",
       # check whether we can drill_up further
       if(private$.curr_map_level <= 1) {
         shinyjs::alert("The highest level is reached. Cannot drill higher!")
-        return()
+        req(FALSE)
       }
       # Update leafdown object
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
