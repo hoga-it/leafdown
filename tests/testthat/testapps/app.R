@@ -37,7 +37,7 @@ server <- function(input, output) {
   })
 
   observeEvent(input$print, {
-    print(is.reactivevalues(input))
+    print(my_leafdown$curr_selection)
   })
 
   output$leafdown <- renderLeaflet({

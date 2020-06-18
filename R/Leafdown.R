@@ -110,7 +110,7 @@ Leafdown <- R6::R6Class("Leafdown",
   public = list(
     #' @description
     #' Initializes the leafdown object.
-    #' This will not draw the map. Add data first and call \code{draw_leafdown}}to draw the map.
+    #' This will not draw the map. Add data first and call \code{draw_leafdown} to draw the map.
     #' @param spdfs_list The spdfs of all map levels. This cannot be changed later
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app
