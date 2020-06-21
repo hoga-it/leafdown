@@ -45,14 +45,7 @@ Leafdown <- R6::R6Class("Leafdown",
       shiny::observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
         req(clicked_id)
-        curr_selection <- private$.curr_selection[[private$.curr_map_level]]
-        if (clicked_id %in% curr_selection) {
-          private$.map_proxy %>% hideGroup(clicked_id)
-          private$.curr_selection[[private$.curr_map_level]] <- curr_selection[!curr_selection == clicked_id]
-        } else {
-          private$.map_proxy %>% showGroup(clicked_id)
-          private$.curr_selection[[private$.curr_map_level]] <- c(curr_selection, clicked_id)
-        }
+        self$toggle_shape_select(clicked_id)
       })
     },
 
@@ -264,6 +257,25 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
       private$.curr_map_level <- private$.curr_map_level - 1
       private$.unselected_parents <- NULL
+    },
+    #' @description
+    #' Selects the shape with the given shape id, or unselects it if it was already selected
+    #' @param shape_id the id of the shape to select, has to be a character and in the current map-level
+    toggle_shape_select = function(shape_id) {
+      checkmate::assert_character(shape_id, min.chars = 1)
+      if(!shape_id %in% private$.curr_poly_ids) {
+        stop("Please make sure the selected shape_id is in the current level")
+      }
+
+      curr_selection <- private$.curr_selection[[private$.curr_map_level]]
+      if (shape_id %in% curr_selection) {
+        private$.map_proxy %>% hideGroup(shape_id)
+        private$.curr_selection[[private$.curr_map_level]] <- curr_selection[!curr_selection == shape_id]
+      } else {
+        private$.map_proxy %>% showGroup(shape_id)
+        private$.curr_selection[[private$.curr_map_level]] <- c(curr_selection, shape_id)
+      }
+      private$.curr_selection[[private$.curr_map_level]]
     }
   )
 )
