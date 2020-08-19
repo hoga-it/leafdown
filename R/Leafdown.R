@@ -47,13 +47,6 @@ Leafdown <- R6::R6Class("Leafdown",
         req(clicked_id)
         self$toggle_shape_select(clicked_id)
       })
-    },
-
-    #' @description
-    #' Check whether the given spdf_element is a valid element of a spdf_list.
-    #' I.e it must be a s4 class of type SpatialPolygonsDataFrame.
-    check_spdf_list_element = function (spdf_element) {
-      return(isS4(spdf_element) && class(spdf_element)[1] == "SpatialPolygonsDataFrame")
     }
   ),
   active = list(
@@ -108,7 +101,6 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app
     initialize = function(spdfs_list, map_output_id, input) {
-      # TODO: check spdfs_list
       if(!is.list(spdfs_list)) {
         stop("The given spdfs_list must be a list")
       }
@@ -116,7 +108,8 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("Leafdown currently supports only two map levels. The given spdf_list can therefore only contain two elements.")
       }
       for(i in length(spdfs_list)) {
-        is_valid <- private$check_spdf_list_element(spdfs_list[[i]])
+        # Check whether the given spdf_element is an s4 class of type SpatialPolygonsDataFrame.
+        is_valid <- check_s4_spdf(spdfs_list[[i]])
         if(!is_valid) {
           stop("The given spdfs_list must contain s4 classes of type SpatialPolygonsDataFrame")
         }

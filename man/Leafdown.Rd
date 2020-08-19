@@ -53,10 +53,6 @@ Once a shape is clicked, it is added to the \code{.curr_selection} (or removed f
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
 
 
-Check whether the given spdf_element is a valid element of a spdf_list.
-I.e it must be a s4 class of type SpatialPolygonsDataFrame.
-
-
 Initializes the leafdown object.
 This will not draw the map. Add data first and call \code{draw_leafdown} to draw the map.
 \subsection{Usage}{
