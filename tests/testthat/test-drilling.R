@@ -26,6 +26,8 @@ test_that("drill_down drills to correct subshapes", {
   children <- app$getAllValues()$export$my_leafdown$curr_spdf$GID_1 # e.g USA.6_1
   child_ids <- substr(children, 5, 5)
   expect_true(all(child_ids %in% c("6", "7")))
+
+  app$stop()
 })
 
 test_that("cannot drill up higher than level 1", {
@@ -89,6 +91,8 @@ test_that("correctly selected and unselected parents after drill_down", {
   # check that the unselected parents are correct after drill_down
   expect_true(all(!unsel_parents %in% c("6", "7")))
   expect_true(all(!unsel_parents %in% sel_parents))
+
+  app$stop()
 
 })
 
