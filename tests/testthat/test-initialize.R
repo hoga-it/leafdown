@@ -17,7 +17,8 @@ test_that("Correct initialize works", {
 })
 
 test_that("Initialize with wrong 'input'", {
-  spdfs <- readRDS("testapps/us1-0005.RDS")
+  l1 <- readRDS("testapps/us1-0005.RDS")
+  spdfs <- list(l1)
 
   input <- list(foo = "bar")
   map_id <- "leafdown"
@@ -25,15 +26,25 @@ test_that("Initialize with wrong 'input'", {
 })
 
 test_that("Initialize with wrong 'map_id'", {
-  spdfs <- readRDS("testapps/us1-0005.RDS")
+  l1 <- readRDS("testapps/us1-0005.RDS")
+  spdfs <- list(l1)
 
   input <- reactiveValues(foo = "bar")
   map_id <- 12
   expect_error(Leafdown$new(spdfs, map_id, input), "")
 })
 
+test_that("Initialize with wrong 'spdf_list'", {
+  spdfs <- list("foo")
+
+  input <- reactiveValues(foo = "bar")
+  map_id <- "leafdown"
+  expect_error(Leafdown$new(spdfs, map_id, input), "The given spdfs_list must contain s4 classes of type SpatialPolygonsDataFrame")
+})
+
 test_that("Initialize with wrong 'spdfs'", {
-  spdfs <- readRDS("testapps/us1-0005.RDS")
+  l1 <- readRDS("testapps/us1-0005.RDS")
+  spdfs <- list(l1)
 
   input <- list(foo = "bar")
   map_id <- "leafdown"

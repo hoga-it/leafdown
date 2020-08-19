@@ -40,6 +40,7 @@ curr_poly_ids The ids of all polygons of the current map level.}
 \item \href{#method-add_data}{\code{Leafdown$add_data()}}
 \item \href{#method-drill_down}{\code{Leafdown$drill_down()}}
 \item \href{#method-drill_up}{\code{Leafdown$drill_up()}}
+\item \href{#method-toggle_shape_select}{\code{Leafdown$toggle_shape_select()}}
 \item \href{#method-clone}{\code{Leafdown$clone()}}
 }
 }
@@ -52,7 +53,12 @@ Once a shape is clicked, it is added to the \code{.curr_selection} (or removed f
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
 
 
+Check whether the given spdf_element is a valid element of a spdf_list.
+I.e it must be a s4 class of type SpatialPolygonsDataFrame.
 
+
+Initializes the leafdown object.
+This will not draw the map. Add data first and call \code{draw_leafdown} to draw the map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(spdfs_list, map_output_id, input)}\if{html}{\out{</div>}}
 }
@@ -144,6 +150,23 @@ Drills up to the higher level if:
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$drill_up()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-toggle_shape_select"></a>}}
+\if{latex}{\out{\hypertarget{method-toggle_shape_select}{}}}
+\subsection{Method \code{toggle_shape_select()}}{
+Selects the shape with the given shape id, or unselects it if it was already selected
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Leafdown$toggle_shape_select(shape_id)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{shape_id}}{the id of the shape to select, has to be a character and in the current map-level}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
