@@ -68,8 +68,6 @@ test_that("correctly selected and unselected parents after drill_down", {
   selected_shape <- list(id = "7")
   app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
   my_leafdown <- app$getAllValues()$export$my_leafdown
-  #expect_equal(my_leafdown$curr_map_level, 1)
-  #expect_equal(my_leafdown$curr_selection, c("6", "7"))
 
   # drill down
   app$setInputs(drill_down = "click")
