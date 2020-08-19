@@ -4,30 +4,43 @@
 \alias{Leafdown}
 \title{Leafdown R6 Class}
 \description{
-This class acts as a wrapper around the leaflet map. It allows the user to:
-- select shapes
-- drill down on these selected shapes
-- drill up
-- convenient functions to connect the map to graphs
+This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
+\itemize{
+  \item select shapes / regions
+  \item drill down on these selected shapes
+  \item drill up
+}
+
+The active bindings of the class provide convenient interfaces between the leafdown map
+and other elements in the shiny app e.g. graphs, tables etc.
+An leafdown object can \strong{only} be used in a shiny app.
+}
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{curr_poly_ids}}{The ids of all polygons of the current map level.}
+}
+\if{html}{\out{</div>}}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.}
 
-\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
-\item{\code{curr_data}}{The spdf-metadata from the currently used shapes AND the corresponding values.}
+\item{\code{curr_data}}{The spdf metadata of the currently used shapes and (if available) the corresponding values.}
 
-\item{\code{curr_map_level}}{The current map level.
+\item{\code{curr_map_level}}{Number of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...)}
 
 \item{\code{curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
 Calling \code{drill_down} will drill down on these selected shapes.}
 
-\item{\code{curr_spdf}}{The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.}
+\item{\code{curr_spdf}}{The spdfs of the current map level.}
+
+\item{\code{curr_poly_ids}}{The ids of all polygons of the current map level.}
 }
 \if{html}{\out{</div>}}
 }

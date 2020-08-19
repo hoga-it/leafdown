@@ -1,11 +1,16 @@
 #' Leafdown R6 Class
 #'
 #' @description
-#' This class acts as a wrapper around the leaflet map. It allows the user to:
-#' - select shapes
-#' - drill down on these selected shapes
-#' - drill up
-#' - convenient functions to connect the map to graphs
+#' This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
+#' \itemize{
+#'   \item select shapes / regions
+#'   \item drill down on these selected shapes
+#'   \item drill up
+#' }
+#'
+#' The active bindings of the class provide convenient interfaces between the leafdown map
+#' and other elements in the shiny app e.g. graphs, tables etc.
+#' An leafdown object can \strong{only} be used in a shiny app.
 #'
 #' @importFrom magrittr "%>%"
 #' @export
@@ -15,21 +20,21 @@ Leafdown <- R6::R6Class("Leafdown",
     .spdfs_list = NULL,
     # map_proxy The proxy from the leaflet map. Used for smoother redrawing.
     .map_proxy = NULL,
-    #' @field map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
+    #' @field map_output_id The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     .map_output_id = NULL,
 
-    #' @field curr_data The spdf-metadata from the currently used shapes AND the corresponding values.
+    #' @field curr_data The spdf metadata of the currently used shapes and (if available) the corresponding values.
     .curr_data = NULL,
-    #' @field curr_map_level The current map level.
+    #' @field curr_map_level Number of the current map level.
     #' This corresponds to the position of the shapes in the \code{spdfs_list}.
     #' (i.e The highest-level is 1, the next is 2 and so on...)
     .curr_map_level = NULL,
     #' @field curr_selection The selected shapes of the current level. They will be highlighted on the map.
-    #' Calling \code{drill_down} will drill down on these selected shapes.
+    #' Calling \code{drill_down}, the drill down functionality is executed for these shapes.
     .curr_selection = NULL,
     #' @field curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
-    #' curr_poly_ids The ids of all polygons of the current map level.
+    #' @field curr_poly_ids The ids of all polygons of the current map level.
     .curr_poly_ids = NULL,
 
     # selected_parents The selected shapes from the higher level.
