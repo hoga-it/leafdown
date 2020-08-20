@@ -13,14 +13,18 @@ test_that("drill_down drills to correct subshapes", {
   app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
   my_leafdown <- app$getAllValues()$export$my_leafdown
   expect_equal(my_leafdown$curr_map_level, 1)
-  expect_equal(my_leafdown$curr_selection, c("6", "7"))
+  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_selection
+  expect_equal(curr_selection[[1]], c("6", "7"))
+
 
   # drill down
   app$setInputs(drill_down = "click")
   curr_map_level <- app$getAllValues()$export$my_leafdown$curr_map_level
   my_leafdown <- app$getAllValues()$export$my_leafdown
   expect_equal(my_leafdown$curr_map_level, 2)
-  expect_equal(length(my_leafdown$curr_selection), 0)
+  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_selection
+  expect_equal(length(curr_selection), 2)
+  expect_equal(length(curr_selection[[2]]), 0)
 
   # check that the drilldown drilled to the correct child shapes
   children <- app$getAllValues()$export$my_leafdown$curr_spdf$GID_1 # e.g USA.6_1
