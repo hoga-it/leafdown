@@ -20,9 +20,9 @@ test_that("selection and deselection works", {
   selected_shape <- list(id = "6")
   app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
   my_leafdown <- app$getAllValues()$export$my_leafdown
-  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_selection
-  expect_equal(length(curr_selection), 1)
-  expect_true("32" %in% curr_selection)
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+  expect_equal(length(curr_sel_ids), 1)
+  expect_true("32" %in% curr_sel_ids)
 
   app$stop()
 })

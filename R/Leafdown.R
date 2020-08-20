@@ -22,7 +22,6 @@ Leafdown <- R6::R6Class("Leafdown",
     .map_proxy = NULL,
     #' @field map_output_id The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     .map_output_id = NULL,
-
     #' @field curr_data The metadata and (if available) the corresponding values of all currently displayed shapes in the map
     .curr_data = NULL,
     #' @field curr_sel_data The metadata and (if available) the corresponding values of all currently displayed shapes in the map
@@ -31,9 +30,9 @@ Leafdown <- R6::R6Class("Leafdown",
     #' This corresponds to the position of the shapes in the \code{spdfs_list}.
     #' (i.e The highest-level is 1, the next is 2 and so on...)
     .curr_map_level = NULL,
-    #' @field curr_selection The selected shapes of the current level. They will be highlighted on the map.
+    #' @field curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
     #' Calling \code{drill_down}, the drill down functionality is executed for these shapes.
-    .curr_selection = NULL,
+    .curr_sel_ids = NULL,
     #' @field curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
     #' @field curr_poly_ids The ids of all polygons of the current map level.
@@ -45,7 +44,7 @@ Leafdown <- R6::R6Class("Leafdown",
 
     #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the selection.
-    #' Once a shape is clicked, it is added to the \code{.curr_selection} (or removed from it).
+    #' Once a shape is clicked, it is added to the \code{.curr_sel_ids} (or removed from it).
     #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
     init_click_observer = function(input, map_output_id) {
       shiny::observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
@@ -129,7 +128,7 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       private$.curr_map_level <- 1
-      private$.curr_selection <- list(c())
+      private$.curr_sel_ids <- list(c())
       private$.selected_parents <- c()
       private$.curr_sel_data <- data.frame()
 
@@ -176,7 +175,7 @@ Leafdown <- R6::R6Class("Leafdown",
       }
       private$.map_proxy %>%
         hideGroup(all_poly_ids) %>%
-        showGroup(private$.curr_selection[[private$.curr_map_level]])
+        showGroup(private$.curr_sel_ids[[private$.curr_map_level]])
       map
     },
     #' @description
@@ -220,7 +219,7 @@ Leafdown <- R6::R6Class("Leafdown",
         req(FALSE)
       }
       # check for selection (we can only drill_down if there are shapes selected)
-      if(is.null(private$.curr_selection[[private$.curr_map_level]])) {
+      if(is.null(private$.curr_sel_ids[[private$.curr_map_level]])) {
         shinyjs::alert("Please select the area to drill down!")
         req(FALSE)
       }
@@ -228,8 +227,8 @@ Leafdown <- R6::R6Class("Leafdown",
       # Information about parent polygons
       parents <- private$.spdfs_list[[private$.curr_map_level]]
       all_poly_ids_parents <- private$.curr_poly_ids
-      curr_selection_parents <- private$.curr_selection[[private$.curr_map_level]]
-      index_sel_parents <- all_poly_ids_parents %in% curr_selection_parents
+      curr_sel_parents <- private$.curr_sel_ids[[private$.curr_map_level]]
+      index_sel_parents <- all_poly_ids_parents %in% curr_sel_parents
       private$.selected_parents <- parents[index_sel_parents, ]
       private$.unselected_parents <- parents[!index_sel_parents, ]
 
@@ -240,7 +239,7 @@ Leafdown <- R6::R6Class("Leafdown",
       # Update leafdown object
       private$.curr_spdf <- spdf_new
       private$.curr_map_level <- private$.curr_map_level + 1
-      private$.curr_selection[[private$.curr_map_level]] <- character(0)
+      private$.curr_sel_ids[[private$.curr_map_level]] <- character(0)
     },
     #' @description
     #' Drills up to the higher level if:
@@ -268,25 +267,23 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       # Ids of selected polygons before click
-      curr_selection <- private$.curr_selection[[private$.curr_map_level]]
-      if (shape_id %in% curr_selection) {
+      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      if (shape_id %in% curr_sel_ids) {
         private$.map_proxy %>% hideGroup(shape_id)
         # Remove id of unselected polygon
-        curr_selection <- curr_selection[!curr_selection == shape_id]
+        curr_sel_ids <- curr_sel_ids[!curr_sel_ids == shape_id]
       } else {
         private$.map_proxy %>% showGroup(shape_id)
         # Add id of newly selected polygon
-        curr_selection <- c(curr_selection, shape_id)
+        curr_sel_ids <- c(curr_sel_ids, shape_id)
       }
 
       # Update data with regards to currently selected polygons (after click)
-      is_selected <- private$.curr_poly_ids %in% curr_selection
+      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
       curr_sel_data <- subset(private$.curr_data, is_selected)
       # Update leafdown object
-      private$.curr_selection[[private$.curr_map_level]] <- curr_selection
+      private$.curr_sel_ids[[private$.curr_map_level]] <- curr_sel_ids
       private$.curr_sel_data <- curr_sel_data
-      print(class(curr_sel_data))
-      print(curr_sel_data)
     }
   )
 )

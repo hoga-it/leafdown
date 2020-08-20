@@ -13,7 +13,7 @@ test_that("drill_down drills to correct subshapes", {
   app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
   my_leafdown <- app$getAllValues()$export$my_leafdown
   expect_equal(my_leafdown$curr_map_level, 1)
-  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_selection
+  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
   expect_equal(curr_selection[[1]], c("6", "7"))
 
 
@@ -22,7 +22,7 @@ test_that("drill_down drills to correct subshapes", {
   curr_map_level <- app$getAllValues()$export$my_leafdown$curr_map_level
   my_leafdown <- app$getAllValues()$export$my_leafdown
   expect_equal(my_leafdown$curr_map_level, 2)
-  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_selection
+  curr_selection <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
   expect_equal(length(curr_selection), 2)
   expect_equal(length(curr_selection[[2]]), 0)
 

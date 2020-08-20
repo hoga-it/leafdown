@@ -18,6 +18,9 @@ An leafdown object can \strong{only} be used in a shiny app.
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
+\item{\code{curr_sel_ids}}{The ids of the selected shapes of the current level. They will be highlighted on the map.
+Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
+
 \item{\code{curr_poly_ids}}{The ids of all polygons of the current map level.}
 }
 \if{html}{\out{</div>}}
@@ -29,14 +32,16 @@ An leafdown object can \strong{only} be used in a shiny app.
 
 \item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
-\item{\code{curr_data}}{The spdf metadata of the currently used shapes and (if available) the corresponding values.}
+\item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes in the map}
+
+\item{\code{curr_sel_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes in the map}
 
 \item{\code{curr_map_level}}{Number of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...)}
 
-\item{\code{curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
-Calling \code{drill_down} will drill down on these selected shapes.}
+\item{\code{curr_sel_ids}}{The ids of the selected shapes of the current level. They will be highlighted on the map.
+Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
 
 \item{\code{curr_spdf}}{The spdfs of the current map level.}
 
@@ -62,7 +67,7 @@ Calling \code{drill_down} will drill down on these selected shapes.}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 Initializes the observer for the maps _shape_click events. This is needed for the selection.
-Once a shape is clicked, it is added to the \code{.curr_selection} (or removed from it).
+Once a shape is clicked, it is added to the \code{.curr_sel_ids} (or removed from it).
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
 
 
