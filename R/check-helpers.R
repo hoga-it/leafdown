@@ -9,7 +9,17 @@ check_s4_spdf = function (x) {
 }
 
 
-
+#' Checks for undesired arguments in ellipsis in $draw_leafdown method
+#'
+#' @param ... Additional arguments given to \code{leaflet::addPolygons}
+#'
+#' @description
+#' Checks arguments in ellipsis for undesired inputs such as 'layerId' which may
+#' collide with internal structure of leafdown and returns a "cleaned" version of
+#' the arguments by removing or redefining problematic inputs.
+#' e.g. 'layerId' is removed from arg_list when set.
+#'
+#' @return List containing arguments in ... as elements
 check_draw_ellipsis <- function(...) {
   arg_list <- list(...)
   if ("layerId" %in% names(arg_list)) {
@@ -18,6 +28,3 @@ check_draw_ellipsis <- function(...) {
   }
   arg_list
 }
-
-
-#check_draw_ellipsis(layerId = 1, a = 2)

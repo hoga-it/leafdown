@@ -15,3 +15,35 @@ test_that("function 'check_s4_spdf' correctly detects objects of class s4 and
   not_spdf <- new("student",name="John", age=21, GPA=3.5)
   expect_false(check_s4_spdf(not_spdf))
 })
+
+
+context("check_draw_ellipsis")
+
+test_that("function 'check_draw_ellipsis' correctly detects undesired input in $draw_leafdown and returns
+          warning message in case", {
+  expect_warning(check_draw_ellipsis(layerId = 1, a = 2), "used internally by leafdown")
+  expect_warning(check_draw_ellipsis(layerId = 1), "used internally by leafdown")
+})
+
+
+test_that("function 'check_draw_ellipsis' removes or changes undesired input in $draw_leafdown correctly", {
+  expect_warning(arg_list_clean <- check_draw_ellipsis(layerId = 1, a = 2))
+  expect_identical(arg_list_clean, list(a = 2))
+  expect_warning(arg_list_clean <- check_draw_ellipsis(layerId = 1))
+  expect_true(length(arg_list_clean) == 0)
+})
+
+
+test_that("function 'check_draw_ellipsis' deals correctly with proper input in $draw_leafdown", {
+  input <- list(a = 1, b = 2)
+  # This tests that we !don't! receive a warning message if input is correct
+  expect_warning(check_draw_ellipsis(input), regexp = NA)
+  expect_identical(list(input), check_draw_ellipsis(input))
+  f_with_ellipsis <- function(...) {
+    arg_list <- check_draw_ellipsis(...)
+    arg_list[[1]]
+  }
+  expect_identical(input, f_with_ellipsis(input))
+})
+
+

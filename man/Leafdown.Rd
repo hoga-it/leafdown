@@ -15,16 +15,6 @@ The active bindings of the class provide convenient interfaces between the leafd
 and other elements in the shiny app e.g. graphs, tables etc.
 An leafdown object can \strong{only} be used in a shiny app.
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{curr_sel_ids}}{The ids of the selected shapes of the current level. They will be highlighted on the map.
-Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
-
-\item{\code{curr_poly_ids}}{The ids of all polygons of the current map level.}
-}
-\if{html}{\out{</div>}}
-}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -38,14 +28,12 @@ Calling \code{drill_down}, the drill down functionality is executed for these sh
 
 \item{\code{curr_map_level}}{Number of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
-(i.e The highest-level is 1, the next is 2 and so on...)}
-
-\item{\code{curr_sel_ids}}{The ids of the selected shapes of the current level. They will be highlighted on the map.
+(i.e The highest-level is 1, the next is 2 and so on...)
+curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
 Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
 
-\item{\code{curr_spdf}}{The spdfs of the current map level.}
-
-\item{\code{curr_poly_ids}}{The ids of all polygons of the current map level.}
+\item{\code{curr_spdf}}{The spdfs of the current map level.
+curr_poly_ids The ids of all polygons of the current map level.}
 }
 \if{html}{\out{</div>}}
 }

@@ -31,12 +31,12 @@ Leafdown <- R6::R6Class("Leafdown",
     #' This corresponds to the position of the shapes in the \code{spdfs_list}.
     #' (i.e The highest-level is 1, the next is 2 and so on...)
     .curr_map_level = NULL,
-    #' @field curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
+    #' curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
     #' Calling \code{drill_down}, the drill down functionality is executed for these shapes.
     .curr_sel_ids = NULL,
     #' @field curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
-    #' @field curr_poly_ids The ids of all polygons of the current map level.
+    #' curr_poly_ids The ids of all polygons of the current map level.
     .curr_poly_ids = NULL,
     # selected_parents The selected shapes from the higher level.
     .selected_parents = NULL,
