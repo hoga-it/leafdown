@@ -5,7 +5,6 @@
 #'
 #' @noRd
 check_s4_spdf = function (x) {
-  # TODO: Write tests
   isS4(x) && checkmate::test_class(x, "SpatialPolygonsDataFrame")
 }
 
