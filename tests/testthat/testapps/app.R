@@ -22,7 +22,7 @@ server <- function(input, output) {
   states2 <- readRDS("us2-0005.RDS")
   spdfs_list <- list(states, states2)
   my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input)
-
+  eval_draw <- NULL
   rv <- reactiveValues()
   rv$update_leafdown <- 0
 
@@ -46,13 +46,18 @@ server <- function(input, output) {
     data <- my_leafdown$get_current_metadata()
     data$y <- 1:nrow(data)
     my_leafdown$add_data(data)
-    my_leafdown$draw_leafdown(
-      fillColor = ~leaflet::colorNumeric("Greens", y)(y),
-      weight = 2, fillOpacity = 0.7, color = "green"
-    )
+    # input$args_leaflet is used for testing arguments in $draw_leafdown and
+    # explicitly defined in the specific test
+    if(!is.null(input[["args_leaflet"]])){
+      # potential warning message from $draw_leafdown
+      eval_draw <<- testthat::capture_warning({
+        do.call(my_leafdown$draw_leafdown, input$args_leaflet)
+      })
+    }
+    my_leafdown$draw_leafdown(layerId = 2)
   })
 
-  exportTestValues(my_leafdown = { my_leafdown })
+  exportTestValues(my_leafdown = { my_leafdown }, eval_draw = {eval_draw})
 }
 
 shinyApp(ui, server)

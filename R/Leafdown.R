@@ -13,6 +13,7 @@
 #' An leafdown object can \strong{only} be used in a shiny app.
 #'
 #' @importFrom magrittr "%>%"
+#' @import leaflet
 #' @export
 Leafdown <- R6::R6Class("Leafdown",
   private = list(
@@ -142,20 +143,30 @@ Leafdown <- R6::R6Class("Leafdown",
     #' Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.
     #' @param ... Additional arguments given to \code{leaflet::addPolygons}
     draw_leafdown = function(...) {
+      # Checks arguments in ellipsis for undesired inputs such as 'layerId' which may
+      # collide with internal structure of leafdown and returns a "cleaned" version of
+      # the arguments by removing or redefining problematic inputs.
+      # e.g. 'layerId' is removed from arg_list when set
+      arg_list <- check_draw_ellipsis(...)
       curr_spdf <- private$.curr_spdf
       curr_spdf@data <- private$.curr_data
-      private$.map_proxy <- leaflet::leafletProxy(private$.map_output_id)
+      # Using proxy to avoid redrawing of map when highlighting
+      private$.map_proxy <- leafletProxy(private$.map_output_id)
+      # ids of all polygons in the current spdf
       all_poly_ids <- c()
       for (pol in curr_spdf@polygons) {
         all_poly_ids <- c(all_poly_ids, pol@ID)
       }
       private$.curr_poly_ids <- all_poly_ids
-      map <- leaflet::leaflet(curr_spdf) %>%
-        leaflet::addPolygons(layerId = ~all_poly_ids, ...) %>%
-        addPolylines(
-          group = all_poly_ids, stroke = TRUE, weight = 4, color = "#FFCC00",
-          highlight = highlightOptions(bringToFront = T, weight = 4)
-        )
+      map <- leaflet(curr_spdf)
+      arg_list[["map"]] <- map
+      # Add polygons (with "cleaned" version of the arguments) and polylines to basic map
+      map <- do.call(addPolygons, arg_list)
+      map <- addPolylines(
+        map = map,
+        group = all_poly_ids, stroke = TRUE, weight = 4, color = "#FFCC00",
+        highlight = highlightOptions(bringToFront = T, weight = 4)
+      )
       if (private$.curr_map_level != 1) {
         # If there are unselected parent polygons then draw them as gray background
         if (length(private$.unselected_parents@polygons) > 0) {
@@ -173,6 +184,7 @@ Leafdown <- R6::R6Class("Leafdown",
             )
         }
       }
+      # On drill up highlight the polylines which were selected before drill down
       private$.map_proxy %>%
         hideGroup(all_poly_ids) %>%
         showGroup(private$.curr_sel_ids[[private$.curr_map_level]])

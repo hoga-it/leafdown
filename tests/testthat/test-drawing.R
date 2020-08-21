@@ -1,73 +1,19 @@
-library(shiny)
+library(shinytest)
 library(leaflet)
-library(leafdown)
-library(shinyjs)
-# Define UI for leafdown app
-ui <- shiny::fluidPage(
-  useShinyjs(),
-  # App title
-  headerPanel("Drillable map with leafdown"),
 
-  # Main
-  actionButton("drill_down", "Drill Down"),
-  actionButton("drill_up", "Drill Up"),
-  actionButton("print", "Print"),
-  leafletOutput("leafdown"),
-  p(),
-)
+context("Drawing")
 
-# Define server for leafdown app
-server <- function(input, output) {
-  states <- readRDS("testapps/us1-0005.RDS")
-  states2 <- readRDS("testapps/us2-0005.RDS")
+test_that("Argument 'layerId' in draw_leafdown is ingored if set", {
 
-  #states <- readRDS("tests/testthat/testapps/us1-0005.RDS")
-  #states2 <- readRDS("tests/testthat/testapps/us2-0005.RDS")
+  app <- ShinyDriver$new("testapps")
+  app$setInputs(args_leaflet = list(layerId = 2), allowInputNoBinding_ = TRUE)
 
-  spdfs_list <- list(states, states2)
+  # select shapes with id="6"
+  selected_shape <- list(id = "6")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  warning_msg <- app$getAllValues()$export$eval_draw
+  expect_true(grepl("internally by leafdown and is therefore ignored", warning_msg, fixed = TRUE))
 
-  input <- reactiveValues(foo = "bar")
-  map_id <- "leafdown"
-  my_leafdown <- Leafdown$new(spdfs_list, map_id, input)
-  data <- my_leafdown$get_current_metadata()
-  data$y <- 1:nrow(data)
-  my_leafdown$add_data(data)
-  my_leafdown$draw_leafdown()
+  app$stop()
+})
 
-
-  my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input)
-
-  rv <- reactiveValues()
-  rv$update_leafdown <- 0
-
-  observeEvent(input$drill_down, {
-    my_leafdown$drill_down()
-    rv$update_leafdown <- rv$update_leafdown + 1
-  })
-
-  observeEvent(input$drill_up, {
-    my_leafdown$drill_up()
-    rv$update_leafdown <- rv$update_leafdown + 1
-  })
-
-  observeEvent(input$print, {
-    print(my_leafdown$curr_selection)
-  })
-
-  output$leafdown <- renderLeaflet({
-    req(spdfs_list)
-    rv$update_leafdown
-    data <- my_leafdown$get_current_metadata()
-    data$y <- 1:nrow(data)
-    my_leafdown$add_data(data)
-    my_leafdown$draw_leafdown(
-      fillColor = ~leaflet::colorNumeric("Greens", y)(y),
-      weight = 2, fillOpacity = 0.7, color = "green",
-      highlight = highlightOptions()
-    )
-  })
-
-  exportTestValues(my_leafdown = { my_leafdown })
-}
-
-shinyApp(ui, server)
