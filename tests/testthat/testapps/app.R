@@ -37,7 +37,7 @@ server <- function(input, output) {
   })
 
   observeEvent(input$print, {
-    print(my_leafdown$curr_selection)
+    print(my_leafdown$curr_sel_data)
   })
 
   output$leafdown <- renderLeaflet({
@@ -54,7 +54,7 @@ server <- function(input, output) {
         do.call(my_leafdown$draw_leafdown, input$args_leaflet)
       })
     }
-    my_leafdown$draw_leafdown(layerId = 2)
+    my_leafdown$draw_leafdown(highlight = highlightOptions(bringToFront = TRUE))
   })
 
   exportTestValues(my_leafdown = { my_leafdown }, eval_draw = {eval_draw})

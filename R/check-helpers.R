@@ -26,5 +26,17 @@ check_draw_ellipsis <- function(...) {
     warning("The argument 'layerId' is used internally by leafdown and is therefore ignored")
     arg_list[["layerId"]] <- NULL
   }
+  if ("highlight" %in% names(arg_list)) {
+    highlight_args <- arg_list$highlight
+    if ("bringToFront" %in% names(highlight_args)) {
+      warning("The argument 'bringToFront' in 'highlightOptions' is used internally by leafdown and is therefore ignored.")
+      arg_list[["highlight"]][["bringToFront"]] <- NULL
+    }
+  }
   arg_list
 }
+
+
+
+
+
