@@ -4,30 +4,43 @@
 \alias{Leafdown}
 \title{Leafdown R6 Class}
 \description{
-This class acts as a wrapper around the leaflet map. It allows the user to:
-- select shapes
-- drill down on these selected shapes
-- drill up
-- convenient functions to connect the map to graphs
+This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
+\itemize{
+  \item select shapes / regions
+  \item drill down on these selected shapes
+  \item drill up
+}
+
+The active bindings of the class provide convenient interfaces between the leafdown map
+and other elements in the shiny app e.g. graphs, tables etc.
+A leafdown object can \strong{only} be used in a shiny app.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.}
+\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
+At the moment only two map levels are possible.}
 
-\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
-\item{\code{curr_data}}{The spdf-metadata from the currently used shapes AND the corresponding values.}
+\item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
-\item{\code{curr_map_level}}{The current map level.
+\item{\code{curr_sel_data}}{A \code{reactiveValue} containing a data.frame with
+the metadata and (if available) the corresponding values of all currently selected shapes.}
+
+\item{\code{curr_map_level}}{Number of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
-(i.e The highest-level is 1, the next is 2 and so on...)}
-
-\item{\code{curr_selection}}{The selected shapes of the current level. They will be highlighted on the map.
-Calling \code{drill_down} will drill down on these selected shapes.}
+(i.e The highest-level is 1, the next is 2 and so on...)
+At the moment only two map levels are possible.
+curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
+Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
 
 \item{\code{curr_spdf}}{The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.}
+curr_poly_ids The ids of all polygons of the current map level.
+selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
+unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
+(Subset of spdfs_list)
+reactiveVa}
 }
 \if{html}{\out{</div>}}
 }
@@ -48,17 +61,13 @@ curr_poly_ids The ids of all polygons of the current map level.}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initializes the observer for the maps _shape_click events. This is needed for the selection.
-Once a shape is clicked, it is added to the \code{.curr_selection} (or removed from it).
+Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
 
 
-Check whether the given spdf_element is a valid element of a spdf_list.
-I.e it must be a s4 class of type SpatialPolygonsDataFrame.
-
-
 Initializes the leafdown object.
-This will not draw the map. Add data first and call \code{draw_leafdown} to draw the map.
+This will not draw the map. First add data and then call \code{draw_leafdown} to draw the map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(spdfs_list, map_output_id, input)}\if{html}{\out{</div>}}
 }
@@ -97,7 +106,8 @@ Draws the leaflet map on the current map level. All unselected parents will be d
 \if{latex}{\out{\hypertarget{method-get_current_metadata}{}}}
 \subsection{Method \code{get_current_metadata()}}{
 Returns the metadata of the shapes from the current maplevel.
-This may differ from what is displayed if \code{drill_down} was called but \code{draw_leafdown} wasn't (yet)
+This may differ from what is displayed if \code{drill_down} has been called but \code{draw_leafdown}
+has not been (yet).
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$get_current_metadata()}\if{html}{\out{</div>}}
 }
@@ -110,8 +120,8 @@ The current meta-data
 \if{html}{\out{<a id="method-add_data"></a>}}
 \if{latex}{\out{\hypertarget{method-add_data}{}}}
 \subsection{Method \code{add_data()}}{
-Sets the data of the current shapes. This includes the meta-data AND the values given by the user.
-These values can be used to draw differently colored shapes.
+Adds the data to the currently displayed shapes.
+This includes the meta-data AND the values to be visualized in the map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$add_data(data)}\if{html}{\out{</div>}}
 }
@@ -155,7 +165,7 @@ Drills up to the higher level if:
 \if{html}{\out{<a id="method-toggle_shape_select"></a>}}
 \if{latex}{\out{\hypertarget{method-toggle_shape_select}{}}}
 \subsection{Method \code{toggle_shape_select()}}{
-Selects the shape with the given shape id, or unselects it if it was already selected
+Selects the shape with the given shape id, or unselects it if it was already selected.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$toggle_shape_select(shape_id)}\if{html}{\out{</div>}}
 }
@@ -163,7 +173,7 @@ Selects the shape with the given shape id, or unselects it if it was already sel
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{shape_id}}{the id of the shape to select, has to be a character and in the current map-level}
+\item{\code{shape_id}}{the id of the shape to select, has to be a character and in the current map-level.}
 }
 \if{html}{\out{</div>}}
 }
