@@ -17,7 +17,8 @@ Suggests:
     covr,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    shinytest
 RoxygenNote: 7.1.0
 Depends: R (>= 3.5.0)
 Imports: 
@@ -26,6 +27,5 @@ Imports:
     magrittr,
     checkmate,
     shiny,
-    shinytest,
     shinyjs
 VignetteBuilder: knitr
