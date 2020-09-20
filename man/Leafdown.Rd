@@ -25,7 +25,8 @@ At the moment only two map levels are possible.}
 
 \item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
-\item{\code{curr_sel_data}}{The metadata and (if available) the corresponding values of all currently selected shapes.}
+\item{\code{curr_sel_data}}{A \code{reactiveValue} containing a data.frame with
+the metadata and (if available) the corresponding values of all currently selected shapes.}
 
 \item{\code{curr_map_level}}{Number of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
@@ -38,7 +39,8 @@ Calling \code{drill_down}, the drill down functionality is executed for these sh
 curr_poly_ids The ids of all polygons of the current map level.
 selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
 unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)}
+(Subset of spdfs_list)
+reactiveVa}
 }
 \if{html}{\out{</div>}}
 }

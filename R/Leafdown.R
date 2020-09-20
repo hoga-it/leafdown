@@ -26,11 +26,12 @@ Leafdown <- R6::R6Class("Leafdown",
     .map_output_id = NULL,
     #' @field curr_data The metadata and (if available) the corresponding values of all currently displayed shapes.
     .curr_data = NULL,
-    #' @field curr_sel_data The metadata and (if available) the corresponding values of all currently selected shapes.
+    #' @field curr_sel_data A \code{reactiveValue} containing a data.frame with
+    #' the metadata and (if available) the corresponding values of all currently selected shapes.
     .curr_sel_data = NULL,
-    #' @field curr_map_level Number of the current map level.
+    #' @field curr_map_level Index of the current map level.
     #' This corresponds to the position of the shapes in the \code{spdfs_list}.
-    #' (i.e The highest-level is 1, the next is 2 and so on...)
+    #' (i.e The highest-level is 1, the next is 2 and so on...).
     #' At the moment only two map levels are possible.
     .curr_map_level = NULL,
     #' curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
@@ -45,6 +46,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
     #' (Subset of spdfs_list)
     .unselected_parents = NULL,
+    #' reactiveVa
 
     #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
@@ -134,7 +136,7 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- 1
       private$.curr_sel_ids <- list(c())
       private$.selected_parents <- c()
-      private$.curr_sel_data <- data.frame()
+      private$.curr_sel_data <- reactiveVal(data.frame())
 
       private$.spdfs_list <- spdfs_list
       private$.map_output_id <- map_output_id
@@ -301,7 +303,7 @@ Leafdown <- R6::R6Class("Leafdown",
       curr_sel_data <- subset(private$.curr_data, is_selected)
       # Update leafdown object
       private$.curr_sel_ids[[private$.curr_map_level]] <- curr_sel_ids
-      private$.curr_sel_data <- curr_sel_data
+      private$.curr_sel_data(curr_sel_data) # update reactiveVal
     }
   )
 )
