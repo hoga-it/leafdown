@@ -46,7 +46,6 @@ Leafdown <- R6::R6Class("Leafdown",
     #' unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
     #' (Subset of spdfs_list)
     .unselected_parents = NULL,
-    #' reactiveVa
 
     #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
