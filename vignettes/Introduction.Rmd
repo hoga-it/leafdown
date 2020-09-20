@@ -42,7 +42,13 @@ library(shinyjs)
 For obtaining those spdfs we can use e.g. the `getData` function of the `raster` package.
 If we select "Germany" as country, level 1 contains the spdf for the federal states
 and level 2 the spdf the administrative districts.
-```{r}
+
+```{r, echo=FALSE}
+ger1 <- readRDS("../inst/extdata/gadm36_DEU_1_sp.rds")
+ger2 <- readRDS("../inst/extdata/gadm36_DEU_2_sp.rds")
+```
+
+```{r, eval=FALSE}
 ger1 <- raster::getData(country = "Germany", level = 1)
 ger2 <- raster::getData(country = "Germany", level = 2)
 ```

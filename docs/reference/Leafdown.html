@@ -40,11 +40,15 @@
 
 
 <meta property="og:title" content="Leafdown R6 Class — Leafdown" />
-<meta property="og:description" content="This class acts as a wrapper around the leaflet map. It allows the user to:
-- select shapes
-- drill down on these selected shapes
-- drill up
-- convenient functions to connect the map to graphs" />
+<meta property="og:description" content="This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
+select shapes / regions
+drill down on these selected shapes
+drill up
+
+
+The active bindings of the class provide convenient interfaces between the leafdown map
+and other elements in the shiny app e.g. graphs, tables etc.
+A leafdown object can only be used in a shiny app." />
 
 
 
@@ -128,11 +132,15 @@
     </div>
 
     <div class="ref-description">
-    <p>This class acts as a wrapper around the leaflet map. It allows the user to:
-- select shapes
-- drill down on these selected shapes
-- drill up
-- convenient functions to connect the map to graphs</p>
+    <p>This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:</p><ul>
+<li><p>select shapes / regions</p></li>
+<li><p>drill down on these selected shapes</p></li>
+<li><p>drill up</p></li>
+</ul>
+
+<p>The active bindings of the class provide convenient interfaces between the leafdown map
+and other elements in the shiny app e.g. graphs, tables etc.
+A leafdown object can <strong>only</strong> be used in a shiny app.</p>
     </div>
 
 
@@ -140,21 +148,28 @@
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl'>
-<dt><code>spdfs_list</code></dt><dd><p>The spdfs of all map levels. This is set in <code>initialize</code> and cannot be changed afterwards.</p></dd>
+<dt><code>spdfs_list</code></dt><dd><p>The spdfs of all map levels. This is set in <code>initialize</code> and cannot be changed afterwards.
+At the moment only two map levels are possible.</p></dd>
 
-<dt><code>map_output_id</code></dt><dd><p>The id from the shiny-ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>. Used to observe for _shape_click events.</p></dd>
+<dt><code>map_output_id</code></dt><dd><p>The id from the shiny ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>. Used to observe for _shape_click events.</p></dd>
 
-<dt><code>curr_data</code></dt><dd><p>The spdf-metadata from the currently used shapes AND the corresponding values.</p></dd>
+<dt><code>curr_data</code></dt><dd><p>The metadata and (if available) the corresponding values of all currently displayed shapes.</p></dd>
 
-<dt><code>curr_map_level</code></dt><dd><p>The current map level.
+<dt><code>curr_sel_data</code></dt><dd><p>A <code>reactiveValue</code> containing a data.frame with
+the metadata and (if available) the corresponding values of all currently selected shapes.</p></dd>
+
+<dt><code>curr_map_level</code></dt><dd><p>Index of the current map level.
 This corresponds to the position of the shapes in the <code>spdfs_list</code>.
-(i.e The highest-level is 1, the next is 2 and so on...)</p></dd>
-
-<dt><code>curr_selection</code></dt><dd><p>The selected shapes of the current level. They will be highlighted on the map.
-Calling <code>drill_down</code> will drill down on these selected shapes.</p></dd>
+(i.e The highest-level is 1, the next is 2 and so on...).
+At the moment only two map levels are possible.
+curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
+Calling <code>drill_down</code>, the drill down functionality is executed for these shapes.</p></dd>
 
 <dt><code>curr_spdf</code></dt><dd><p>The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.</p></dd>
+curr_poly_ids The ids of all polygons of the current map level.
+selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
+unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
+(Subset of spdfs_list)</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -169,16 +184,17 @@ curr_poly_ids The ids of all polygons of the current map level.</p></dd>
 <li><p><a href='#method-add_data'><code>Leafdown$add_data()</code></a></p></li>
 <li><p><a href='#method-drill_down'><code>Leafdown$drill_down()</code></a></p></li>
 <li><p><a href='#method-drill_up'><code>Leafdown$drill_up()</code></a></p></li>
+<li><p><a href='#method-toggle_shape_select'><code>Leafdown$toggle_shape_select()</code></a></p></li>
 <li><p><a href='#method-clone'><code>Leafdown$clone()</code></a></p></li>
 </ul>
 <p><hr>
 <a id="method-new"></a></p><h3>Method <code>new()</code></h3>
-<p>Initializes the observer for the maps _shape_click events. This is needed for the selection.
-Once a shape is clicked, it is added to the <code>.curr_selection</code> (or removed from it).
+<p>Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+Once a shape is clicked, it is added to (or removed from) <code>.curr_sel_ids</code>.
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.</p>
 
-
-<h3>Usage</h3>
+<p>Initializes the leafdown object.
+This will not draw the map. First add data and then call <code>draw_leafdown</code> to draw the map.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>new</span>(<span class='no'>spdfs_list</span>, <span class='no'>map_output_id</span>, <span class='no'>input</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
@@ -203,15 +219,16 @@ The outline of selected shapes is highlighted via the showGroup (hideGroup) func
 <p><hr>
 <a id="method-get_current_metadata"></a></p><h3>Method <code>get_current_metadata()</code></h3>
 <p>Returns the metadata of the shapes from the current maplevel.
-This may differ from what is displayed if <code>drill_down</code> was called but <code>draw_leafdown</code> wasn't (yet)</p><h3>Usage</h3>
+This may differ from what is displayed if <code>drill_down</code> has been called but <code>draw_leafdown</code>
+has not been (yet).</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>get_current_metadata</span>()</pre><p></div></p>
 
 <h3>Returns</h3>
 <p>The current meta-data</p>
 <p><hr>
 <a id="method-add_data"></a></p><h3>Method <code>add_data()</code></h3>
-<p>Sets the data of the current shapes. This includes the meta-data AND the values given by the user.
-These values can be used to draw differently colored shapes.</p><h3>Usage</h3>
+<p>Adds the data to the currently displayed shapes.
+This includes the meta-data AND the values to be visualized in the map.</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>add_data</span>(<span class='no'>data</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
@@ -236,6 +253,16 @@ These values can be used to draw differently colored shapes.</p><h3>Usage</h3>
   <code>draw_leafdown</code> to redraw the map on the new level</p><h3>Usage</h3>
 <p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>drill_up</span>()</pre><p></div></p>
 
+<p><hr>
+<a id="method-toggle_shape_select"></a></p><h3>Method <code>toggle_shape_select()</code></h3>
+<p>Selects the shape with the given shape id, or unselects it if it was already selected.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>toggle_shape_select</span>(<span class='no'>shape_id</span>)</pre><p></div></p>
+
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
+<dt><code>shape_id</code></dt><dd><p>the id of the shape to select, has to be a character and in the current map-level.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
