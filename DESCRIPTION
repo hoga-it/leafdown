@@ -19,7 +19,7 @@ Suggests:
     knitr,
     rmarkdown,
     shinytest
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Depends: R (>= 3.5.0)
 Imports: 
     R6,
