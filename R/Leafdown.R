@@ -233,7 +233,7 @@ Leafdown <- R6::R6Class("Leafdown",
         req(FALSE)
       }
       # check for selection (we can only drill_down if there are shapes selected)
-      if(is.null(private$.curr_sel_ids[[private$.curr_map_level]])) {
+      if(length(private$.curr_sel_ids[[private$.curr_map_level]]) < 1) {
         shinyjs::alert("Please select the area to drill down!")
         req(FALSE)
       }
