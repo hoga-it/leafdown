@@ -14,10 +14,10 @@ check_s4_spdf = function (x) {
 #' @param ... Additional arguments given to \code{leaflet::addPolygons}
 #'
 #' @description
-#' Checks arguments in ellipsis for undesired inputs such as 'layerId' which may
+#' Checks arguments in ellipsis for undesired inputs such as `layerId` which may
 #' collide with internal structure of leafdown and returns a "cleaned" version of
 #' the arguments by removing or redefining problematic inputs.
-#' e.g. 'layerId' is removed from arg_list when set.
+#' e.g. `layerId` is removed from arg_list when set.
 #'
 #' @return List containing arguments in ... as elements
 check_draw_ellipsis <- function(...) {
@@ -31,6 +31,10 @@ check_draw_ellipsis <- function(...) {
     if ("bringToFront" %in% names(highlight_args)) {
       warning("The argument 'bringToFront' in 'highlightOptions' is used internally by leafdown and is therefore ignored.")
       arg_list[["highlight"]][["bringToFront"]] <- NULL
+    }
+    if ("dashArray" %in% names(highlight_args)) {
+      warning("The argument 'dashArray' in 'highlightOptions' is used internally by leafdown and is therefore ignored.")
+      arg_list[["highlight"]][["dashArray"]] <- NULL
     }
   }
   arg_list
