@@ -85,12 +85,15 @@
 
     
     
-<p>In this article we would like to give an example of how to create a very simple drill-down map with <code>leafdown</code>.<br>
+<p>In this article we would like to give an example of how to create a very simple drill down map with <code>leafdown</code>.<br>
 The goal is to create a map that:</p>
 <ul>
 <li>shows the GDP (gross domestic product) of the federal states of Germany</li>
-<li>the user to drill-down to the administrative districts.</li>
+<li>allows the user to drill down to the administrative districts.</li>
 </ul>
+<div class="figure">
+<img src="res/app_germany_map.png" height="400" alt=""><p class="caption">german map</p>
+</div>
 <p>Let’s first load the libraries we are going to use for this app.<br></p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">leafdown</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">leaflet</span>)
@@ -125,7 +128,7 @@ The goal is to create a map that:</p>
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>For this app we will use the data sets that come with the <code>leaflet</code>. The data.frame <code>gdp_2014_federal_states</code> contains the GPD of 2014 for the federal states and <code>gdp_2014_admin_districts</code> for the administrative districts.</p>
+<p>For this app we will use the data sets that come with the <code>leafdown</code>. The data.frame <code>gdp_2014_federal_states</code> contains the GPD of 2014 for the federal states and <code>gdp_2014_admin_districts</code> for the administrative districts.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">gdp_2014_federal_states</span>)
 <span class="co">#&gt;       Federal_State GDP_2014</span>
 <span class="co">#&gt; 1 Baden-Württemberg    41473</span>

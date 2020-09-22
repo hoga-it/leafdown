@@ -1,12 +1,17 @@
-library(leafdown)
+#library(leafdown) # Comment this when uploading
 library(leaflet)
 library(shiny)
 library(dplyr)
 library(shinycssloaders)
 library(shinyjs)
 
-ger1 <- raster::getData(country = "Germany", level = 1)
-ger2 <- raster::getData(country = "Germany", level = 2)
+# Uncomment this when uploading
+#ger1 <- raster::getData(country = "Germany", level = 1)
+#ger2 <- raster::getData(country = "Germany", level = 2)
+
+# Comment this when uploading
+ger1 <- readRDS("../inst/extdata/gadm36_DEU_1_sp.rds")
+ger2 <- readRDS("../inst/extdata/gadm36_DEU_2_sp.rds")
 
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
@@ -60,13 +65,18 @@ server <- function(input, output) {
 
     my_leafdown$add_data(data)
     labels <- create_labels(data, curr_map_level)
-    map <- my_leafdown$draw_leafdown(
+    my_leafdown$draw_leafdown(
       fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
-      highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7,
-                                   bringToFront = FALSE)
-
-    )
+      highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
+    ) %>%
+      addLegend("topright",
+                pal = colorNumeric("Blues", data$GDP_2014),
+                values = data$GDP_2014,
+                title = "Est. GDP (2014)",
+                labFormat = labelFormat(suffix = "€"),
+                opacity = 1
+      )
   })
 }
 
