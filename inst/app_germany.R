@@ -1,4 +1,6 @@
-#library(leafdown) # Comment this when uploading
+library(leafdown)
+# Run this before uploading
+#devtools::install_github("https://github.com/hoga-it/leafdown", ref = "pkgdown_website")
 library(leaflet)
 library(shiny)
 library(dplyr)
@@ -6,12 +8,15 @@ library(shinycssloaders)
 library(shinyjs)
 
 # Uncomment this when uploading
-#ger1 <- raster::getData(country = "Germany", level = 1)
-#ger2 <- raster::getData(country = "Germany", level = 2)
+# ger1 <- raster::getData(country = "Germany", level = 1)
+# ger2 <- raster::getData(country = "Germany", level = 2)
+
+ger1 <- readRDS("extdata/gadm36_DEU_1_sp.rds")
+ger2 <- readRDS("extdata/gadm36_DEU_2_sp.rds")
 
 # Comment this when uploading
-ger1 <- readRDS("../inst/extdata/gadm36_DEU_1_sp.rds")
-ger2 <- readRDS("../inst/extdata/gadm36_DEU_2_sp.rds")
+#ger1 <- readRDS("../inst/extdata/gadm36_DEU_1_sp.rds")
+#ger2 <- readRDS("../inst/extdata/gadm36_DEU_2_sp.rds")
 
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
