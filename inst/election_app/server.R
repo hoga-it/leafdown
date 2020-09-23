@@ -23,12 +23,6 @@ server <- function(input, output) {
   #
   rv <- reactiveValues()
   rv$update_leafdown <- 0
-  rv$df <- data.frame()
-  rv$df_selected <- data.frame()
-
-  shiny::observeEvent(input$leafdown_shape_click, {
-    rv$df_selected <- my_leafdown$curr_sel_data
-  })
 
   # observers for the drilling buttons
   observeEvent(input$drill_down, {
@@ -52,6 +46,7 @@ server <- function(input, output) {
     # depending on the map_level we have different election-data so the 'by' columns for the join are different
     if(my_leafdown$curr_map_level == 2) {
       data$state_abbr <- substr(data$HASC_2, 4, 5)
+      # there are counties with the same name in different states so we have to join on both
       data <- left_join(data, usa16_2, by = c("NAME_2", "state_abbr"))
     } else {
       data$state_abbr <- substr(data$HASC_1, 4, 5)
@@ -87,15 +82,16 @@ server <- function(input, output) {
 
   # plots
   output$socio <- renderEcharts4r({
-    req(rv$df_selected)
+    req(my_leafdown$curr_sel_data)
+    df <- my_leafdown$curr_sel_data()
     # check whether any shape is selected, show basic info for the whole usa if nothing is selected
-    if(dim(rv$df_selected)[1] > 0){
+    if(dim(df)[1] > 0){
       if(my_leafdown$curr_map_level == 1) {
-        df <- rv$df_selected[, c("state_abbr", "Hispanic", "White", "Black", "Asian", "Amerindian", "Other")]
+        df <- df[, c("state_abbr", "Hispanic", "White", "Black", "Asian", "Amerindian", "Other")]
         df <- df %>% pivot_longer(2:7, "race") %>% group_by(state_abbr)
         df$value <- round(df$value * 100, 2)
       } else {
-        df <- rv$df_selected[, c("County", "Hispanic", "White", "Black", "Asian", "Amerindian", "Other")]
+        df <- df[, c("County", "Hispanic", "White", "Black", "Asian", "Amerindian", "Other")]
         df <- df %>% pivot_longer(2:7, "race") %>% group_by(County)
       }
     } else {
@@ -117,14 +113,15 @@ server <- function(input, output) {
   })
 
   output$party <- renderEcharts4r({
-    req(rv$df_selected)
+    req(my_leafdown$curr_sel_data)
+    df <- my_leafdown$curr_sel_data()
     # check whether any shape is selected, show general election-result if nothing is selected
-    if(dim(rv$df_selected)[1] > 0){
+    if(dim(df)[1] > 0){
       if(my_leafdown$curr_map_level == 1) {
-        df <- rv$df_selected[, c("state_abbr", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
+        df <- df[, c("state_abbr", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
         df <- df %>% pivot_longer(2:5, "party") %>% group_by(party)
       } else {
-        df <- rv$df_selected[, c("County", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
+        df <- df[, c("County", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
         df <- df %>% pivot_longer(2:5, "party") %>% group_by(party)
         df$value <- df$value / 100
         names(df)[1] <- "state_abbr"
