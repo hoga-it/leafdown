@@ -19,10 +19,7 @@ drill down map with `leafdown`. \
 The goal is to create a map that:
 
 -  shows the GDP (gross domestic product) of the federal states of Germany 
--  allows the user to drill down to the administrative districts.
-
-TODO: Update picture
-
+-  allows the user to drill down to the administrative districts of selected federal states.
 
 ![](res/app_germany_map.png){width=250px, height=400px}
 
@@ -42,7 +39,8 @@ library(shinyjs)
 
 ## SpatialPolygonsDataFrames
 
-`leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions we would like to show.
+`leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions 
+we want to display on our map.
 
 For obtaining those spdfs we can use e.g. the `getData` function of the `raster` package.
 If we select "Germany" as country, level 1 contains the spdf for the federal states
@@ -107,7 +105,12 @@ head(gdp_2014_admin_districts)
 
 
 ## Leafdown workflow
-In this part we give a sketch of the `leafdown` workflow.
+In this part we sketch the `leafdown` workflow. \
+(Please note that the execution of the code snippets in this chapter
+*only* work within a shiny app)
+
+
+### Initialization
 
 As usual for R6 classes, we create a new object of our `Leafdown` class using the
 `new()` method. \
@@ -117,14 +120,19 @@ Here we have to specify the:
 - `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
 - `input`: The `input` from the shiny app
 
-### Initialization
-```{r}
+```{r, echo=FALSE}
 input <- reactiveValues(foo = "bar") # a little helper as we are currently not in a shiny session
+```
+
+```{r}
 my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = input)
 ```
 
-In the next step we add data to our map.
-Using the method `$get_current_metadata()` we can obtain the metadata of the (displayed)
+
+### Data
+
+In the next step we add data to our `leafdown` object.
+Using the method `$get_current_metadata()` we can obtain the metadata of the
 regions of the current map level.
 As metadata we refer to the data that describe the polygons such as region names, 
 region ids etc.
@@ -135,41 +143,53 @@ data <- my_leafdown$get_current_metadata()
 print(head(data))
 ```
 
-Now we can add new columns (with data we want to show in our app) to the existing metadata.
+Now we can add new columns (with data we want to display  on our map) to the existing metadata
 e.g. by using a left join.
-It is important that the initial metadata of the data.frame retrieved from `$get_current_data()` 
+It is important that the initial metadata of the data.frame retrieved with `$get_current_data()` 
 are unchanged and no rows are removed.
 
 ```{r}
 new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
 ```
 
-After creating our new data set we give this to our `my_leafdown` with the `$add_data` method.
+After creating our new data set we give this to our `leafdown`object with the `$add_data` method.
 ```{r}
 my_leafdown$add_data(new_data)
 ```
 
-The current data of `my_leafdown` can be retrieved using the `curr_data` attribute.
+The current data of `my_leafdown` can be retrieved via the `curr_data` attribute.
 ```{r}
 print(head(my_leafdown$curr_data))
 ```
 
 
 Finally we can use the method `$draw_leafdown` to draw the map.
-The specified arguments are internally handed over to the `addPolygons` of `leaflet` 
-which makes it possible to use
-all the great `leaflet` features such as a legend or a map background just
-as in the usual leaflet maps.
-
-
-The `$draw_leafdown()` method returns a normal `leaflet` object. Therefore we 
-can also add a legend or a map background as in the usual leaflet maps.
+The specified arguments are internally handed over to the 
+`[addPolygons](https://rdrr.io/cran/leaflet/man/map-layers.html)` function
+of `leaflet`. Therefore attributes like `fillColor` or `opacity` can be specified
+just as for a usual `leaflet` map.
 
 ```{r, eval=FALSE}
-my_leafdown$draw_leafdown(
+map <- my_leafdown$draw_leafdown(
   fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
-) %>% addTiles() # Add map background
+) 
 ```
+
+
+The `$draw_leafdown()` method returns a usual `leaflet` map. 
+This also allows us to add a legend or a background to our map.
+
+```{r, eval=FALSE}
+map <- map %>%
+  addLegend(
+    pal = colorNumeric("Blues", data$GDP_2014),
+    values = data$GDP_2014
+  )
+```
+
+### Selection
+
+TODO
 
 ### Drilldown
 
