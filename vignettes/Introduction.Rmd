@@ -109,6 +109,22 @@ In this part we sketch the `leafdown` workflow. \
 (Please note that the execution of the code snippets in this chapter
 *only* work within a shiny app)
 
+TODO: Add picture of workflow
+
+```{r, echo=FALSE}
+# DiagrammeR::grViz("digraph {
+#   
+# graph[layout = dot, rankdir = LR]
+# 
+# a
+# b
+# c
+# 
+# a -> b -> c
+# }")
+```
+
+
 
 ### Initialization
 
@@ -162,6 +178,7 @@ The current data of `my_leafdown` can be retrieved via the `curr_data` attribute
 print(head(my_leafdown$curr_data))
 ```
 
+### Draw map
 
 Finally we can use the method `$draw_leafdown` to draw the map.
 The specified arguments are internally handed over to the 
@@ -238,8 +255,9 @@ my_leafdown$draw_leafdown(
 )
 ```
 
+### Draw map
 
-
+TODO
 
 ### Drillup
 
@@ -254,6 +272,12 @@ which parents were selected in the upper map level.
 ```{r}
 new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
 ```
+
+
+### Draw map
+
+TODO
+
 
 ## Shiny App
 
