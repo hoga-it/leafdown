@@ -64,6 +64,36 @@ test_that("cannot drill down without selection", {
   app$stop()
 })
 
+test_that("cannot drill down without selection after deselection (see #10)", {
+  app <- ShinyDriver$new("testapps")
+
+  # select shapes with id="6" and "32
+  selected_shape <- list(id = "6")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  selected_shape <- list(id = "32")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+
+  # unselect shapes with id="6" and "32
+  selected_shape <- list(id = "6")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  selected_shape <- list(id = "32")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+
+  # check that there is no selection
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+
+  expect_equal(length(curr_sel_ids), 1)
+  expect_identical(curr_sel_ids, list(character(0)))
+
+  # try to drill down
+  app$setInputs(drill_down = "click")
+
+  leafdown_output <- app$getAllValues()$output$leafdown
+  expect_false("message" %in% names(leafdown_output))
+
+  app$stop()
+})
 
 test_that("correctly selected and unselected parents after drill_down", {
   app <- ShinyDriver$new("testapps")
