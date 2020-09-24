@@ -8,15 +8,12 @@ library(shinycssloaders)
 library(shinyjs)
 
 # Uncomment this when uploading
-# ger1 <- raster::getData(country = "Germany", level = 1)
-# ger2 <- raster::getData(country = "Germany", level = 2)
-
-ger1 <- readRDS("extdata/gadm36_DEU_1_sp.rds")
-ger2 <- readRDS("extdata/gadm36_DEU_2_sp.rds")
+# ger1 <- readRDS("extdata/ger1-005.R")
+# ger2 <- readRDS("extdata/ger1-005.R")
 
 # Comment this when uploading
-#ger1 <- readRDS("../inst/extdata/gadm36_DEU_1_sp.rds")
-#ger2 <- readRDS("../inst/extdata/gadm36_DEU_2_sp.rds")
+ger1 <- readRDS("../inst/extdata/ger1-005.R")
+ger2 <- readRDS("../inst/extdata/ger2-005.R")
 
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
@@ -78,7 +75,7 @@ server <- function(input, output) {
       addLegend("topright",
                 pal = colorNumeric("Blues", data$GDP_2014),
                 values = data$GDP_2014,
-                title = "Est. GDP (2014)",
+                title = "GDP per capita (2014)",
                 labFormat = labelFormat(suffix = "€"),
                 opacity = 1
       )
