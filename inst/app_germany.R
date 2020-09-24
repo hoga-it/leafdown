@@ -8,12 +8,12 @@ library(shinycssloaders)
 library(shinyjs)
 
 # Uncomment this when uploading
-# ger1 <- readRDS("extdata/ger1-005.R")
-# ger2 <- readRDS("extdata/ger1-005.R")
+ger1 <- readRDS("extdata/ger1-005.R")
+ger2 <- readRDS("extdata/ger2-005.R")
 
 # Comment this when uploading
-ger1 <- readRDS("../inst/extdata/ger1-005.R")
-ger2 <- readRDS("../inst/extdata/ger2-005.R")
+#ger1 <- readRDS("../inst/extdata/ger1-005.R")
+#ger2 <- readRDS("../inst/extdata/ger2-005.R")
 
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",

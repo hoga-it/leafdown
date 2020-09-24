@@ -40,3 +40,4 @@ devtools::install_github("hoga-it/leafdown")
   - Allows the selection of regions / shapes.
   - Easy to use and well integrated into syntax of the
     [leaflet](https://rstudio.github.io/leaflet/) R package.
+  - Computationally efficient as drilldown only for regions of interest

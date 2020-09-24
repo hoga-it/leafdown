@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 In this article we would like to give an example of how to create a very simple 
-drill down map with `leafdown`. \
+drilldown map with `leafdown`. \
 The goal is to create a map that:
 
 -  shows the GDP (gross domestic product) of the federal states of Germany 
@@ -33,7 +33,7 @@ library(dplyr)
 library(shinyjs)
 ```
 
-(Note that the `shinyjs` package is loaded for some automatic messages that the 
+(Note that the `shinyjs` package is loaded for some automatic warning messages that the 
 `leafdown` map can return to the user of the shiny app.)
 
 
@@ -42,13 +42,13 @@ library(shinyjs)
 `leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions 
 we want to display on our map.
 
-For obtaining those spdfs we can use e.g. the `getData` function of the `raster` package.
-If we select "Germany" as country, level 1 contains the spdf for the federal states
-and level 2 the spdf the administrative districts.
+To get these spdfs we can for example use the `getData` function of the `raster` package.
+For "Germany", `level = 1` contains the spdf for the federal states
+and `level = 2` the spdf for the administrative districts.
 
 ```{r, echo=FALSE}
-ger1 <- readRDS("../inst/extdata/gadm36_DEU_1_sp.rds")
-ger2 <- readRDS("../inst/extdata/gadm36_DEU_2_sp.rds")
+ger1 <- readRDS("../inst/extdata/ger1-005.R")
+ger2 <- readRDS("../inst/extdata/ger2-005.R")
 ```
 
 ```{r, eval=FALSE}
@@ -56,8 +56,8 @@ ger1 <- raster::getData(country = "Germany", level = 1)
 ger2 <- raster::getData(country = "Germany", level = 2)
 ```
 
-The spdf for level 2 does not display all German umlauts correctly. Therefore we adapt 
-some names so that we can assign our data easier later on.
+The spdf for `level = 2` does not display all German umlauts correctly. Therefore 
+we adjust  some names so that we can assign our data more easily later on.
 ```{r, message=FALSE}
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
@@ -67,9 +67,9 @@ ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
 )
 ```
 
-Let's now build our `spdfs_list` which we can provide to `leafdown` in our shiny app.
-It is important that `spdfs_list` is ordered such that the spdf of highest map level 
-(in our case the federal states) is the first element and so on.
+Let's now create our `spdfs_list` which we can provide to `leafdown` in our shiny app.
+It is important that `spdfs_list` is ordered such that the spdf of the highest map level 
+(in our case the federal states) is the first list element and so on.
 
 ```
 list (spdfs_list)
@@ -99,38 +99,81 @@ head(gdp_2014_federal_states)
 head(gdp_2014_admin_districts)
 ```
 
-(For more information on the data please see `?gdp_2014_federal_states` or
+(For more information about the data, please see `?gdp_2014_federal_states` or
 `?gdp_2014_admin_districts` respectively)
 
 
 
 ## Leafdown workflow
-In this part we sketch the `leafdown` workflow. \
+In this part we sketch the typical `leafdown` workflow. \
 (Please note that the execution of the code snippets in this chapter
-*only* work within a shiny app)
+**only** work within a shiny app)
 
-TODO: Add picture of workflow
+TODO: Replace this with picture
 
-```{r, echo=FALSE}
-# DiagrammeR::grViz("digraph {
-#   
-# graph[layout = dot, rankdir = LR]
-# 
-# a
-# b
-# c
-# 
-# a -> b -> c
-# }")
+```{r, echo=FALSE, fig.width=7}
+DiagrammeR::grViz(
+'
+digraph { 
+  rankdir=LR; 
+  graph [fontname = "Segoe UI", fontsize = 28, 
+         nodesep="2", ranksep="1", color = dimgrey];
+  node [fontname = "Segoe UI", fontsize = 22, color = dimgrey];
+  edge [fontname = "Segoe UI", fontsize = 22, color = dimgrey];
+  "Invisible"[style=invis];
+  c0 [
+    label = "Initialization \n $new()", fillcolor  = palegreen, 
+    style=filled, color = "grey"
+  ];
+  
+  subgraph cluster01 { 
+    label="Map Level 1"; 
+    a0 [label="Add Data \n ($add_data)", fillcolor = OldLace, style=filled]; 
+    a1 [label="Draw Map \n ($draw_leafdown)",  fillcolor = Moccasin, style=filled]; 
+    a2 [label="Select Shapes", fillcolor = lightyellow, style=filled]; 
+    a3 [label="Drill Down \n ($drill_down)", fillcolor = PowderBlue, style=filled]; 
+    a0 -> a1 
+    a1 -> a2; 
+    a2 -> a3; 
+  }; 
+  
+  subgraph cluster02 
+  {
+    label="Map Level 2";
+    b0 [label="Drill Down \n ($drill_up)", fillcolor = PowderBlue, style=filled]; 
+    b3 [label="Add Data \n ($add_data)", fillcolor = OldLace, style=filled]; 
+    b1 [label="..."]; 
+    b2 [label="Draw Map \n ($draw_leafdown)", fillcolor = Moccasin, style=filled]; 
+    
+    b0 -> b1 [dir="back"]; 
+    b1 -> b2 [dir="back"]; 
+    b2 -> b3 [dir="back"]; 
+
+  }; 
+  
+  edge[constraint=false]; 
+  a1->b1 [style=invis]; 
+  a2->b2 [style=invis]; 
+  a3->b3 [style=dotted];
+  b0->a0 [style=dotted];
+  edge[constraint=true]; 
+  Invisible -> b0[style=invis]; 
+  edge[constraint=true]; 
+  c0 -> a0;
+  Invisible -> a0[style=invis]; 
+  
+  
+} 
+'
+)
 ```
-
 
 
 ### Initialization
 
 As usual for R6 classes, we create a new object of our `Leafdown` class using the
 `new()` method. \
-Here we have to specify the:
+For this we have to specify the:
 
 - `spdfs_list`: The list containing the spdfs of both map levels.
 - `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
@@ -148,27 +191,24 @@ my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = inpu
 ### Data
 
 In the next step we add data to our `leafdown` object.
-Using the method `$get_current_metadata()` we can obtain the metadata of the
-regions of the current map level.
-As metadata we refer to the data that describe the polygons such as region names, 
-region ids etc.
-(Essentially we refer to metadata as what is obtained by calling e.g. `ger1@data`)
+Using the method `$get_current_metadata()` we can retrieve the metadata of the 
+current map level.
+With metadata we refer to the data that describes the polygons, such as region names, 
+region IDs, etc.
 
 ```{r}
-data <- my_leafdown$get_current_metadata()
-print(head(data))
+metadata <- my_leafdown$get_current_metadata()
+print(head(metadata))
 ```
 
-Now we can add new columns (with data we want to display  on our map) to the existing metadata
-e.g. by using a left join.
-It is important that the initial metadata of the data.frame retrieved with `$get_current_data()` 
-are unchanged and no rows are removed.
+Now we can add new columns for variables we want to display on our map to the existing metadata.
+It is important that the initial metadata remains unchanged and no rows are removed.
 
 ```{r}
-new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+new_data <- metadata %>% dplyr::left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
 ```
 
-After creating our new data set we give this to our `leafdown`object with the `$add_data` method.
+After creating our new data set, we give it to our `leafdown`object with the `$add_data` method.
 ```{r}
 my_leafdown$add_data(new_data)
 ```
@@ -180,11 +220,10 @@ print(head(my_leafdown$curr_data))
 
 ### Draw map
 
-Finally we can use the method `$draw_leafdown` to draw the map.
-The specified arguments are internally handed over to the 
-`[addPolygons](https://rdrr.io/cran/leaflet/man/map-layers.html)` function
-of `leaflet`. Therefore attributes like `fillColor` or `opacity` can be specified
-just as for a usual `leaflet` map.
+To draw the map we use the method `$draw_leafdown`.
+The specified arguments in the method are internally handed over to the
+`addPolygons` function of `leaflet`. Therefore attributes like `fillColor` or 
+`opacity` can be specified just as for a usual `leaflet` map.
 
 ```{r, eval=FALSE}
 map <- my_leafdown$draw_leafdown(
@@ -193,7 +232,7 @@ map <- my_leafdown$draw_leafdown(
 ```
 
 
-The `$draw_leafdown()` method returns a usual `leaflet` map. 
+The `$draw_leafdown` method returns a usual `leaflet` map. 
 This also allows us to add a legend or a background to our map.
 
 ```{r, eval=FALSE}
@@ -206,30 +245,52 @@ map <- map %>%
 
 ### Selection
 
-TODO
+Let's now have look at what happens when a user clicks on a region.
+Internally a `leafdown` object has an observer for `shape_click` events.
+Once a user clicks on a certain region, this region becomes "active" and
+its boundaries on the map are highlighted.
+(If the clicked region is already active, it becomes inactive).
+We can retrieve the data of reactive regions via the `$curr_sel_data` attribute.
+Assuming that the user clicked on Bavaria and Hesse than curr_sel_data would 
+look as follows:
+
+```{r, eval=FALSE}
+my_leafdown$curr_sel_data()
+```
+
+```{r, echo=FALSE}
+subset(my_leafdown$curr_data, NAME_1 %in% c("Bayern", "Hessen"))
+```
+
+Note that this attribute is a `reactiveValue` which allows to update graphs and other 
+elements upon a user click. (For more on the connection to other elements please
+see the article: TODO: Refer to USA article)
 
 ### Drilldown
 
 Using the `$drill_down` method we can now drill down to the admin districts of
-the selected federal states.
+the **selected** federal states. 
 
 ```{r, eval=FALSE}
 my_leafdown$drill_down()
 ```
 
+This will update the currently active spdf (`my_leafdown$curr_spdf`) which then
+only contains polygons and corresponding metadata for regions
+whose parents were selected in the upper (previous) map level.
+In our case the parents are "Bavaria" and "Hesse", so only
+spdfs of admin districts within these federal states will be contained in 
+`my_leafdown$curr_spdf`.
 
-This will update the currently active spdf (`my_leafdown$curr_spdf`).
-This spdf will only contain polygons and corresponding metadata for regions
-which parents were selected in the upper (previous) map level.
-Example:
+```{r, eval=FALSE}
+length(my_leafdown$curr_spdf)
+```
+```{r, echo=FALSE}
+print(2)
+```
 
-- We selected the federal states "Bavaria" and "Hesse" in the first map level
-- After the drilldown the currently active spdf will then only contain the 
-admin districts of "Bavaria" and "Hesse" but non of the other federal states.
 
-Note that the initial `spdf_list` (`my_leafdown$spdfs_list`) remains unchanged
-such that we can drill down and up multiple times without the need of specifying
-`spdf_list` again.
+### Data
 
 The updated metadata can then again retrieved via `$get_current_metadata()`.
 ```{r eval = FALSE}
@@ -238,26 +299,38 @@ data <- my_leafdown$get_current_metadata()
 print(head(data))
 ```
 
-TODO: Change this to show Bavaria data
 ```{r echo=FALSE}
-print(head(ger2@data))
+head(subset(ger2@data, GID_1 %in% c("DEU.2_1", "DEU.7_1")))
+```
+
+```{r eval = FALSE}
+print(unique(data$NAME_1))
+```
+
+```{r echo=FALSE}
+c("Bayern", "Hessen")
 ```
 
 
-Now we can again add new data as described above and draw the our map.
+Now we can again add new data as described above.
 ```{r, eval=FALSE}
 my_leafdown$drill_down()
 data <- my_leafdown$get_current_metadata()
 data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
 my_leafdown$add_data(new_data)
+```
+
+### Draw map
+
+```{r, eval=FALSE}
 my_leafdown$draw_leafdown(
   fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
 )
 ```
 
-### Draw map
 
-TODO
+All non active parent regions grayed out in the background.
+
 
 ### Drillup
 
@@ -270,7 +343,7 @@ which parents were selected in the upper map level.
 - Note that the initial spdf_list remains unchanged.
 
 ```{r}
-new_data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+new_data <- metadata %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
 ```
 
 
