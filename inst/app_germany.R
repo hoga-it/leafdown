@@ -1,6 +1,6 @@
 library(leafdown)
 # Run this before uploading
-#devtools::install_github("https://github.com/hoga-it/leafdown", ref = "pkgdown_website")
+# devtools::install_github("https://github.com/hoga-it/leafdown", ref = "pkgdown_website")
 library(leaflet)
 library(shiny)
 library(dplyr)
@@ -73,11 +73,11 @@ server <- function(input, output) {
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
     ) %>%
       addLegend("topright",
-                pal = colorNumeric("Blues", data$GDP_2014),
-                values = data$GDP_2014,
-                title = "GDP per capita (2014)",
-                labFormat = labelFormat(suffix = "€"),
-                opacity = 1
+        pal = colorNumeric("Blues", data$GDP_2014),
+        values = data$GDP_2014,
+        title = "GDP per capita (2014)",
+        labFormat = labelFormat(suffix = "€"),
+        opacity = 1
       )
   })
 }
