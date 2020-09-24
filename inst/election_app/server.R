@@ -89,27 +89,30 @@ server <- function(input, output) {
       if(my_leafdown$curr_map_level == 1) {
         df <- df[, c("state_abbr", "Hispanic", "White", "Black", "Asian", "Amerindian", "Other")]
         df <- df %>% pivot_longer(2:7, "race") %>% group_by(state_abbr)
-        df$value <- round(df$value * 100, 2)
+        df$value <- round(df$value, 2)
       } else {
         df <- df[, c("County", "Hispanic", "White", "Black", "Asian", "Amerindian", "Other")]
         df <- df %>% pivot_longer(2:7, "race") %>% group_by(County)
+        df$value <- round(df$value/100, 2)
       }
     } else {
       # show basic info for the whole usa as no state is selected
       df <- data.frame(
         state_abbr = "USA",
         race = c("Hispanic", "White", "Black", "Asian", "Amerindian", "Other"),
-        value = c(15.3, 63.4, 13.4, 5.9, 1.5, 2.7)) %>% group_by(state_abbr)
+        value = c(0.15, 0.634, 0.134, 0.059, 0.015, 0.027)) %>% group_by(state_abbr)
     }
     # create the graph
     df %>%
       e_charts(race) %>%
       e_bar(value) %>%
       e_tooltip(trigger = "axis",axisPointer = list(type = "shadow")) %>%
-      e_title(text = "Racial makeup in percentages") %>%
-      e_y_axis(splitArea = list(show = FALSE),splitLine = list(show = FALSE)) %>%
+      e_y_axis(splitArea = list(show = FALSE),
+               splitLine = list(show = FALSE),
+               formatter = e_axis_formatter("percent", digits = 2)) %>%
       e_legend(orient = 'vertical',right = 10,top = 10) %>%
-      e_color(brewer.pal(nrow(df), "Set3"))
+      e_color(brewer.pal(nrow(df), "Set3")) %>%
+      e_tooltip(formatter = e_tooltip_item_formatter("percent"))
   })
 
   output$party <- renderEcharts4r({
@@ -139,8 +142,8 @@ server <- function(input, output) {
       e_bar(value) %>%
       e_y_axis(formatter = e_axis_formatter("percent", digits = 2)) %>%
       e_tooltip(trigger = "axis",axisPointer = list(type = "shadow")) %>%
-      e_title(text = "Votes in percent") %>%
       e_legend(right = 10,top = 10) %>%
-      e_color(c("#232066", "#E91D0E", "#f3b300", "#006900"))
+      e_color(c("#232066", "#E91D0E", "#f3b300", "#006900"))%>%
+      e_tooltip(formatter = e_tooltip_item_formatter("percent", digits = 2))
   })
 }
