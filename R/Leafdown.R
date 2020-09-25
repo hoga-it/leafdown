@@ -102,12 +102,10 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("`$curr_spdf` is read only", call. = FALSE)
       }
     },
-    #' @description
+    #' @field curr_metadata
     #' Returns the metadata of the shapes from the current maplevel.
     #' This may differ from what is displayed if \code{drill_down} has been called but \code{draw_leafdown}
     #' has not been (yet).
-    #'
-    #' @return The current meta-data
     curr_metadata = function(value) {
       if (missing(value)) {
         private$.curr_spdf@data
