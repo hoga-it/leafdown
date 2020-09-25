@@ -101,6 +101,19 @@ Leafdown <- R6::R6Class("Leafdown",
       } else {
         stop("`$curr_spdf` is read only", call. = FALSE)
       }
+    },
+    #' @description
+    #' Returns the metadata of the shapes from the current maplevel.
+    #' This may differ from what is displayed if \code{drill_down} has been called but \code{draw_leafdown}
+    #' has not been (yet).
+    #'
+    #' @return The current meta-data
+    curr_metadata = function(value) {
+      if (missing(value)) {
+        private$.curr_spdf@data
+      } else {
+        stop("`$curr_spdf@data` is read only", call. = FALSE)
+      }
     }
   ),
   public = list(
@@ -195,15 +208,6 @@ Leafdown <- R6::R6Class("Leafdown",
         hideGroup(all_poly_ids) %>%
         showGroup(private$.curr_sel_ids[[private$.curr_map_level]])
       map
-    },
-    #' @description
-    #' Returns the metadata of the shapes from the current maplevel.
-    #' This may differ from what is displayed if \code{drill_down} has been called but \code{draw_leafdown}
-    #' has not been (yet).
-    #'
-    #' @return The current meta-data
-    get_current_metadata = function() {
-      private$.curr_spdf@data
     },
     #' @description
     #' Adds the data to the currently displayed shapes.
