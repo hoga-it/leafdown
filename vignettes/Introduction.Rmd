@@ -113,26 +113,28 @@ TODO: Replace this with picture
 
 ```{r, echo=FALSE, fig.width=7}
 DiagrammeR::grViz(
-'
+  '
 digraph { 
   rankdir=LR; 
-  graph [fontname = "Segoe UI", fontsize = 28, 
+  rank="same";
+  graph [fontname = "Segoe UI", fontsize = 36, 
          nodesep="2", ranksep="1", color = dimgrey];
-  node [fontname = "Segoe UI", fontsize = 22, color = dimgrey];
-  edge [fontname = "Segoe UI", fontsize = 22, color = dimgrey];
+  node [fontname = "Segoe UI", fontsize = 30, color = dimgrey];
+  edge [fontname = "Segoe UI", fontsize = 30, color = dimgrey];
   "Invisible"[style=invis];
   c0 [
-    label = "Initialization \n $new()", fillcolor  = palegreen, 
+    label = "Initialization \n ($new)", fillcolor  = palegreen, 
     style=filled, color = "grey"
   ];
   
   subgraph cluster01 { 
     label="Map Level 1"; 
+    rank="same";
     a0 [label="Add Data \n ($add_data)", fillcolor = OldLace, style=filled]; 
     a1 [label="Draw Map \n ($draw_leafdown)",  fillcolor = Moccasin, style=filled]; 
     a2 [label="Select Shapes", fillcolor = lightyellow, style=filled]; 
     a3 [label="Drill Down \n ($drill_down)", fillcolor = PowderBlue, style=filled]; 
-    a0 -> a1 
+    a0 -> a1;
     a1 -> a2; 
     a2 -> a3; 
   }; 
@@ -140,8 +142,9 @@ digraph {
   subgraph cluster02 
   {
     label="Map Level 2";
-    b0 [label="Drill Down \n ($drill_up)", fillcolor = PowderBlue, style=filled]; 
-    b3 [label="Add Data \n ($add_data)", fillcolor = OldLace, style=filled]; 
+    rank="same";
+    b0 [label="    Drill Up   \n ($drill_up)", fillcolor = PowderBlue, style=filled]; 
+    b3 [label="   Add Data   \n ($add_data) ", fillcolor = OldLace, style=filled]; 
     b1 [label="..."]; 
     b2 [label="Draw Map \n ($draw_leafdown)", fillcolor = Moccasin, style=filled]; 
     
@@ -213,7 +216,7 @@ After creating our new data set, we give it to our `leafdown`object with the `$a
 my_leafdown$add_data(new_data)
 ```
 
-The current data of `my_leafdown` can be retrieved via the `curr_data` attribute.
+The current data of a `leafdown` object can be retrieved via the `$curr_data` attribute.
 ```{r}
 print(head(my_leafdown$curr_data))
 ```
@@ -250,8 +253,8 @@ Internally a `leafdown` object has an observer for `shape_click` events.
 Once a user clicks on a certain region, this region becomes "active" and
 its boundaries on the map are highlighted.
 (If the clicked region is already active, it becomes inactive).
-We can retrieve the data of reactive regions via the `$curr_sel_data` attribute.
-Assuming that the user clicked on Bavaria and Hesse than curr_sel_data would 
+We can retrieve the data of active regions via the `$curr_sel_data` attribute.
+Assuming that the user clicked on Bavaria and Hesse than `$curr_sel_data` would 
 look as follows:
 
 ```{r, eval=FALSE}
@@ -269,7 +272,7 @@ see the article: TODO: Refer to USA article)
 ### Drilldown
 
 Using the `$drill_down` method we can now drill down to the admin districts of
-the **selected** federal states. 
+the **active** federal states. 
 
 ```{r, eval=FALSE}
 my_leafdown$drill_down()
@@ -277,7 +280,7 @@ my_leafdown$drill_down()
 
 This will update the currently active spdf (`my_leafdown$curr_spdf`) which then
 only contains polygons and corresponding metadata for regions
-whose parents were selected in the upper (previous) map level.
+whose parents were active in the upper (previous) map level.
 In our case the parents are "Bavaria" and "Hesse", so only
 spdfs of admin districts within these federal states will be contained in 
 `my_leafdown$curr_spdf`.
@@ -292,11 +295,12 @@ print(2)
 
 ### Data
 
-The updated metadata can then again retrieved via `$get_current_metadata()`.
+The updated metadata can then again be retrieved via `$get_current_metadata()`.
+
 ```{r eval = FALSE}
 my_leafdown$drill_down()
-data <- my_leafdown$get_current_metadata()
-print(head(data))
+metadata <- my_leafdown$get_current_metadata()
+head(metadata)
 ```
 
 ```{r echo=FALSE}
@@ -304,21 +308,36 @@ head(subset(ger2@data, GID_1 %in% c("DEU.2_1", "DEU.7_1")))
 ```
 
 ```{r eval = FALSE}
-print(unique(data$NAME_1))
+unique(metadata$NAME_1)
 ```
 
 ```{r echo=FALSE}
 c("Bayern", "Hessen")
 ```
 
+Just as before we can add new columns for variables we want to display on our map 
+to the existing metadata.
 
-Now we can again add new data as described above.
 ```{r, eval=FALSE}
-my_leafdown$drill_down()
-data <- my_leafdown$get_current_metadata()
-data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
+new_data <- metadata %>% 
+  dplyr::left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
 my_leafdown$add_data(new_data)
 ```
+
+Again, the current data can be retrieved via the `$curr_data` attribute.
+
+```{r, eval=FALSE}
+head(my_leafdown$curr_data)
+```
+
+```{r, echo=FALSE}
+ger2@data %>% 
+  filter(GID_1 %in% c("DEU.2_1", "DEU.7_1")) %>% 
+  dplyr::left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District")) %>% 
+  slice_head(n = 5) %>% 
+  as.data.frame()
+```
+
 
 ### Draw map
 
@@ -349,7 +368,8 @@ new_data <- metadata %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "F
 
 ### Draw map
 
-TODO
+Results in the same map as at the beginning
+Active regions are still active.
 
 
 ## Shiny App
@@ -371,6 +391,7 @@ ui <- shiny::fluidPage(
 ### Server
 
 ```{r}
+# Little helper function for hover labels
 create_labels <- function(data, map_level) {
   labels <- sprintf(
     "<strong>%s</strong><br/>%g € per capita</sup>",
@@ -416,7 +437,7 @@ server <- function(input, output) {
       addLegend("topright",
         pal = colorNumeric("Blues", data$GDP_2014),
         values = data$GDP_2014,
-        title = "Est. GDP (2014)",
+        title = "GDP per capita (2014)",
         labFormat = labelFormat(suffix = "€"),
         opacity = 1
       )
