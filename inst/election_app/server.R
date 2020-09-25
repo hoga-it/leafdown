@@ -61,7 +61,7 @@ server <- function(input, output) {
     # draw the leafdown object
     my_leafdown$draw_leafdown(
       fillColor = ~fillcolor(data$y),
-      weight = 2, fillOpacity = 0.7, color = "black") %>%
+      weight = 3, fillOpacity = 1, color = "white") %>%
       # set the view to be center on the USA
       setView(-95, 39,  4)  %>%
       # add a nice legend
