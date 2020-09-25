@@ -1,12 +1,3 @@
-library(shiny)
-library(leaflet)
-library(leafdown)
-library(shinyjs)
-library(echarts4r)
-library(dplyr)
-library(tidyr)
-library(RColorBrewer)
-
 # Define server for leafdown app
 server <- function(input, output) {
   # load the shapes for the two levels
@@ -15,8 +6,8 @@ server <- function(input, output) {
   spdfs_list <- list(states, states2)
 
   # load the election-data for the two levels
-  usa16_1 <- read_csv("data/us16_1.csv")
-  usa16_2 <- read_csv("data/us16_2.csv")
+  usa16_1 <- read.csv("data/us16_1.csv")
+  usa16_2 <- read.csv("data/us16_2.csv")
 
   # create leafdown object
   my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
@@ -40,7 +31,7 @@ server <- function(input, output) {
     req(spdfs_list)
     req(rv$update_leafdown)
     # fetch the current metadata from the leafdown object
-    data <- my_leafdown$get_current_metadata()
+    data <- my_leafdown$curr_metadata
 
     # join the metadata with the election-data.
     # depending on the map_level we have different election-data so the 'by' columns for the join are different

@@ -1,3 +1,12 @@
+library(bs4Dash)
+library(shinyjs)
+library(leaflet)
+library(leafdown)
+library(echarts4r)
+library(dplyr)
+library(tidyr)
+library(RColorBrewer)
+
 ui = bs4DashPage(
   title = "Leafdown Showcase - USA Election Data",
   navbar = bs4DashNavbar(tags$h3("Leafdown Showcase - USA Election Data", style = "margin-bottom: .2rem;")),
