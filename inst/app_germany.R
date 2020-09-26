@@ -57,12 +57,12 @@ server <- function(input, output) {
 
   output$leafdown <- renderLeaflet({
     update_leafdown()
-    data <- my_leafdown$curr_metadata
+    meta_data <- my_leafdown$curr_metadata
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
-      data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+      data <- meta_data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
     } else {
-      data <- data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
+      data <- meta_data %>% left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
     }
 
     my_leafdown$add_data(data)
