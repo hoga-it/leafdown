@@ -5,10 +5,16 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis build
+status](https://travis-ci.com/hoga-it/leafdown.svg?branch=master)](https://travis-ci.com/hoga-it/leafdown)
 <!-- badges: end -->
 
-The goal of leafdown is to provide drill down functionality for leaflet
+The goal of leafdown is to provide drilldown functionality for leaflet
 choropleths.
+
+<img src='man/figures/select_drilldown.PNG'/>
 
 ## Installation
 
@@ -28,10 +34,10 @@ devtools::install_github("hoga-it/leafdown")
 
 ## Features
 
-  - Adds drill-down functionality for leaflet choropleths maps.
-  - Allows selection of regions / shapes in map.
-  - Easy to use and well integrated into syntax of leaflet r package.
-
-## Current limitations
-
-  - Drill-down only available for two map levels.
+  - Adds drilldown functionality for [leaflet
+    choropleths](https://rstudio.github.io/leaflet/choropleths.html)
+    maps.
+  - Allows the selection of regions / shapes.
+  - Easy to use and well integrated into syntax of the
+    [leaflet](https://rstudio.github.io/leaflet/) R package.
+  - Computationally efficient as drilldown only for regions of interest
