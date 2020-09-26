@@ -131,3 +131,36 @@ test_that("correctly selected and unselected parents after drill_down", {
 })
 
 
+
+test_that("curr_sel_data 0 rows after drill_down and n_sel rows after drill_up", {
+  app <- ShinyDriver$new("testapps")
+
+  # select shapes with ids="6", "7"
+  selected_shape <- list(id = "6")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  selected_shape <- list(id = "7")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  rv_curr_sel_data <- app$getAllValues()$export$my_leafdown$curr_sel_data
+  curr_sel_data <- shiny::isolate(rv_curr_sel_data())
+
+  expect_true(is.data.frame(curr_sel_data))
+  expect_true(nrow(curr_sel_data) == 2)
+
+  # drill down
+  app$setInputs(drill_down = "click")
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  rv_curr_sel_data <- app$getAllValues()$export$my_leafdown$curr_sel_data
+  curr_sel_data <- shiny::isolate(rv_curr_sel_data())
+  expect_true(is.data.frame(curr_sel_data))
+  expect_true(nrow(curr_sel_data) == 0)
+
+  # drill up
+  app$setInputs(drill_up = "click")
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  rv_curr_sel_data <- app$getAllValues()$export$my_leafdown$curr_sel_data
+  curr_sel_data <- shiny::isolate(rv_curr_sel_data())
+  expect_true(is.data.frame(curr_sel_data))
+  expect_true(nrow(curr_sel_data) == 2)
+
+})

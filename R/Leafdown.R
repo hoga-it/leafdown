@@ -47,6 +47,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' (Subset of spdfs_list)
     .unselected_parents = NULL,
 
+
     #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
     #' Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
@@ -146,12 +147,12 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- 1
       private$.curr_sel_ids <- list(c())
       private$.selected_parents <- c()
-      private$.curr_sel_data <- reactiveVal(data.frame())
-
       private$.spdfs_list <- spdfs_list
       private$.map_output_id <- map_output_id
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
-
+      private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
+      private$.curr_data <- private$.curr_spdf@data
+      private$.curr_sel_data <- reactiveVal(data.frame())
       private$init_click_observer(input, map_output_id)
     },
     #' @description
@@ -167,12 +168,7 @@ Leafdown <- R6::R6Class("Leafdown",
       curr_spdf@data <- private$.curr_data
       # Using proxy to avoid redrawing of map when highlighting
       private$.map_proxy <- leafletProxy(private$.map_output_id)
-      # ids of all polygons in the current spdf
-      all_poly_ids <- c()
-      for (pol in curr_spdf@polygons) {
-        all_poly_ids <- c(all_poly_ids, pol@ID)
-      }
-      private$.curr_poly_ids <- all_poly_ids
+      all_poly_ids <- private$.curr_poly_ids
       map <- leaflet(curr_spdf)
       arg_list[["map"]] <- map
       arg_list[["layerId"]] <- ~all_poly_ids
@@ -259,8 +255,12 @@ Leafdown <- R6::R6Class("Leafdown",
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new
+      private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_map_level <- private$.curr_map_level + 1
       private$.curr_sel_ids[[private$.curr_map_level]] <- character(0)
+      private$.curr_data <- private$.curr_spdf@data
+      private$.curr_sel_data(data.frame()) # update reactiveVal
+
     },
     #' @description
     #' Drills up to the higher level if:
@@ -273,10 +273,20 @@ Leafdown <- R6::R6Class("Leafdown",
         shinyjs::alert("The highest level is reached. Cannot drill higher!")
         req(FALSE)
       }
+
       # Update leafdown object
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
+      private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_map_level <- private$.curr_map_level - 1
       private$.unselected_parents <- NULL
+      private$.curr_data <- private$.curr_spdf@data
+
+      ### Get selected data in new map level
+      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
+      curr_sel_data <- subset(private$.curr_data, is_selected)
+      private$.curr_sel_data(curr_sel_data) # update reactiveVal
+
     },
     #' @description
     #' Selects the shape with the given shape id, or unselects it if it was already selected.
