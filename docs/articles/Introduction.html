@@ -72,8 +72,7 @@
 
       
 
-      </header><script src="Introduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="Introduction_files/htmlwidgets-1.5.1/htmlwidgets.js"></script><script src="Introduction_files/viz-1.8.2/viz.js"></script><link href="Introduction_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
-<script src="Introduction_files/grViz-binding-1.0.6.1/grViz.js"></script><div class="row">
+      </header><script src="Introduction_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction</h1>
@@ -151,8 +150,7 @@ The goal is to create a map that:</p>
 <p>In this part we sketch the typical <code>leafdown</code> workflow.<br>
 (Please note that the execution of the code snippets in this chapter <strong>only</strong> work within a shiny app)</p>
 <p>TODO: Replace this with picture</p>
-<div id="htmlwidget-c95f6971e7959465e7ad" style="width:672px;height:432.632880098888px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c95f6971e7959465e7ad">{"x":{"diagram":"\ndigraph { \n  rankdir=LR; \n  graph [fontname = \"Segoe UI\", fontsize = 24, \n         nodesep=\"2\", ranksep=\"1\", color = dimgrey];\n  node [fontname = \"Segoe UI\", fontsize = 18, color = dimgrey];\n  edge [fontname = \"Segoe UI\", fontsize = 18, color = dimgrey];\n  \"Invisible\"[style=invis];\n  c0 [\n    label = \"Initialization \n $new()\", fillcolor  = palegreen, \n    style=filled, color = \"grey\"\n  ];\n  \n  subgraph cluster01 { \n    label=\"Map Level 1\"; \n    a0 [label=\"Add Data \n ($add_data)\", fillcolor = OldLace, style=filled]; \n    a1 [label=\"Draw Map \n ($draw_leafdown)\",  fillcolor = Moccasin, style=filled]; \n    a2 [label=\"Select Shapes\", fillcolor = lightyellow, style=filled]; \n    a3 [label=\"Drill Down \n ($drill_down)\", fillcolor = PowderBlue, style=filled]; \n    a0 -> a1 \n    a1 -> a2; \n    a2 -> a3; \n  }; \n  \n  subgraph cluster02 \n  {\n    label=\"Map Level 2\";\n    b0 [label=\"Drill Down \n ($drill_up)\", fillcolor = PowderBlue, style=filled]; \n    b3 [label=\"Add Data \n ($add_data)\", fillcolor = OldLace, style=filled]; \n    b1 [label=\"...\"]; \n    b2 [label=\"Draw Map \n ($draw_leafdown)\", fillcolor = Moccasin, style=filled]; \n    \n    b0 -> b1 [dir=\"back\"]; \n    b1 -> b2 [dir=\"back\"]; \n    b2 -> b3 [dir=\"back\"]; \n\n  }; \n  \n  edge[constraint=false]; \n  a1->b1 [style=invis]; \n  a2->b2 [style=invis]; \n  a3->b3 [style=dotted];\n  b0->a0 [style=dotted];\n  edge[constraint=true]; \n  Invisible -> b0[style=invis]; \n  edge[constraint=true]; \n  c0 -> a0;\n  Invisible -> a0[style=invis]; \n  \n  \n} \n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><div id="initialization" class="section level3">
+<div id="initialization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initialization" class="anchor"></a>Initialization</h3>
 <p>As usual for R6 classes, we create a new object of our <code>Leafdown</code> class using the <code>new()</code> method.<br>
@@ -171,8 +169,8 @@ For this we have to specify the:</p>
 <div id="data-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-1" class="anchor"></a>Data</h3>
-<p>In the next step we add data to our <code>leafdown</code> object. Using the method <code>$get_current_metadata()</code> we can retrieve the metadata of the current map level. With metadata we refer to the data that describes the polygons, such as region names, region IDs, etc.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_metadata</span>()
+<p>In the next step we add data to our <code>leafdown</code> object. Using the method <code>$curr_metadata</code> we can retrieve the metadata of the current map level. With metadata we refer to the data that describes the polygons, such as region names, region IDs, etc.</p>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">metadata</span>))
 <span class="co">#&gt;   GID_0  NAME_0   GID_1            NAME_1 VARNAME_1 NL_NAME_1</span>
 <span class="co">#&gt; 1   DEU Germany DEU.1_1 Baden-Württemberg      &lt;NA&gt;      &lt;NA&gt;</span>
@@ -192,7 +190,7 @@ For this we have to specify the:</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="no">metadata</span> <span class="kw">%&gt;%</span> <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))</pre></body></html></div>
 <p>After creating our new data set, we give it to our <code>leafdown</code>object with the <code>$add_data</code> method.</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">add_data</span>(<span class="no">new_data</span>)</pre></body></html></div>
-<p>The current data of <code>my_leafdown</code> can be retrieved via the <code>curr_data</code> attribute.</p>
+<p>The current data of a <code>leafdown</code> object can be retrieved via the <code>$curr_data</code> attribute.</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">my_leafdown</span>$<span class="no">curr_data</span>))
 <span class="co">#&gt;   GID_0  NAME_0   GID_1            NAME_1 VARNAME_1 NL_NAME_1</span>
 <span class="co">#&gt; 1   DEU Germany DEU.1_1 Baden-Württemberg      &lt;NA&gt;      &lt;NA&gt;</span>
@@ -226,7 +224,7 @@ For this we have to specify the:</p>
 <div id="selection" class="section level3">
 <h3 class="hasAnchor">
 <a href="#selection" class="anchor"></a>Selection</h3>
-<p>Let’s now have look at what happens when a user clicks on a region. Internally a <code>leafdown</code> object has an observer for <code>shape_click</code> events. Once a user clicks on a certain region, this region becomes “active” and its boundaries on the map are highlighted. (If the clicked region is already active, it becomes inactive). We can retrieve the data of reactive regions via the <code>$curr_sel_data</code> attribute. Assuming that the user clicked on Bavaria and Hesse than curr_sel_data would look as follows:</p>
+<p>Let’s now have look at what happens when a user clicks on a region. Internally a <code>leafdown</code> object has an observer for <code>shape_click</code> events. Once a user clicks on a certain region, this region becomes “active” and its boundaries on the map are highlighted. (If the clicked region is already active, it becomes inactive). We can retrieve the data of active regions via the <code>$curr_sel_data</code> attribute. Assuming that the user clicked on Bavaria and Hesse than <code>$curr_sel_data</code> would look as follows:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">curr_sel_data</span>()</pre></body></html></div>
 <pre><code>#&gt;   GID_0  NAME_0   GID_1 NAME_1 VARNAME_1 NL_NAME_1    TYPE_1 ENGTYPE_1 CC_1
 #&gt; 2   DEU Germany DEU.2_1 Bayern   Bavaria      &lt;NA&gt; Freistaat      &lt;NA&gt;   09
@@ -239,19 +237,19 @@ For this we have to specify the:</p>
 <div id="drilldown" class="section level3">
 <h3 class="hasAnchor">
 <a href="#drilldown" class="anchor"></a>Drilldown</h3>
-<p>Using the <code>$drill_down</code> method we can now drill down to the admin districts of the <strong>selected</strong> federal states.</p>
+<p>Using the <code>$drill_down</code> method we can now drill down to the admin districts of the <strong>active</strong> federal states.</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">drill_down</span>()</pre></body></html></div>
-<p>This will update the currently active spdf (<code>my_leafdown$curr_spdf</code>) which then only contains polygons and corresponding metadata for regions whose parents were selected in the upper (previous) map level. In our case the parents are “Bavaria” and “Hesse”, so only spdfs of admin districts within these federal states will be contained in <code>my_leafdown$curr_spdf</code>.</p>
+<p>This will update the currently active spdf (<code>my_leafdown$curr_spdf</code>) which then only contains polygons and corresponding metadata for regions whose parents were active in the upper (previous) map level. In our case the parents are “Bavaria” and “Hesse”, so only spdfs of admin districts within these federal states will be contained in <code>my_leafdown$curr_spdf</code>.</p>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">my_leafdown</span>$<span class="no">curr_spdf</span>)</pre></body></html></div>
 <pre><code>#&gt; [1] 2</code></pre>
 </div>
 <div id="data-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-2" class="anchor"></a>Data</h3>
-<p>The updated metadata can then again retrieved via <code>$get_current_metadata()</code>.</p>
+<p>The updated metadata can then again be retrieved via <code>$curr_metadata</code>.</p>
 <div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">drill_down</span>()
-<span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_metadata</span>()
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">data</span>))</pre></body></html></div>
+<span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">metadata</span>)</pre></body></html></div>
 <pre><code>#&gt;    GID_0  NAME_0   GID_1 NAME_1 NL_NAME_1     GID_2                     NAME_2
 #&gt; 46   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.1_1          Aichach-Friedberg
 #&gt; 47   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.2_1                  Altötting
@@ -266,18 +264,31 @@ For this we have to specify the:</p>
 #&gt; 49      &lt;NA&gt;      &lt;NA&gt;        Landkreis  District 09371 DE.BY.AS
 #&gt; 50      &lt;NA&gt;      &lt;NA&gt;        Landkreis  District 09571 DE.BY.AN
 #&gt; 51      &lt;NA&gt;      &lt;NA&gt; Kreisfreie Stadt  District 09561 DE.BY.AN</code></pre>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">data</span>$<span class="no">NAME_1</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">metadata</span>$<span class="no">NAME_1</span>)</pre></body></html></div>
 <pre><code>#&gt; [1] "Bayern" "Hessen"</code></pre>
-<p>Now we can again add new data as described above.</p>
-<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">drill_down</span>()
-<span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_metadata</span>()
-<span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_admin_districts</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_2"</span> <span class="kw">=</span> <span class="st">"Admin_District"</span>))
+<p>Just as before we can add new columns for variables we want to display on our map to the existing metadata.</p>
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="no">metadata</span> <span class="kw">%&gt;%</span>
+  <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_admin_districts</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_2"</span> <span class="kw">=</span> <span class="st">"Admin_District"</span>))
 <span class="no">my_leafdown</span>$<span class="fu">add_data</span>(<span class="no">new_data</span>)</pre></body></html></div>
+<p>Again, the current data can be retrieved via the <code>$curr_data</code> attribute.</p>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">my_leafdown</span>$<span class="no">curr_data</span>)</pre></body></html></div>
+<pre><code>#&gt;   GID_0  NAME_0   GID_1 NAME_1 NL_NAME_1     GID_2            NAME_2 VARNAME_2
+#&gt; 1   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.1_1 Aichach-Friedberg      &lt;NA&gt;
+#&gt; 2   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.2_1         Altötting      &lt;NA&gt;
+#&gt; 3   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.4_1            Amberg      &lt;NA&gt;
+#&gt; 4   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.3_1   Amberg-Sulzbach      &lt;NA&gt;
+#&gt; 5   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.6_1           Ansbach      &lt;NA&gt;
+#&gt;   NL_NAME_2           TYPE_2 ENGTYPE_2  CC_2   HASC_2 GDP_2014
+#&gt; 1      &lt;NA&gt;        Landkreis  District 09771 DE.BY.AF    24100
+#&gt; 2      &lt;NA&gt;        Landkreis  District 09171 DE.BY.AT    45200
+#&gt; 3      &lt;NA&gt; Kreisfreie Stadt  District 09361 DE.BY.AM    50000
+#&gt; 4      &lt;NA&gt;        Landkreis  District 09371 DE.BY.AS    24300
+#&gt; 5      &lt;NA&gt;        Landkreis  District 09571 DE.BY.AN    52500</code></pre>
 </div>
 <div id="draw-map-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#draw-map-1" class="anchor"></a>Draw map</h3>
-<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">draw_leafdown</span>(
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">draw_leafdown</span>(
   <span class="kw">fillColor</span> <span class="kw">=</span> ~ <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorNumeric</a></span>(<span class="st">"Blues"</span>, <span class="no">GDP_2014</span>)(<span class="no">GDP_2014</span>)
 )</pre></body></html></div>
 <p>All non active parent regions grayed out in the background.</p>
@@ -291,12 +302,12 @@ For this we have to specify the:</p>
 <li>at the new map level the new spdf only contains polygons and data of regions which parents were selected in the upper map level.</li>
 <li>Note that the initial spdf_list remains unchanged.</li>
 </ul>
-<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="no">metadata</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="no">metadata</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))</pre></body></html></div>
 </div>
 <div id="draw-map-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#draw-map-2" class="anchor"></a>Draw map</h3>
-<p>TODO</p>
+<p>Results in the same map as at the beginning Active regions are still active.</p>
 </div>
 </div>
 <div id="shiny-app" class="section level2">
@@ -306,7 +317,7 @@ For this we have to specify the:</p>
 <div id="ui" class="section level3">
 <h3 class="hasAnchor">
 <a href="#ui" class="anchor"></a>UI</h3>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">ui</span> <span class="kw">&lt;-</span> <span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidPage</a></span>(
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">ui</span> <span class="kw">&lt;-</span> <span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidPage</a></span>(
   <span class="no">tags</span>$<span class="fu">style</span>(<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reexports.html">HTML</a></span>(<span class="st">".leaflet-container {background: #ffffff;}"</span>)),
   <span class="fu"><a href="https://rdrr.io/pkg/shinyjs/man/useShinyjs.html">useShinyjs</a></span>(),
   <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html">actionButton</a></span>(<span class="st">"drill_down"</span>, <span class="st">"Drill Down"</span>),
@@ -317,14 +328,15 @@ For this we have to specify the:</p>
 <div id="server" class="section level3">
 <h3 class="hasAnchor">
 <a href="#server" class="anchor"></a>Server</h3>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="no">create_labels</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">data</span>, <span class="no">map_level</span>) {
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="co"># Little helper function for hover labels</span>
+<span class="no">create_labels</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">data</span>, <span class="no">map_level</span>) {
   <span class="no">labels</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(
     <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g € per capita&lt;/sup&gt;"</span>,
     <span class="no">data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"NAME_"</span>, <span class="no">map_level</span>)], <span class="no">data</span>$<span class="no">GDP_2014</span>
   )
   <span class="no">labels</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="kw pkg">htmltools</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>)
 }</pre></body></html></div>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
+<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
   <span class="no">my_leafdown</span> <span class="kw">&lt;-</span> <span class="no">Leafdown</span>$<span class="fu">new</span>(<span class="no">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="no">input</span>)
   <span class="no">update_leafdown</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveVal.html">reactiveVal</a></span>(<span class="fl">0</span>)
 
@@ -340,7 +352,7 @@ For this we have to specify the:</p>
 
   <span class="no">output</span>$<span class="no">leafdown</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-shiny.html">renderLeaflet</a></span>({
     <span class="fu">update_leafdown</span>()
-    <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="fu">get_current_metadata</span>()
+    <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
     <span class="no">curr_map_level</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_map_level</span>
     <span class="kw">if</span> (<span class="no">curr_map_level</span> <span class="kw">==</span> <span class="fl">1</span>) {
       <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))
@@ -358,7 +370,7 @@ For this we have to specify the:</p>
       <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addLegend.html">addLegend</a></span>(<span class="st">"topright"</span>,
         <span class="kw">pal</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorNumeric</a></span>(<span class="st">"Blues"</span>, <span class="no">data</span>$<span class="no">GDP_2014</span>),
         <span class="kw">values</span> <span class="kw">=</span> <span class="no">data</span>$<span class="no">GDP_2014</span>,
-        <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Est. GDP (2014)"</span>,
+        <span class="kw">title</span> <span class="kw">=</span> <span class="st">"GDP per capita (2014)"</span>,
         <span class="kw">labFormat</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addLegend.html">labelFormat</a></span>(<span class="kw">suffix</span> <span class="kw">=</span> <span class="st">"€"</span>),
         <span class="kw">opacity</span> <span class="kw">=</span> <span class="fl">1</span>
       )
@@ -368,7 +380,7 @@ For this we have to specify the:</p>
 <div id="run-app" class="section level3">
 <h3 class="hasAnchor">
 <a href="#run-app" class="anchor"></a>Run App</h3>
-<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
 <style>
 .shiny-app-frame {
   position: relative;

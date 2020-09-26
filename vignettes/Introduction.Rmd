@@ -111,7 +111,7 @@ In this part we sketch the typical `leafdown` workflow. \
 
 TODO: Replace this with picture
 
-```{r, echo=FALSE, fig.width=7}
+```{r, echo=FALSE, fig.width=7, eval= FALSE}
 DiagrammeR::grViz(
   '
 digraph { 
@@ -194,13 +194,13 @@ my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = inpu
 ### Data
 
 In the next step we add data to our `leafdown` object.
-Using the method `$get_current_metadata()` we can retrieve the metadata of the 
+Using the method `$curr_metadata` we can retrieve the metadata of the 
 current map level.
 With metadata we refer to the data that describes the polygons, such as region names, 
 region IDs, etc.
 
 ```{r}
-metadata <- my_leafdown$get_current_metadata()
+metadata <- my_leafdown$curr_metadata
 print(head(metadata))
 ```
 
@@ -295,11 +295,11 @@ print(2)
 
 ### Data
 
-The updated metadata can then again be retrieved via `$get_current_metadata()`.
+The updated metadata can then again be retrieved via `$curr_metadata`.
 
 ```{r eval = FALSE}
 my_leafdown$drill_down()
-metadata <- my_leafdown$get_current_metadata()
+metadata <- my_leafdown$curr_metadata
 head(metadata)
 ```
 
@@ -419,7 +419,7 @@ server <- function(input, output) {
 
   output$leafdown <- renderLeaflet({
     update_leafdown()
-    data <- my_leafdown$get_current_metadata()
+    data <- my_leafdown$curr_metadata
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
       data <- data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
