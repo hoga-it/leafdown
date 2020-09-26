@@ -21,7 +21,10 @@ The goal is to create a map that:
 -  shows the GDP (gross domestic product) of the federal states of Germany 
 -  allows the user to drill down to the administrative districts of selected federal states.
 
-![](res/app_germany_map.png){width=250px, height=400px}
+
+```{r, echo=FALSE, out.width=400, out.height=400}
+knitr::include_graphics("../man/figures/app_germany_map.png")
+```
 
 Let's first load the libraries we are going to use for our app. \
 
@@ -109,11 +112,8 @@ In this part we sketch the typical `leafdown` workflow. \
 (Please note that the execution of the code snippets in this chapter
 **only** work within a shiny app)
 
-TODO: Replace this with picture
-
-```{r, echo=FALSE, fig.width=7, eval= FALSE}
-DiagrammeR::grViz(
-  '
+```{r, echo=FALSE, fig.width=7, eval=FALSE}
+DiagrammeR::grViz('
 digraph { 
   rankdir=LR; 
   rank="same";
@@ -164,13 +164,17 @@ digraph {
   edge[constraint=true]; 
   c0 -> a0;
   Invisible -> a0[style=invis]; 
-  
-  
 } 
-'
-)
+') %>% 
+  DiagrammeRsvg::export_svg() %>% 
+  charToRaw() %>% 
+  rsvg::rsvg_png("res/leafdown_workflow.png")
+
 ```
 
+```{r, echo=FALSE, out.width=700, out.height=200}
+knitr::include_graphics("../man/figures/leafdown_workflow.png")
+```
 
 ### Initialization
 
@@ -341,6 +345,9 @@ ger2@data %>%
 
 ### Draw map
 
+After adding `GDP_2014` to our admin district data, we can again draw our map.
+Note that all non active parent regions grayed out in the background.
+
 ```{r, eval=FALSE}
 my_leafdown$draw_leafdown(
   fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
@@ -348,18 +355,19 @@ my_leafdown$draw_leafdown(
 ```
 
 
-All non active parent regions grayed out in the background.
-
-
 ### Drillup
 
-TO DO: Explain drill-down and drill up functionality
-Drilldown
 
-- updates the spdf and the metadata
-- at the new map level the new spdf only contains polygons and data of regions 
-which parents were selected in the upper map level. 
-- Note that the initial spdf_list remains unchanged.
+Using the `$drill_up` method we can now drill back up to the federal states. 
+Note that the active regions (we selected before we drilled down) are still active.
+
+```{r, eval=FALSE}
+my_leafdown$drill_down()
+```
+
+### Data
+
+To draw the map we first have to add our federal states data again.
 
 ```{r}
 new_data <- metadata %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
@@ -368,14 +376,16 @@ new_data <- metadata %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "F
 
 ### Draw map
 
-Results in the same map as at the beginning
-Active regions are still active.
+And again we can draw our map just as usual.
+```{r, eval=FALSE}
+map <- my_leafdown$draw_leafdown(
+  fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
+) 
+```
+
 
 
 ## Shiny App
-
-Let's now define a very basic UI with only two buttons for drilldown and 
-drillup and the `leaflet` UI element in which we can render our `leafdown` map.
 
 ### UI
 ```{r, eval=FALSE}
