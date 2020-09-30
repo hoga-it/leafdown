@@ -165,7 +165,9 @@ Leafdown <- R6::R6Class("Leafdown",
       # e.g. 'layerId' is removed from arg_list when set
       arg_list <- check_draw_ellipsis(...)
       curr_spdf <- private$.curr_spdf
-      curr_spdf@data <- private$.curr_data
+      if(!is.null(private$.curr_data)) {
+        curr_spdf@data <- private$.curr_data
+      }
       # Using proxy to avoid redrawing of map when highlighting
       private$.map_proxy <- leafletProxy(private$.map_output_id)
       all_poly_ids <- private$.curr_poly_ids
