@@ -103,7 +103,8 @@ The goal is to create a map that:</p>
 <h2 class="hasAnchor">
 <a href="#spatialpolygonsdataframes" class="anchor"></a>SpatialPolygonsDataFrames</h2>
 <p><code>leafdown</code> requires a list of SpatialPolygonsDataFrames (spdfs) for the regions we want to display on our map.</p>
-<p>To get these spdfs we can for example use the <code>getData</code> function of the <code>raster</code> package. For “Germany”, <code>level = 1</code> contains the spdf for the federal states and <code>level = 2</code> the spdf for the administrative districts.</p>
+<p>To get these spdfs we can use the <code>getData</code> function of the <code>raster</code> package. For “Germany”, <code>level = 1</code> contains the spdf for the federal states and <code>level = 2</code> the spdf for the administrative districts.</p>
+<p>If an <code>spdf</code> comes from a different source, it is important that the structure is identical to the <code>spdfs</code> that comes from the <code>raster</code> package. It is especially important that the data of both <code>spdfs</code> have a column <code>GID_1</code> that indicates which subregions correspond to the regions of the first map level.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">ger1</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(<span class="kw">country</span> <span class="kw">=</span> <span class="st">"Germany"</span>, <span class="kw">level</span> <span class="kw">=</span> <span class="fl">1</span>)
 <span class="no">ger2</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(<span class="kw">country</span> <span class="kw">=</span> <span class="st">"Germany"</span>, <span class="kw">level</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
 <p>The spdf for <code>level = 2</code> does not display all German umlauts correctly. Therefore we adjust some names so that we can assign our data more easily later on.</p>
@@ -147,9 +148,9 @@ The goal is to create a map that:</p>
 <div id="leafdown-workflow" class="section level2">
 <h2 class="hasAnchor">
 <a href="#leafdown-workflow" class="anchor"></a>Leafdown workflow</h2>
-<p>In this part we sketch the typical <code>leafdown</code> workflow.<br>
-(Please note that the execution of the code snippets in this chapter <strong>only</strong> work within a shiny app)</p>
+<p>In this part we sketch and explain the typical <code>leafdown</code> workflow.<br></p>
 <p><img src="../man/figures/leafdown_workflow.png" width="1102" height="200"></p>
+<p>(Please note that the execution of the code snippets in this chapter <strong>only</strong> works within a shiny app)</p>
 <div id="initialization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initialization" class="anchor"></a>Initialization</h3>
@@ -169,7 +170,7 @@ For this we have to specify the:</p>
 <div id="data-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-1" class="anchor"></a>Data</h3>
-<p>In the next step we add data to our <code>leafdown</code> object. Using the method <code>$curr_metadata</code> we can retrieve the metadata of the current map level. With metadata we refer to the data that describes the polygons, such as region names, region IDs, etc.</p>
+<p>In the next step we add data to our <code>leafdown</code> object. Using the method <code>$curr_metadata</code> we can retrieve the metadata of the current map level. With metadata we refer to the data that describes the polygons, such as region names, region IDs, etc. The metadata are automatically set with the <code>spdf_list[[i]]@data</code> where i is the current map level.</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">metadata</span>))
 <span class="co">#&gt;   GID_0  NAME_0   GID_1            NAME_1 VARNAME_1 NL_NAME_1</span>

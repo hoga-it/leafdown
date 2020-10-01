@@ -45,9 +45,14 @@ library(shinyjs)
 `leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions 
 we want to display on our map.
 
-To get these spdfs we can for example use the `getData` function of the `raster` package.
+To get these spdfs we can use the `getData` function of the `raster` package.
 For "Germany", `level = 1` contains the spdf for the federal states
 and `level = 2` the spdf for the administrative districts.
+
+If an `spdf` comes from a different source, it is important that the structure 
+is identical to the `spdfs` that comes from the `raster` package. It is especially 
+important that the data of both `spdfs` have a column `GID_1` that indicates 
+which subregions correspond to the regions of the first map level.
 
 ```{r, echo=FALSE}
 ger1 <- readRDS("../inst/extdata/ger1-005.R")
@@ -108,9 +113,7 @@ head(gdp_2014_admin_districts)
 
 
 ## Leafdown workflow
-In this part we sketch the typical `leafdown` workflow. \
-(Please note that the execution of the code snippets in this chapter
-**only** work within a shiny app)
+In this part we sketch and explain the typical `leafdown` workflow. \
 
 ```{r, echo=FALSE, fig.width=7, eval=FALSE}
 DiagrammeR::grViz('
@@ -176,6 +179,9 @@ digraph {
 knitr::include_graphics("../man/figures/leafdown_workflow.png")
 ```
 
+(Please note that the execution of the code snippets in this chapter
+**only** works within a shiny app)
+
 ### Initialization
 
 As usual for R6 classes, we create a new object of our `Leafdown` class using the
@@ -202,6 +208,8 @@ Using the method `$curr_metadata` we can retrieve the metadata of the
 current map level.
 With metadata we refer to the data that describes the polygons, such as region names, 
 region IDs, etc.
+The metadata are automatically set with the `spdf_list[[i]]@data` where i is the current
+map level.
 
 ```{r}
 metadata <- my_leafdown$curr_metadata
