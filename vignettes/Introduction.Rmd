@@ -204,7 +204,7 @@ my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = inpu
 ### Data
 
 In the next step we add data to our `leafdown` object.
-Using the method `$curr_metadata` we can retrieve the metadata of the 
+Using the attribute `$curr_metadata` we can retrieve the metadata of the 
 current map level.
 With metadata we refer to the data that describes the polygons, such as region names, 
 region IDs, etc.
