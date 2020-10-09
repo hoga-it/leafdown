@@ -31,3 +31,65 @@
 #' Note that in this package we have slightly adapted some names of the
 #' administrative districts for a better match.
 "gdp_2014_admin_districts"
+
+
+#' Results of the 2016 US Presidential Election - County Level
+#'
+#'
+#' A dataset containing the results of the presidential election and census data (e.g. racial makeup, unemployment)
+#'
+#' @format A data frame with 3,143 rows and 17 total columns
+#' \describe{
+#'   \item{State}{Name of the State}
+#'   \item{ST}{Abbreviation of the State name}
+#'   \item{County}{Name of the County}
+#'   \item{Votes}{Total number of votes cast}
+#'   \item{Republicans2016}{Percent of votes for the Republican Party}
+#'   \item{Democrats2016}{Percent of votes for the Democratic Party}
+#'   \item{Green2016}{Percent of votes for the Green Party}
+#'   \item{Libertarians2016}{Percent of votes for the Libertarian Party}
+#'   \item{TotalPopulation}{Total Population of the county}
+#'   \item{Unemployment}{Percent of unemployment}
+#'   \item{White}{Percentage of Whites}
+#'   \item{Black}{Percentage of Blacks}
+#'   \item{Hispanic}{Percentage of Hispanics}
+#'   \item{Asian}{Percentage of Asians}
+#'   \item{Amerindian}{Percentage of Amerindians}
+#'   \item{Other}{Percentage of Other Races}
+#'   \item{NAME_2}{The short County name, used for matching with the map}
+#' }
+#' @source
+#' https://github.com/Deleetdk/USA.county.data
+#'
+#' Note that in this package we have slightly adapted some names of the
+#' administrative districts for a better match.
+"us_election_counties"
+
+#' Results of the 2016 US Presidential Election - State Level
+#'
+#'
+#' A dataset containing the results of the presidential election and census data (e.g. racial makeup, unemployment)
+#'
+#' @format A data frame with 51 rows and 15 total columns
+#' \describe{
+#'   \item{State}{Name of the State}
+#'   \item{ST}{Abbreviation of the State name}
+#'   \item{Votes}{Total number of votes cast}
+#'   \item{Republicans2016}{Percent of votes for the Republican Party}
+#'   \item{Democrats2016}{Percent of votes for the Democratic Party}
+#'   \item{Green2016}{Percent of votes for the Green Party}
+#'   \item{Libertarians2016}{Percent of votes for the Libertarian Party}
+#'   \item{TotalPopulation}{Total Population of the county}
+#'   \item{Unemployment}{Percent of unemployment}
+#'   \item{White}{Percentage of Whites}
+#'   \item{Black}{Percentage of Blacks}
+#'   \item{Hispanic}{Percentage of Hispanics}
+#'   \item{Asian}{Percentage of Asians}
+#'   \item{Amerindian}{Percentage of Amerindians}
+#'   \item{Other}{Percentage of Other Races}
+#' }
+#' @source
+#' https://github.com/Deleetdk/USA.county.data
+#'
+#' Note: The data was aggregated from the county level
+"us_election_states"
