@@ -188,6 +188,12 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       private$.curr_data <- data
+
+      ### Get selected data in new map level
+      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
+      curr_sel_data <- subset(private$.curr_data, is_selected)
+      private$.curr_sel_data(curr_sel_data) # update reactiveVal
     },
     #' @description
     #' Drills down to the lower level if:
@@ -225,8 +231,6 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- private$.curr_map_level + 1
       private$.curr_sel_ids[[private$.curr_map_level]] <- character(0)
       private$.curr_data <- private$.curr_spdf@data
-      private$.curr_sel_data(data.frame()) # update reactiveVal
-
     },
     #' @description
     #' Drills up to the higher level if:
@@ -246,13 +250,6 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- private$.curr_map_level - 1
       private$.unselected_parents <- NULL
       private$.curr_data <- private$.curr_spdf@data
-
-      ### Get selected data in new map level
-      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
-      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
-      curr_sel_data <- subset(private$.curr_data, is_selected)
-      private$.curr_sel_data(curr_sel_data) # update reactiveVal
-
     },
     #' @description
     #' Selects the shape with the given shape id, or unselects it if it was already selected.
