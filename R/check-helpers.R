@@ -40,7 +40,32 @@ check_draw_ellipsis <- function(...) {
   arg_list
 }
 
+#' Check whether the given spdf_list is a valid spdf_list and has all the required params.
+#' @description
+#' The spdf_list must be a list of at most two elements.
+#' All elements must be a s4 class of type SpatialPolygonsDataFrame.
+#' Every element must have a GID_1
+#'
+#' @param spdf_list A list with the spdfs of all map levels
+check_spdf_list <- function (spdfs_list) {
+  if(!is.list(spdfs_list)) {
+    stop("The given spdfs_list must be a list")
+  }
+  if(length(spdfs_list) > 2) {
+    stop("Leafdown currently supports only two map levels. The given spdf_list can therefore only contain two elements.")
+  }
+  for(i in length(spdfs_list)) {
+    # Check whether the given spdf_element is an s4 class of type SpatialPolygonsDataFrame.
+    is_valid <- check_s4_spdf(spdfs_list[[i]])
+    if(!is_valid) {
+      stop("The given spdfs_list must contain s4 classes of type SpatialPolygonsDataFrame")
+    }
 
-
+    # Check whether the data of the given spdf_element has 'GID_1' column
+    if(!"GID_1" %in% names(spdfs_list[[i]]@data)) {
+      stop("The data of each element of the given spdfs_list must contain a 'GID_1' column")
+    }
+  }
+}
 
 

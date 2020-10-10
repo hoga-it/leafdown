@@ -119,23 +119,12 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Initializes the leafdown object.
     #' This will not draw the map. First add data and then call \code{draw_leafdown} to draw the map.
-    #' @param spdfs_list The spdfs of all map levels. This cannot be changed later
+    #' @param spdfs_list A list with the spdfs of all map levels. This cannot be changed later.
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app
     initialize = function(spdfs_list, map_output_id, input) {
-      if(!is.list(spdfs_list)) {
-        stop("The given spdfs_list must be a list")
-      }
-      if(length(spdfs_list) > 2) {
-        stop("Leafdown currently supports only two map levels. The given spdf_list can therefore only contain two elements.")
-      }
-      for(i in length(spdfs_list)) {
-        # Check whether the given spdf_element is an s4 class of type SpatialPolygonsDataFrame.
-        is_valid <- check_s4_spdf(spdfs_list[[i]])
-        if(!is_valid) {
-          stop("The given spdfs_list must contain s4 classes of type SpatialPolygonsDataFrame")
-        }
-      }
+      check_spdf_list(spdfs_list)
+
       # check map_output_id
       checkmate::assert_character(map_output_id, min.chars = 1)
 
@@ -165,7 +154,9 @@ Leafdown <- R6::R6Class("Leafdown",
       # e.g. 'layerId' is removed from arg_list when set
       arg_list <- check_draw_ellipsis(...)
       curr_spdf <- private$.curr_spdf
-      curr_spdf@data <- private$.curr_data
+      if(!is.null(private$.curr_data)) {
+        curr_spdf@data <- private$.curr_data
+      }
       # Using proxy to avoid redrawing of map when highlighting
       private$.map_proxy <- leafletProxy(private$.map_output_id)
       all_poly_ids <- private$.curr_poly_ids
