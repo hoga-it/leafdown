@@ -11,9 +11,7 @@ test_that("Correct initialize works", {
 
   input <- reactiveValues(foo = "bar")
   map_id <- "leafdown"
-  my_leafdown <- Leafdown$new(spdfs, map_id, input)
-
-  expect_equal(my_leafdown$map_output_id, map_id)
+  expect_error(Leafdown$new(spdfs, map_id, input), NA)
 })
 
 test_that("Initialize with wrong 'input'", {

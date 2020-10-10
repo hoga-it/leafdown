@@ -61,25 +61,11 @@ Leafdown <- R6::R6Class("Leafdown",
     }
   ),
   active = list(
-    spdfs_list = function(value) {
-      if (missing(value)) {
-        private$.spdfs_list
-      } else {
-        stop("`$spdfs_list` is read only", call. = FALSE)
-      }
-    },
     curr_sel_data = function(value) {
       if (missing(value)) {
         private$.curr_sel_data
       } else {
         stop("`$curr_sel_data` is read only", call. = FALSE)
-      }
-    },
-    map_output_id = function(value) {
-      if (missing(value)) {
-        private$.map_output_id
-      } else {
-        stop("`$map_output_id` is read only", call. = FALSE)
       }
     },
     curr_data = function(value) {
@@ -94,24 +80,6 @@ Leafdown <- R6::R6Class("Leafdown",
         private$.curr_map_level
       } else {
         stop("`$curr_map_level` is read only", call. = FALSE)
-      }
-    },
-    curr_spdf = function(value) {
-      if (missing(value)) {
-        private$.curr_spdf
-      } else {
-        stop("`$curr_spdf` is read only", call. = FALSE)
-      }
-    },
-    #' @field curr_metadata
-    #' Returns the metadata of the shapes from the current maplevel.
-    #' This may differ from what is displayed if \code{drill_down} has been called but \code{draw_leafdown}
-    #' has not been (yet).
-    curr_metadata = function(value) {
-      if (missing(value)) {
-        private$.curr_spdf@data
-      } else {
-        stop("`$curr_spdf@data` is read only", call. = FALSE)
       }
     }
   ),
@@ -208,11 +176,24 @@ Leafdown <- R6::R6Class("Leafdown",
       if(!all(names(private$.curr_spdf@data) %in% names(data))) {
         stop("You cannot remove columns from the existing meta-data. Only add to it")
       }
+
       if(!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
-        stop("You cannot change the existing meta-data. Only add to it")
+        # check if the data was just reordered
+        data_reordered <- data[order(match(data[, "GID_1"], private$.curr_spdf@data[, "GID_1"])), ]
+        if(isTRUE(all.equal(data_reordered[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+          stop("Please do not reorder the data. Use left_joins to add the data")
+        } else {
+          stop("You cannot change the existing meta-data. Only add to it")
+        }
       }
 
       private$.curr_data <- data
+
+      ### Get selected data in new map level
+      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
+      curr_sel_data <- subset(private$.curr_data, is_selected)
+      private$.curr_sel_data(curr_sel_data) # update reactiveVal
     },
     #' @description
     #' Drills down to the lower level if:
@@ -250,8 +231,6 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- private$.curr_map_level + 1
       private$.curr_sel_ids[[private$.curr_map_level]] <- character(0)
       private$.curr_data <- private$.curr_spdf@data
-      private$.curr_sel_data(data.frame()) # update reactiveVal
-
     },
     #' @description
     #' Drills up to the higher level if:
@@ -271,13 +250,6 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_map_level <- private$.curr_map_level - 1
       private$.unselected_parents <- NULL
       private$.curr_data <- private$.curr_spdf@data
-
-      ### Get selected data in new map level
-      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
-      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
-      curr_sel_data <- subset(private$.curr_data, is_selected)
-      private$.curr_sel_data(curr_sel_data) # update reactiveVal
-
     },
     #' @description
     #' Selects the shape with the given shape id, or unselects it if it was already selected.
