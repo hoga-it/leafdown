@@ -18,14 +18,14 @@ choropleths.
 
 ## Installation
 
-You can install the released version of leafdown from
-[CRAN](https://CRAN.R-project.org) with:
+<!--You can install the released version of leafdown from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("leafdown")
-```
+```-->
 
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -40,4 +40,6 @@ devtools::install_github("hoga-it/leafdown")
   - Allows the selection of regions / shapes.
   - Easy to use and well integrated into syntax of the
     [leaflet](https://rstudio.github.io/leaflet/) R package.
-  - Computationally efficient as drilldown only for regions of interest
+  - Allows communication of the map with other shiny elements
+    (e.g. Graphs).
+  - Computationally efficient as drilldown only for regions of interest.
