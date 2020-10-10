@@ -28,7 +28,7 @@ server <- function(input, output) {
     req(spdfs_list)
     req(rv$update_leafdown)
     # fetch the current metadata from the leafdown object
-    data <- my_leafdown$curr_metadata
+    data <- my_leafdown$curr_data
 
     # join the metadata with the election-data.
     # depending on the map_level we have different election-data so the 'by' columns for the join are different
