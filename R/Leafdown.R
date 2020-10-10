@@ -208,8 +208,15 @@ Leafdown <- R6::R6Class("Leafdown",
       if(!all(names(private$.curr_spdf@data) %in% names(data))) {
         stop("You cannot remove columns from the existing meta-data. Only add to it")
       }
+
       if(!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
-        stop("You cannot change the existing meta-data. Only add to it")
+        # check if the data was just reordered
+        data_reordered <- data[order(match(data[, "GID_1"], private$.curr_spdf@data[, "GID_1"])), ]
+        if(isTRUE(all.equal(data_reordered[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+          stop("Please do not reorder the data. Use left_joins to add the data")
+        } else {
+          stop("You cannot change the existing meta-data. Only add to it")
+        }
       }
 
       private$.curr_data <- data

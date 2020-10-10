@@ -59,3 +59,12 @@ test_that("Missing row in data throws error", {
   expect_error(my_leafdown$add_data(data), "You cannot change the existing meta-data. Only add to it")
 })
 
+test_that("Reordering Data throws correct error", {
+  my_leafdown <- init_leafdown()
+  data <- my_leafdown$curr_metadata
+  data$y <- nrow(data):1
+
+  data <- data[order(data$y), ]
+
+  expect_error(my_leafdown$add_data(data), "Please do not reorder the data. Use left_joins to add the data")
+})
