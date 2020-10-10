@@ -43,7 +43,7 @@ server <- function(input, output) {
   output$leafdown <- renderLeaflet({
     req(spdfs_list)
     rv$update_leafdown
-    data <- my_leafdown$curr_metadata
+    data <- my_leafdown$curr_data
     data$y <- 1:nrow(data)
     my_leafdown$add_data(data)
     # input$args_leaflet is used for testing arguments in $draw_leafdown and

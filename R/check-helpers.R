@@ -46,7 +46,7 @@ check_draw_ellipsis <- function(...) {
 #' All elements must be a s4 class of type SpatialPolygonsDataFrame.
 #' Every element must have a GID_1
 #'
-#' @param spdf_list A list with the spdfs of all map levels
+#' @param spdfs_list A list with the spdfs of all map levels
 check_spdf_list <- function (spdfs_list) {
   if(!is.list(spdfs_list)) {
     stop("The given spdfs_list must be a list")
