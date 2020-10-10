@@ -61,25 +61,11 @@ Leafdown <- R6::R6Class("Leafdown",
     }
   ),
   active = list(
-    spdfs_list = function(value) {
-      if (missing(value)) {
-        private$.spdfs_list
-      } else {
-        stop("`$spdfs_list` is read only", call. = FALSE)
-      }
-    },
     curr_sel_data = function(value) {
       if (missing(value)) {
         private$.curr_sel_data
       } else {
         stop("`$curr_sel_data` is read only", call. = FALSE)
-      }
-    },
-    map_output_id = function(value) {
-      if (missing(value)) {
-        private$.map_output_id
-      } else {
-        stop("`$map_output_id` is read only", call. = FALSE)
       }
     },
     curr_data = function(value) {
@@ -94,13 +80,6 @@ Leafdown <- R6::R6Class("Leafdown",
         private$.curr_map_level
       } else {
         stop("`$curr_map_level` is read only", call. = FALSE)
-      }
-    },
-    curr_spdf = function(value) {
-      if (missing(value)) {
-        private$.curr_spdf
-      } else {
-        stop("`$curr_spdf` is read only", call. = FALSE)
       }
     }
   ),

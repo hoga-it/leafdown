@@ -5,7 +5,7 @@ context("Test 'add_data'")
 
 test_that("Add data correctly", {
   my_leafdown <- init_leafdown()
-  data <- my_leafdown$curr_metadata
+  data <- my_leafdown$curr_data
   data$y <- 1:nrow(data)
   my_leafdown$add_data(data)
 
@@ -25,7 +25,7 @@ test_that("Add empty List as data throws error", {
 
 test_that("Changed values in data throws error", {
   my_leafdown <- init_leafdown()
-  data <- my_leafdown$curr_metadata
+  data <- my_leafdown$curr_data
 
   # change data
   col <- 1
@@ -37,7 +37,7 @@ test_that("Changed values in data throws error", {
 
 test_that("Missing columns in data throws error", {
   my_leafdown <- init_leafdown()
-  data <- my_leafdown$curr_metadata
+  data <- my_leafdown$curr_data
 
   # change data
   # random col to delete
@@ -49,7 +49,7 @@ test_that("Missing columns in data throws error", {
 
 test_that("Missing row in data throws error", {
   my_leafdown <- init_leafdown()
-  data <- my_leafdown$curr_metadata
+  data <- my_leafdown$curr_data
 
   # change data
   # random col and row for change
@@ -61,7 +61,7 @@ test_that("Missing row in data throws error", {
 
 test_that("Reordering Data throws correct error", {
   my_leafdown <- init_leafdown()
-  data <- my_leafdown$curr_metadata
+  data <- my_leafdown$curr_data
   data$y <- nrow(data):1
 
   data <- data[order(data$y), ]
