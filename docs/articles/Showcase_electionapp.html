@@ -243,6 +243,27 @@
   )
 )
 
+<span class="kw">percent</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">x</span>, <span class="kw">digits</span> = <span class="fl">2</span>, <span class="kw">format</span> = <span class="st">"f"</span>, <span class="kw">...</span>) {      <span class="co"># Create user-defined function</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/formatc.html">formatC</a></span>(<span class="kw">x</span> <span class="op">*</span> <span class="fl">100</span>, format = <span class="kw">format</span>, digits = <span class="kw">digits</span>, <span class="kw">...</span>), <span class="st">"%"</span>)
+}
+
+<span class="kw">create_labels</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">data</span>, <span class="kw">map_level</span>) {
+  <span class="kw">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(
+    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;
+    Democrats: %s&lt;br/&gt;
+    Republicans: %s&lt;br/&gt;
+    Libertarians: %s&lt;br/&gt;
+    Green: %s&lt;br/&gt;
+    &lt;/sup&gt;"</span>,
+    <span class="kw">data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"NAME_"</span>, <span class="kw">map_level</span>)],
+    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Democrats2016</span>),
+    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Republicans2016</span>),
+    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Libertarians2016</span>),
+    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Green2016</span>)
+  )
+  <span class="kw">labels</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="kw">htmltools</span>::<span class="kw"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>)
+}
+
 <span class="co"># Define server for leafdown app</span>
 <span class="kw">server</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">input</span>, <span class="kw">output</span>) {
   <span class="co"># load the shapes for the two levels</span>
@@ -299,11 +320,11 @@
 
     <span class="co"># add the data back to the leafdown object</span>
     <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">add_data</span>(<span class="kw">data</span>)
-
+    <span class="kw">labels</span> <span class="op">&lt;-</span> <span class="fu">create_labels</span>(<span class="kw">data</span>, <span class="kw">my_leafdown</span><span class="op">$</span><span class="kw">curr_map_level</span>)
     <span class="co"># draw the leafdown object</span>
     <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">draw_leafdown</span>(
       fillColor = <span class="op">~</span><span class="fu">fillcolor</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">y</span>),
-      weight = <span class="fl">3</span>, fillOpacity = <span class="fl">1</span>, color = <span class="st">"white"</span>) <span class="op">%&gt;%</span>
+      weight = <span class="fl">3</span>, fillOpacity = <span class="fl">1</span>, color = <span class="st">"white"</span>, label = <span class="kw">labels</span>) <span class="op">%&gt;%</span>
       <span class="co"># set the view to be center on the USA</span>
       <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html">setView</a></span>(<span class="op">-</span><span class="fl">95</span>, <span class="fl">39</span>,  <span class="fl">4</span>)  <span class="op">%&gt;%</span>
       <span class="co"># add a nice legend</span>
@@ -357,7 +378,7 @@
       } <span class="co">else</span> {
         <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"County"</span>, <span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>)]
         <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="fl">2</span><span class="op">:</span><span class="fl">5</span>, <span class="st">"party"</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">party</span>)
-        <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">/</span> <span class="fl">100</span>
+        <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="kw">df</span><span class="op">$</span><span class="kw">value</span>
         <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">df</span>)[<span class="fl">1</span>] <span class="op">&lt;-</span> <span class="st">"ST"</span>
       }
     } <span class="co">else</span> {
