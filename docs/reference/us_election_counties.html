@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • leafdown</title>
+<title>Results of the 2016 US Presidential Election - County Level — us_election_counties • leafdown</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Results of the 2016 US Presidential Election - County Level — us_election_counties" />
+<meta property="og:description" content="A dataset containing the results of the presidential election and census data (e.g. racial makeup, unemployment)" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -118,78 +119,48 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Results of the 2016 US Presidential Election - County Level</h1>
+    
+    <div class="hidden name"><code>us_election_counties.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>A dataset containing the results of the presidential election and census data (e.g. racial makeup, unemployment)</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='kw'>us_election_counties</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="check_draw_ellipsis.html">check_draw_ellipsis()</a></code> </p>
-        </td>
-        <td><p>Checks for undesired arguments in ellipsis in $draw_leafdown method</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="check_spdf_list.html">check_spdf_list()</a></code> </p>
-        </td>
-        <td><p>Check whether the given spdf_list is a valid spdf_list and has all the required params.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gdp_2014_admin_districts.html">gdp_2014_admin_districts</a></code> </p>
-        </td>
-        <td><p>GPD for administrative districts of Germany for 2014.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gdp_2014_federal_states.html">gdp_2014_federal_states</a></code> </p>
-        </td>
-        <td><p>GPD for federal states of Germany for 2014.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="Leafdown.html">Leafdown</a></code> </p>
-        </td>
-        <td><p>Leafdown R6 Class</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="us_election_counties.html">us_election_counties</a></code> </p>
-        </td>
-        <td><p>Results of the 2016 US Presidential Election - County Level</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="us_election_states.html">us_election_states</a></code> </p>
-        </td>
-        <td><p>Results of the 2016 US Presidential Election - State Level</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame with 3,143 rows and 17 total columns</p><dl>
+  <dt>State</dt><dd><p>Name of the State</p></dd>
+  <dt>ST</dt><dd><p>Abbreviation of the State name</p></dd>
+  <dt>County</dt><dd><p>Name of the County</p></dd>
+  <dt>Votes</dt><dd><p>Total number of votes cast</p></dd>
+  <dt>Republicans2016</dt><dd><p>Percent of votes for the Republican Party</p></dd>
+  <dt>Democrats2016</dt><dd><p>Percent of votes for the Democratic Party</p></dd>
+  <dt>Green2016</dt><dd><p>Percent of votes for the Green Party</p></dd>
+  <dt>Libertarians2016</dt><dd><p>Percent of votes for the Libertarian Party</p></dd>
+  <dt>TotalPopulation</dt><dd><p>Total Population of the county</p></dd>
+  <dt>Unemployment</dt><dd><p>Percent of unemployment</p></dd>
+  <dt>White</dt><dd><p>Percentage of Whites</p></dd>
+  <dt>Black</dt><dd><p>Percentage of Blacks</p></dd>
+  <dt>Hispanic</dt><dd><p>Percentage of Hispanics</p></dd>
+  <dt>Asian</dt><dd><p>Percentage of Asians</p></dd>
+  <dt>Amerindian</dt><dd><p>Percentage of Amerindians</p></dd>
+  <dt>Other</dt><dd><p>Percentage of Other Races</p></dd>
+  <dt>NAME_2</dt><dd><p>The short County name, used for matching with the map</p></dd>
+
+</dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>https://github.com/Deleetdk/USA.county.data</p>
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
