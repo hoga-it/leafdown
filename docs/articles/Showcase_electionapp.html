@@ -144,7 +144,7 @@
     } <span class="co">else</span> {
       <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"County"</span>, <span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>)]
       <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span> <span class="op">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="fl">2</span><span class="op">:</span><span class="fl">5</span>, <span class="st">"party"</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">party</span>)
-      <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">/</span> <span class="fl">100</span>
+      <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="kw">df</span><span class="op">$</span><span class="kw">value</span>
       <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">df</span>)[<span class="fl">1</span>] <span class="op">&lt;-</span> <span class="st">"state_abbr"</span>
     }
   } <span class="co">else</span> {

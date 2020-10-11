@@ -81,7 +81,7 @@ output$party <- renderEcharts4r({
     } else {
       df <- df[, c("County", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
       df <- df %>% pivot_longer(2:5, "party") %>% group_by(party)
-      df$value <- df$value / 100
+      df$value <- df$value
       names(df)[1] <- "state_abbr"
     }
   } else {
