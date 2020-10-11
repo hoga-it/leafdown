@@ -4,11 +4,13 @@
 \name{gdp_2014_admin_districts}
 \alias{gdp_2014_admin_districts}
 \title{GPD for administrative districts of Germany for 2014.}
-\format{A data frame with 402 rows and 2 variables:
+\format{
+A data frame with 402 rows and 2 variables:
 \describe{
   \item{Admin_District}{Name of the administrative district}
   \item{GDP_2014}{GDP for the year 2014, in euro}
-}}
+}
+}
 \source{
 Landatlas (www.landatlas.de). Ausgabe 2018.
 Hrsg.: Thuenen-Institut fuer Laendliche Raeume - Braunschweig 2018.

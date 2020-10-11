@@ -15,6 +15,22 @@ The active bindings of the class provide convenient interfaces between the leafd
 and other elements in the shiny app e.g. graphs, tables etc.
 A leafdown object can \strong{only} be used in a shiny app.
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
+At the moment only two map levels are possible.}
+
+\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+
+\item{\code{curr_spdf}}{The spdfs of the current map level.
+curr_poly_ids The ids of all polygons of the current map level.
+selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
+unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
+(Subset of spdfs_list)}
+}
+\if{html}{\out{</div>}}
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -48,7 +64,6 @@ unselected_parents All spdf shapes from the higher level which are not selected.
 \itemize{
 \item \href{#method-new}{\code{Leafdown$new()}}
 \item \href{#method-draw_leafdown}{\code{Leafdown$draw_leafdown()}}
-\item \href{#method-get_current_metadata}{\code{Leafdown$get_current_metadata()}}
 \item \href{#method-add_data}{\code{Leafdown$add_data()}}
 \item \href{#method-drill_down}{\code{Leafdown$drill_down()}}
 \item \href{#method-drill_up}{\code{Leafdown$drill_up()}}
@@ -74,7 +89,7 @@ This will not draw the map. First add data and then call \code{draw_leafdown} to
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This cannot be changed later}
+\item{\code{spdfs_list}}{A list with the spdfs of all map levels. This cannot be changed later.}
 
 \item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
@@ -98,21 +113,6 @@ Draws the leaflet map on the current map level. All unselected parents will be d
 \item{\code{...}}{Additional arguments given to \code{leaflet::addPolygons}}
 }
 \if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_current_metadata"></a>}}
-\if{latex}{\out{\hypertarget{method-get_current_metadata}{}}}
-\subsection{Method \code{get_current_metadata()}}{
-Returns the metadata of the shapes from the current maplevel.
-This may differ from what is displayed if \code{drill_down} has been called but \code{draw_leafdown}
-has not been (yet).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Leafdown$get_current_metadata()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The current meta-data
 }
 }
 \if{html}{\out{<hr>}}
