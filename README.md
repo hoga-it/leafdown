@@ -32,6 +32,11 @@ You can install the development version from
 devtools::install_github("hoga-it/leafdown")
 ```
 
+## Documentation
+
+Please find the documentation
+[here](https://hoga-it.github.io/leafdown/index.html):
+
 ## Features
 
   - Adds drilldown functionality for [leaflet
@@ -43,3 +48,5 @@ devtools::install_github("hoga-it/leafdown")
   - Allows communication of the map with other shiny elements
     (e.g. Graphs).
   - Computationally efficient as drilldown only for regions of interest.
+
+## Example Apps
