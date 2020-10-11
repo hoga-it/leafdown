@@ -41,7 +41,7 @@ devtools::install_github("hoga-it/leafdown")
 
 ## Documentation
 
-Please find the documentation [here](https://hoga-it.github.io/leafdown/index.html): 
+Please find the documentation [here](https://hoga-it.github.io/leafdown/index.html)
 
 ## Features
 
