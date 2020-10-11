@@ -59,6 +59,9 @@
 <li>
       <a href="articles/Introduction.html">Introduction</a>
     </li>
+    <li>
+      <a href="articles/Showcase_electionapp.html">Showcase - Election App</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -87,10 +90,13 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of leafdown from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"leafdown"</span>)</pre></div>
-<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># install.packages("devtools")</span>
+<!--You can install the released version of leafdown from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("leafdown")
+```-->
+<p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="co"># install.packages("devtools")</span>
 <span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"hoga-it/leafdown"</span>)</pre></div>
 </div>
 <div id="features" class="section level2">
@@ -100,7 +106,8 @@
 <li>Adds drilldown functionality for <a href="https://rstudio.github.io/leaflet/choropleths.html">leaflet choropleths</a> maps.</li>
 <li>Allows the selection of regions / shapes.</li>
 <li>Easy to use and well integrated into syntax of the <a href="https://rstudio.github.io/leaflet/">leaflet</a> R package.</li>
-<li>Computationally efficient as drilldown only for regions of interest</li>
+<li>Allows communication of the map with other shiny elements (e.g. Graphs).</li>
+<li>Computationally efficient as drilldown only for regions of interest.</li>
 </ul>
 </div>
 </div>
