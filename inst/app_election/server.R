@@ -6,10 +6,26 @@ library(leafdown)
 states <- readRDS("us1.RDS")
 counties <- readRDS("us2.RDS")
 
-# uncomment this when uploading
-#states <- readRDS("us1.RDS")
-#counties <- readRDS("us2.RDS")
+percent <- function(x, digits = 2, format = "f", ...) {      # Create user-defined function
+  paste0(formatC(x * 100, format = format, digits = digits, ...), "%")
+}
 
+create_labels <- function(data, map_level) {
+  labels <- sprintf(
+    "<strong>%s</strong><br/>
+    Democrats: %s<br/>
+    Republicans: %s<br/>
+    Libertarians: %s<br/>
+    Green: %s<br/>
+    </sup>",
+    data[, paste0("NAME_", map_level)],
+    percent(data$Democrats2016),
+    percent(data$Republicans2016),
+    percent(data$Libertarians2016),
+    percent(data$Green2016)
+  )
+  labels %>% lapply(htmltools::HTML)
+}
 
 # Define server for leafdown app
 server <- function(input, output) {
@@ -64,11 +80,11 @@ server <- function(input, output) {
 
     # add the data back to the leafdown object
     my_leafdown$add_data(data)
-
+    labels <- create_labels(data, my_leafdown$curr_map_level)
     # draw the leafdown object
     my_leafdown$draw_leafdown(
       fillColor = ~fillcolor(data$y),
-      weight = 3, fillOpacity = 1, color = "white") %>%
+      weight = 3, fillOpacity = 1, color = "white", label = labels) %>%
       # set the view to be center on the USA
       setView(-95, 39,  4)  %>%
       # add a nice legend
@@ -122,7 +138,7 @@ server <- function(input, output) {
       } else {
         df <- df[, c("County", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
         df <- df %>% pivot_longer(2:5, "party") %>% group_by(party)
-        df$value <- df$value / 100
+        df$value <- df$value
         names(df)[1] <- "ST"
       }
     } else {
