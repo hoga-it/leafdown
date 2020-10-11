@@ -1,0 +1,103 @@
+---
+title: "Showcase - Election App"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Showcase - Election App}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+In this article we demonstrate how easy it is to connect Graphs with a `leafdown` map.
+TODO add image
+
+## Data
+As described in the Introduction, we need two types of data:
+
+**SpatialPolygonsDataFrames**, the shapes of the US-States and Counties, taken from the `raster` package.
+
+**Election Results and Census Data**, the data we want to display on the map, taken from the example data sets that come with the `leafdown` package.
+(The original data comes from [Deleetdk](https://github.com/Deleetdk/USA.county.data). For more information about the data, please see TODO change `?us16_1` or `?us16_2` respectively)
+
+## The Map itself
+The structure of the map is pretty similar to the map from the Introduction article.
+Here we show the results of the US Presidential Election from 2016.
+
+## Connecting Graphs to our Map
+In this section we want to demonstrate how simple it is to connect graphs or similar UI-elements with the map.
+
+We create two graphs that give more insight on the currently selected shapes. </br>
+- As the map only shows the winner, we create a barchart to show the percentages from every party. </br>
+- Additionally we add a graph showing the racial makeup.
+
+The changes in the UI are straight forward:
+```{r, eval = FALSE}
+column(
+  width = 5,
+  # box for racial makeup graph
+  bs4Card(
+    width = 12,
+    closable = F,
+    collapsible = F,
+    title = "Racial makeup in percentages",
+    echarts4rOutput("socio")
+  ),
+  # box for party percent graph
+  bs4Card(
+    width = 12,
+    closable = F,
+    collapsible = F,
+    title = "Votes in percent",
+    echarts4rOutput("party")
+  )
+)
+```
+
+To connect the graphs with the map, we can use the `$curr_sel_data()` attribute.
+This attribute is a `reactiveValue` which allows us to update the graphs whenever the user selects a shape on the map or drills a level up or down.
+
+In the server we get the data using `df <- my_leafdown$curr_sel_data()`. 
+
+Creating the rest of the graph is again straight forward.
+
+```{r, eval = FALSE}
+output$party <- renderEcharts4r({
+  # get the currently selected data from the map
+  df <- my_leafdown$curr_sel_data()
+  
+  # check whether any shape is selected, show general election-result if nothing is selected
+  if(dim(df)[1] > 0){
+    if(my_leafdown$curr_map_level == 1) {
+      df <- df[, c("state_abbr", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
+      df <- df %>% pivot_longer(2:5, "party") %>% group_by(party)
+    } else {
+      df <- df[, c("County", "Democrats2016", "Republicans2016", "Libertarians2016", "Green2016")]
+      df <- df %>% pivot_longer(2:5, "party") %>% group_by(party)
+      df$value <- df$value / 100
+      names(df)[1] <- "state_abbr"
+    }
+  } else {
+    # show general election-result as no state is selected
+    df <- data.frame(
+      party = c("Democrats2016", "Republicans2016", "Libertarians2016", "Green2016"),
+      state_abbr = "USA",
+      value = c(0.153, 0.634, 0.134, 0.059)) %>% group_by(party)
+  }
+  # create the graph
+  df %>%
+    e_charts(state_abbr, stack="grp") %>%
+    e_bar(value) %>%
+    e_y_axis(formatter = e_axis_formatter("percent", digits = 2)) %>%
+    e_tooltip(trigger = "axis",axisPointer = list(type = "shadow")) %>%
+    e_legend(right = 10,top = 10) %>%
+    e_color(c("#232066", "#E91D0E", "#f3b300", "#006900"))%>%
+    e_tooltip(formatter = e_tooltip_item_formatter("percent", digits = 2))
+})
+```
+
+# TODO add map demo

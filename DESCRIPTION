@@ -6,12 +6,28 @@ Authors@R: c(
     person("Andreas", "Hofheinz", email = "andreas.hofheinz@outlook.com", role = "cre"),
     person("Peter", "Gandenberger", email = "peter.gandenberger@gmail.com", role = "aut"))
 Maintainer: Andreas Hofheinz, Peter Gandenberger <hofheinz.gandenberger.it@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: GPL-3
+Description: The goal of leafdown is to provide drill down functionality for leaflet choropleths.
+    - Adds drill-down functionality for leaflet choropleths maps.
+    - Allows selection of regions / shapes in map.
+    - Easy to use and well integrated into syntax of leaflet r package.
+License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
     covr,
-    testthat
-RoxygenNote: 7.0.2
+    testthat,
+    knitr,
+    rmarkdown,
+    shinytest,
+    dplyr,
+    htmltools
+RoxygenNote: 7.1.1
+Depends: R (>= 3.5.0)
+Imports: 
+    R6,
+    leaflet,
+    magrittr,
+    checkmate,
+    shiny,
+    shinyjs
+VignetteBuilder: knitr
