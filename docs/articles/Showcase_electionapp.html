@@ -175,231 +175,263 @@
 <span class="kw">counties</span> <span class="op">&lt;-</span> <span class="kw">raster</span>::<span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(country = <span class="st">"USA"</span>, level = <span class="fl">2</span>)
 <span class="co"># TODO replace the path to your downloaded shapes in the server code</span>
 </pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://shiny.rstudio.com">shiny</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://rinterface.github.io/bs4Dash/index.html">bs4Dash</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://deanattali.com/shinyjs">shinyjs</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://rstudio.github.io/leaflet">leaflet</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">leafdown</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://echarts4r.john-coene.com">echarts4r</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org">dplyr</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://tidyr.tidyverse.org">tidyr</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">RColorBrewer</span>)
-
-<span class="kw">ui</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashPage.html">bs4DashPage</a></span>(
-  title = <span class="st">"Leafdown Showcase - USA Election Data"</span>,
-  navbar = <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashNavbar.html">bs4DashNavbar</a></span>(<span class="kw">tags</span><span class="op">$</span><span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h3</a></span>(<span class="st">"Leafdown Showcase - USA Election Data"</span>, style = <span class="st">"margin-bottom: .2rem;"</span>)),
-  <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashSidebar.html">bs4DashSidebar</a></span>(disable = <span class="fl">TRUE</span>),
-  body = <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashBody.html">bs4DashBody</a></span>(
-    <span class="co"># set the background of the map-container to be white</span>
-    <span class="kw">tags</span><span class="op">$</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(
-      <span class="kw">tags</span><span class="op">$</span><span class="fu">style</span>(<span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>(<span class="st">".leaflet-container { background: #fff; height: 100%}"</span>)),
-      <span class="co"># workaround for the NA in leaflet legend see https://github.com/rstudio/leaflet/issues/615</span>
-      <span class="kw">tags</span><span class="op">$</span><span class="fu">style</span>(<span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>(<span class="st">".leaflet-control div:last-child {clear: both;}"</span>)),
-      <span class="kw">tags</span><span class="op">$</span><span class="fu">style</span>(<span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>(<span class="st">".card {height: 100%;}"</span>)),
-      <span class="kw">tags</span><span class="op">$</span><span class="fu">style</span>(<span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>(<span class="st">".col-sm-12:last-child .card {margin-bottom: 0 !important;}"</span>)),
-      <span class="kw">tags</span><span class="op">$</span><span class="fu">style</span>(<span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>(<span class="st">"#leafdown {height: 80% !important; margin-top: 10px; margin-bottom: 10px;}"</span>))
-    ),
-    <span class="co"># we need shinyjs for the leafdown map</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shinyjs/man/useShinyjs.html">useShinyjs</a></span>(),
-    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidRow</a></span>(
-      <span class="co"># a card for the map</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4Card.html">bs4Card</a></span>(
-        title = <span class="st">"Map"</span>,
-        closable = <span class="kw">F</span>,
-        collapsible = <span class="kw">F</span>,
-        width = <span class="fl">6</span>,
-        <span class="co"># a dropdown to select what KPI should be displayed on the map</span>
-        <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/selectInput.html">selectInput</a></span>(<span class="st">"map_sel"</span>, <span class="st">"Select what KPI to display on the map:"</span>,
-                    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Votes"</span> = <span class="st">"votes"</span>,<span class="st">"Unemployment"</span> = <span class="st">"unemployment"</span>)),
-        <span class="co"># the two buttons used for drilling</span>
-        <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html">actionButton</a></span>(<span class="st">"drill_down"</span>, <span class="st">"Drill Down"</span>),
-        <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html">actionButton</a></span>(<span class="st">"drill_up"</span>, <span class="st">"Drill Up"</span>),
-        <span class="co"># the actual map element</span>
-        <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-shiny.html">leafletOutput</a></span>(<span class="st">"leafdown"</span>)
-      ),
-
-      <span class="co"># a column with the two graphs</span>
-      <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/column.html">column</a></span>(
-        width = <span class="fl">6</span>,
-        <span class="co"># box for racial makeup graph</span>
-        <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4Card.html">bs4Card</a></span>(
-          width = <span class="fl">12</span>,
-          closable = <span class="kw">F</span>,
-          collapsible = <span class="kw">F</span>,
-          title = <span class="st">"Racial makeup in percentages"</span>,
-          <span class="fu"><a href="http://echarts4r.john-coene.com/reference/echarts4r-shiny.html">echarts4rOutput</a></span>(<span class="st">"socio"</span>)
-        ),
-        <span class="co"># box for party percent graph</span>
-        <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4Card.html">bs4Card</a></span>(
-          width = <span class="fl">12</span>,
-          closable = <span class="kw">F</span>,
-          collapsible = <span class="kw">F</span>,
-          title = <span class="st">"Votes in percent"</span>,
-          <span class="fu"><a href="http://echarts4r.john-coene.com/reference/echarts4r-shiny.html">echarts4rOutput</a></span>(<span class="st">"party"</span>)
-        )
-      )
-    )
-  )
-)
-
-<span class="kw">percent</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">x</span>, <span class="kw">digits</span> = <span class="fl">2</span>, <span class="kw">format</span> = <span class="st">"f"</span>, <span class="kw">...</span>) {      <span class="co"># Create user-defined function</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/formatc.html">formatC</a></span>(<span class="kw">x</span> <span class="op">*</span> <span class="fl">100</span>, format = <span class="kw">format</span>, digits = <span class="kw">digits</span>, <span class="kw">...</span>), <span class="st">"%"</span>)
-}
-
-<span class="kw">create_labels</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">data</span>, <span class="kw">map_level</span>) {
-  <span class="kw">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(
-    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;
-    Democrats: %s&lt;br/&gt;
-    Republicans: %s&lt;br/&gt;
-    Libertarians: %s&lt;br/&gt;
-    Green: %s&lt;br/&gt;
-    &lt;/sup&gt;"</span>,
-    <span class="kw">data</span>[, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"NAME_"</span>, <span class="kw">map_level</span>)],
-    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Democrats2016</span>),
-    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Republicans2016</span>),
-    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Libertarians2016</span>),
-    <span class="fu">percent</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Green2016</span>)
-  )
-  <span class="kw">labels</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="kw">htmltools</span>::<span class="kw"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>)
-}
-
-<span class="co"># Define server for leafdown app</span>
-<span class="kw">server</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">input</span>, <span class="kw">output</span>) {
-  <span class="co"># load the shapes for the two levels</span>
-  <span class="co"># TODO load the shapes you have downloaded via the raster package</span>
-  <span class="kw">states</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="st">"us1.RDS"</span>)
-  <span class="kw">counties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="st">"us2.RDS"</span>)
-  <span class="kw">spdfs_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">states</span>, <span class="kw">counties</span>)
-
-  <span class="co"># create leafdown object</span>
-  <span class="kw">my_leafdown</span> <span class="op">&lt;-</span> <span class="kw">Leafdown</span><span class="op">$</span><span class="fu">new</span>(<span class="kw">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="kw">input</span>)
-
-  <span class="kw">rv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveValues.html">reactiveValues</a></span>()
-  <span class="kw">rv</span><span class="op">$</span><span class="kw">update_leafdown</span> <span class="op">&lt;-</span> <span class="fl">0</span>
-
-  <span class="co"># observers for the drilling buttons</span>
-  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html">observeEvent</a></span>(<span class="kw">input</span><span class="op">$</span><span class="kw">drill_down</span>, {
-    <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">drill_down</span>()
-    <span class="kw">rv</span><span class="op">$</span><span class="kw">update_leafdown</span> <span class="op">&lt;-</span> <span class="kw">rv</span><span class="op">$</span><span class="kw">update_leafdown</span> <span class="op">+</span> <span class="fl">1</span>
-  })
-
-  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html">observeEvent</a></span>(<span class="kw">input</span><span class="op">$</span><span class="kw">drill_up</span>, {
-    <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">drill_up</span>()
-    <span class="kw">rv</span><span class="op">$</span><span class="kw">update_leafdown</span> <span class="op">&lt;-</span> <span class="kw">rv</span><span class="op">$</span><span class="kw">update_leafdown</span> <span class="op">+</span> <span class="fl">1</span>
-  })
-
-  <span class="co"># this is where the leafdown magic happens</span>
-  <span class="kw">output</span><span class="op">$</span><span class="kw">leafdown</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-shiny.html">renderLeaflet</a></span>({
-    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/req.html">req</a></span>(<span class="kw">spdfs_list</span>)
-    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/req.html">req</a></span>(<span class="kw">rv</span><span class="op">$</span><span class="kw">update_leafdown</span>)
-    <span class="co"># fetch the current metadata from the leafdown object</span>
-    <span class="kw">data</span> <span class="op">&lt;-</span> <span class="kw">my_leafdown</span><span class="op">$</span><span class="kw">curr_data</span>
-
-    <span class="co"># join the metadata with the election-data.</span>
-    <span class="co"># depending on the map_level we have different election-data so the 'by' columns for the join are different</span>
-    <span class="co">if</span>(<span class="kw">my_leafdown</span><span class="op">$</span><span class="kw">curr_map_level</span> <span class="op">==</span> <span class="fl">2</span>) {
-      <span class="kw">data</span><span class="op">$</span><span class="kw">ST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span>(<span class="kw">data</span><span class="op">$</span><span class="kw">HASC_2</span>, <span class="fl">4</span>, <span class="fl">5</span>)
-      <span class="co"># there are counties with the same name in different states so we have to join on both</span>
-      <span class="kw">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="kw">data</span>, <span class="kw">us_election_counties</span>, by = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_2"</span>, <span class="st">"ST"</span>))
-    } <span class="co">else</span> {
-      <span class="kw">data</span><span class="op">$</span><span class="kw">ST</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span>(<span class="kw">data</span><span class="op">$</span><span class="kw">HASC_1</span>, <span class="fl">4</span>, <span class="fl">5</span>)
-      <span class="kw">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="kw">data</span>, <span class="kw">us_election_states</span>, by = <span class="st">"ST"</span>)
-    }
-
-    <span class="co"># depending on the selected KPI in the dropdown we show different data</span>
-    <span class="co">if</span>(<span class="kw">input</span><span class="op">$</span><span class="kw">map_sel</span> <span class="op">==</span> <span class="st">"unemployment"</span>) {
-      <span class="kw">data</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="kw">data</span><span class="op">$</span><span class="kw">Unemployment</span> <span class="op">*</span> <span class="fl">100</span>
-      <span class="kw">fillcolor</span> <span class="op">&lt;-</span> <span class="kw">leaflet</span>::<span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorNumeric</a></span>(<span class="st">"Greens"</span>, <span class="kw">data</span><span class="op">$</span><span class="kw">y</span>)
-      <span class="kw">legend_title</span> <span class="op">&lt;-</span> <span class="st">"Unemployment in Percent"</span>
-    } <span class="co">else</span> {
-      <span class="kw">data</span><span class="op">$</span><span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="kw">data</span><span class="op">$</span><span class="kw">Republicans2016</span> <span class="op">&gt;</span> <span class="kw">data</span><span class="op">$</span><span class="kw">Democrats2016</span>, <span class="st">"Republicans"</span>, <span class="st">"Democrats"</span>)
-      <span class="kw">fillcolor</span> <span class="op">&lt;-</span> <span class="kw">leaflet</span>::<span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorFactor</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#232066"</span>, <span class="st">"#E91D0E"</span>), <span class="kw">data</span><span class="op">$</span><span class="kw">y</span>)
-      <span class="kw">legend_title</span> <span class="op">&lt;-</span> <span class="st">"Winning Party"</span>
-    }
-
-    <span class="co"># add the data back to the leafdown object</span>
-    <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">add_data</span>(<span class="kw">data</span>)
-    <span class="kw">labels</span> <span class="op">&lt;-</span> <span class="fu">create_labels</span>(<span class="kw">data</span>, <span class="kw">my_leafdown</span><span class="op">$</span><span class="kw">curr_map_level</span>)
-    <span class="co"># draw the leafdown object</span>
-    <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">draw_leafdown</span>(
-      fillColor = <span class="op">~</span><span class="fu">fillcolor</span>(<span class="kw">data</span><span class="op">$</span><span class="kw">y</span>),
-      weight = <span class="fl">3</span>, fillOpacity = <span class="fl">1</span>, color = <span class="st">"white"</span>, label = <span class="kw">labels</span>) <span class="op">%&gt;%</span>
-      <span class="co"># set the view to be center on the USA</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html">setView</a></span>(<span class="op">-</span><span class="fl">95</span>, <span class="fl">39</span>,  <span class="fl">4</span>)  <span class="op">%&gt;%</span>
-      <span class="co"># add a nice legend</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addLegend.html">addLegend</a></span>(pal = <span class="kw">fillcolor</span>,
-                values = <span class="op">~</span><span class="kw">data</span><span class="op">$</span><span class="kw">y</span>,
-                title = <span class="kw">legend_title</span>,
-                opacity = <span class="fl">1</span>)
-  })
-
-  <span class="co"># plots</span>
-  <span class="kw">output</span><span class="op">$</span><span class="kw">socio</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://echarts4r.john-coene.com/reference/echarts4r-shiny.html">renderEcharts4r</a></span>({
-    <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">curr_sel_data</span>()
-    <span class="co"># check whether any shape is selected, show basic info for the whole usa if nothing is selected</span>
-    <span class="co">if</span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">df</span>)[<span class="fl">1</span>] <span class="op">&gt;</span> <span class="fl">0</span>){
-      <span class="co">if</span>(<span class="kw">my_leafdown</span><span class="op">$</span><span class="kw">curr_map_level</span> <span class="op">==</span> <span class="fl">1</span>) {
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"State"</span>, <span class="st">"Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Asian"</span>, <span class="st">"Amerindian"</span>, <span class="st">"Other"</span>)]
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="fl">2</span><span class="op">:</span><span class="fl">7</span>, <span class="st">"race"</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">State</span>)
-        <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw">df</span><span class="op">$</span><span class="kw">value</span>, <span class="fl">2</span>)
-      } <span class="co">else</span> {
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"County"</span>, <span class="st">"Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Asian"</span>, <span class="st">"Amerindian"</span>, <span class="st">"Other"</span>)]
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="fl">2</span><span class="op">:</span><span class="fl">7</span>, <span class="st">"race"</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">County</span>)
-        <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="kw">df</span><span class="op">$</span><span class="kw">value</span><span class="op">/</span><span class="fl">100</span>, <span class="fl">2</span>)
-      }
-    } <span class="co">else</span> {
-      <span class="co"># show basic info for the whole usa as no state is selected</span>
-      <span class="kw">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
-        ST = <span class="st">"USA"</span>,
-        race = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Asian"</span>, <span class="st">"Amerindian"</span>, <span class="st">"Other"</span>),
-        value = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.15</span>, <span class="fl">0.634</span>, <span class="fl">0.134</span>, <span class="fl">0.059</span>, <span class="fl">0.015</span>, <span class="fl">0.027</span>)) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">ST</span>)
-    }
-    <span class="co"># create the graph</span>
-    <span class="kw">df</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/init.html">e_charts</a></span>(<span class="kw">race</span>) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e_bar.html">e_bar</a></span>(<span class="kw">value</span>) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e-tooltip.html">e_tooltip</a></span>(trigger = <span class="st">"axis"</span>,axisPointer = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(type = <span class="st">"shadow"</span>)) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/axis.html">e_y_axis</a></span>(splitArea = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(show = <span class="fl">FALSE</span>),
-               splitLine = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(show = <span class="fl">FALSE</span>),
-               formatter = <span class="fu"><a href="http://echarts4r.john-coene.com/reference/axis.html">e_axis_formatter</a></span>(<span class="st">"percent"</span>, digits = <span class="fl">2</span>)) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e_legend.html">e_legend</a></span>(orient = <span class="st">'vertical'</span>,right = <span class="fl">10</span>,top = <span class="fl">10</span>) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e_color.html">e_color</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">df</span>), <span class="st">"Set3"</span>)) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e-tooltip.html">e_tooltip</a></span>(formatter = <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e-tooltip.html">e_tooltip_item_formatter</a></span>(<span class="st">"percent"</span>))
-  })
-
-  <span class="kw">output</span><span class="op">$</span><span class="kw">party</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://echarts4r.john-coene.com/reference/echarts4r-shiny.html">renderEcharts4r</a></span>({
-    <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">my_leafdown</span><span class="op">$</span><span class="fu">curr_sel_data</span>()
-    <span class="co"># check whether any shape is selected, show general election-result if nothing is selected</span>
-    <span class="co">if</span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="kw">df</span>)[<span class="fl">1</span>] <span class="op">&gt;</span> <span class="fl">0</span>){
-      <span class="co">if</span>(<span class="kw">my_leafdown</span><span class="op">$</span><span class="kw">curr_map_level</span> <span class="op">==</span> <span class="fl">1</span>) {
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ST"</span>, <span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>)]
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="fl">2</span><span class="op">:</span><span class="fl">5</span>, <span class="st">"party"</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">party</span>)
-      } <span class="co">else</span> {
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"County"</span>, <span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>)]
-        <span class="kw">df</span> <span class="op">&lt;-</span> <span class="kw">df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="fl">2</span><span class="op">:</span><span class="fl">5</span>, <span class="st">"party"</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">party</span>)
-        <span class="kw">df</span><span class="op">$</span><span class="kw">value</span> <span class="op">&lt;-</span> <span class="kw">df</span><span class="op">$</span><span class="kw">value</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">df</span>)[<span class="fl">1</span>] <span class="op">&lt;-</span> <span class="st">"ST"</span>
-      }
-    } <span class="co">else</span> {
-      <span class="co"># show general election-result as no state is selected</span>
-      <span class="kw">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
-        party = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>),
-        ST = <span class="st">"USA"</span>,
-        value = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.153</span>, <span class="fl">0.634</span>, <span class="fl">0.134</span>, <span class="fl">0.059</span>)) <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">party</span>)
-    }
-    <span class="co"># create the graph</span>
-    <span class="kw">df</span> <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/init.html">e_charts</a></span>(<span class="kw">ST</span>, stack=<span class="st">"grp"</span>) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e_bar.html">e_bar</a></span>(<span class="kw">value</span>) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/axis.html">e_y_axis</a></span>(formatter = <span class="fu"><a href="http://echarts4r.john-coene.com/reference/axis.html">e_axis_formatter</a></span>(<span class="st">"percent"</span>, digits = <span class="fl">2</span>)) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e-tooltip.html">e_tooltip</a></span>(trigger = <span class="st">"axis"</span>,axisPointer = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(type = <span class="st">"shadow"</span>)) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e_legend.html">e_legend</a></span>(right = <span class="fl">10</span>,top = <span class="fl">10</span>) <span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e_color.html">e_color</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#232066"</span>, <span class="st">"#E91D0E"</span>, <span class="st">"#f3b300"</span>, <span class="st">"#006900"</span>))<span class="op">%&gt;%</span>
-      <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e-tooltip.html">e_tooltip</a></span>(formatter = <span class="fu"><a href="http://echarts4r.john-coene.com/reference/e-tooltip.html">e_tooltip_item_formatter</a></span>(<span class="st">"percent"</span>, digits = <span class="fl">2</span>))
-  })
-}
-</pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(shiny)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">library</span>(bs4Dash)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">library</span>(shinyjs)</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">library</span>(leaflet)</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">library</span>(leafdown)</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="kw">library</span>(echarts4r)</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">library</span>(tidyr)</span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">library</span>(RColorBrewer)</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a>ui =<span class="st"> </span><span class="kw">bs4DashPage</span>(</span>
+<span id="cb4-12"><a href="#cb4-12"></a>  <span class="dt">title =</span> <span class="st">"Leafdown Showcase - USA Election Data"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13"></a>  <span class="dt">navbar =</span> <span class="kw">bs4DashNavbar</span>(tags<span class="op">$</span><span class="kw">h3</span>(<span class="st">"Leafdown Showcase - USA Election Data"</span>, <span class="dt">style =</span> <span class="st">"margin-bottom: .2rem;"</span>)),</span>
+<span id="cb4-14"><a href="#cb4-14"></a>  <span class="kw">bs4DashSidebar</span>(<span class="dt">disable =</span> <span class="ot">TRUE</span>),</span>
+<span id="cb4-15"><a href="#cb4-15"></a>  <span class="dt">body =</span> <span class="kw">bs4DashBody</span>(</span>
+<span id="cb4-16"><a href="#cb4-16"></a>    <span class="co"># set the background of the map-container to be white</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>    tags<span class="op">$</span><span class="kw">head</span>(</span>
+<span id="cb4-18"><a href="#cb4-18"></a>      tags<span class="op">$</span><span class="kw">style</span>(<span class="kw">HTML</span>(<span class="st">".leaflet-container { background: #fff; height: 100%}"</span>)),</span>
+<span id="cb4-19"><a href="#cb4-19"></a>      <span class="co"># workaround for the NA in leaflet legend see https://github.com/rstudio/leaflet/issues/615</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>      tags<span class="op">$</span><span class="kw">style</span>(<span class="kw">HTML</span>(<span class="st">".leaflet-control div:last-child {clear: both;}"</span>)),</span>
+<span id="cb4-21"><a href="#cb4-21"></a>      tags<span class="op">$</span><span class="kw">style</span>(<span class="kw">HTML</span>(<span class="st">".card {height: 100%;}"</span>)),</span>
+<span id="cb4-22"><a href="#cb4-22"></a>      tags<span class="op">$</span><span class="kw">style</span>(<span class="kw">HTML</span>(<span class="st">".col-sm-12:last-child .card {margin-bottom: 0 !important;}"</span>)),</span>
+<span id="cb4-23"><a href="#cb4-23"></a>      tags<span class="op">$</span><span class="kw">style</span>(<span class="kw">HTML</span>(<span class="st">"#leafdown {height: 80% !important; margin-top: 10px; margin-bottom: 10px;}"</span>))</span>
+<span id="cb4-24"><a href="#cb4-24"></a>    ),</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    <span class="co"># we need shinyjs for the leafdown map</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a>    <span class="kw">useShinyjs</span>(),</span>
+<span id="cb4-27"><a href="#cb4-27"></a>    <span class="kw">fluidRow</span>(</span>
+<span id="cb4-28"><a href="#cb4-28"></a>      <span class="co"># a card for the map</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a>      <span class="kw">bs4Card</span>(</span>
+<span id="cb4-30"><a href="#cb4-30"></a>        <span class="dt">title =</span> <span class="st">"Map"</span>,</span>
+<span id="cb4-31"><a href="#cb4-31"></a>        <span class="dt">closable =</span> F,</span>
+<span id="cb4-32"><a href="#cb4-32"></a>        <span class="dt">collapsible =</span> F,</span>
+<span id="cb4-33"><a href="#cb4-33"></a>        <span class="dt">width =</span> <span class="dv">6</span>,</span>
+<span id="cb4-34"><a href="#cb4-34"></a>        <span class="co"># a dropdown to select what KPI should be displayed on the map</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a>        <span class="kw">selectInput</span>(<span class="st">"map_sel"</span>, <span class="st">"Select what KPI to display on the map:"</span>,</span>
+<span id="cb4-36"><a href="#cb4-36"></a>                    <span class="kw">c</span>(<span class="st">"Votes"</span> =<span class="st"> "votes"</span>,<span class="st">"Unemployment"</span> =<span class="st"> "unemployment"</span>)),</span>
+<span id="cb4-37"><a href="#cb4-37"></a>        <span class="co"># the two buttons used for drilling</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a>        <span class="kw">actionButton</span>(<span class="st">"drill_down"</span>, <span class="st">"Drill Down"</span>),</span>
+<span id="cb4-39"><a href="#cb4-39"></a>        <span class="kw">actionButton</span>(<span class="st">"drill_up"</span>, <span class="st">"Drill Up"</span>),</span>
+<span id="cb4-40"><a href="#cb4-40"></a>        <span class="co"># the actual map element</span></span>
+<span id="cb4-41"><a href="#cb4-41"></a>        <span class="kw">leafletOutput</span>(<span class="st">"leafdown"</span>)</span>
+<span id="cb4-42"><a href="#cb4-42"></a>      ),</span>
+<span id="cb4-43"><a href="#cb4-43"></a></span>
+<span id="cb4-44"><a href="#cb4-44"></a>      <span class="co"># a column with the two graphs</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a>      <span class="kw">column</span>(</span>
+<span id="cb4-46"><a href="#cb4-46"></a>        <span class="dt">width =</span> <span class="dv">6</span>,</span>
+<span id="cb4-47"><a href="#cb4-47"></a>        <span class="co"># box for racial makeup graph</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a>        <span class="kw">bs4Card</span>(</span>
+<span id="cb4-49"><a href="#cb4-49"></a>          <span class="dt">width =</span> <span class="dv">12</span>,</span>
+<span id="cb4-50"><a href="#cb4-50"></a>          <span class="dt">closable =</span> F,</span>
+<span id="cb4-51"><a href="#cb4-51"></a>          <span class="dt">collapsible =</span> F,</span>
+<span id="cb4-52"><a href="#cb4-52"></a>          <span class="dt">title =</span> <span class="st">"Racial makeup in percentages"</span>,</span>
+<span id="cb4-53"><a href="#cb4-53"></a>          <span class="kw">echarts4rOutput</span>(<span class="st">"socio"</span>)</span>
+<span id="cb4-54"><a href="#cb4-54"></a>        ),</span>
+<span id="cb4-55"><a href="#cb4-55"></a>        <span class="co"># box for party percent graph</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a>        <span class="kw">bs4Card</span>(</span>
+<span id="cb4-57"><a href="#cb4-57"></a>          <span class="dt">width =</span> <span class="dv">12</span>,</span>
+<span id="cb4-58"><a href="#cb4-58"></a>          <span class="dt">closable =</span> F,</span>
+<span id="cb4-59"><a href="#cb4-59"></a>          <span class="dt">collapsible =</span> F,</span>
+<span id="cb4-60"><a href="#cb4-60"></a>          <span class="dt">title =</span> <span class="st">"Votes in percent"</span>,</span>
+<span id="cb4-61"><a href="#cb4-61"></a>          <span class="kw">echarts4rOutput</span>(<span class="st">"party"</span>)</span>
+<span id="cb4-62"><a href="#cb4-62"></a>        )</span>
+<span id="cb4-63"><a href="#cb4-63"></a>      )</span>
+<span id="cb4-64"><a href="#cb4-64"></a>    )</span>
+<span id="cb4-65"><a href="#cb4-65"></a>  )</span>
+<span id="cb4-66"><a href="#cb4-66"></a>)</span>
+<span id="cb4-67"><a href="#cb4-67"></a></span>
+<span id="cb4-68"><a href="#cb4-68"></a>percent &lt;-<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">digits =</span> <span class="dv">2</span>, <span class="dt">format =</span> <span class="st">"f"</span>, ...) {      <span class="co"># Create user-defined function</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a>  <span class="kw">paste0</span>(<span class="kw">formatC</span>(x <span class="op">*</span><span class="st"> </span><span class="dv">100</span>, <span class="dt">format =</span> format, <span class="dt">digits =</span> digits, ...), <span class="st">"%"</span>)</span>
+<span id="cb4-70"><a href="#cb4-70"></a>}</span>
+<span id="cb4-71"><a href="#cb4-71"></a></span>
+<span id="cb4-72"><a href="#cb4-72"></a>create_labels &lt;-<span class="st"> </span><span class="cf">function</span>(data, map_level) {</span>
+<span id="cb4-73"><a href="#cb4-73"></a>  labels &lt;-<span class="st"> </span><span class="kw">sprintf</span>(</span>
+<span id="cb4-74"><a href="#cb4-74"></a>    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;</span></span>
+<span id="cb4-75"><a href="#cb4-75"></a><span class="st">    Democrats: %s&lt;br/&gt;</span></span>
+<span id="cb4-76"><a href="#cb4-76"></a><span class="st">    Republicans: %s&lt;br/&gt;</span></span>
+<span id="cb4-77"><a href="#cb4-77"></a><span class="st">    Libertarians: %s&lt;br/&gt;</span></span>
+<span id="cb4-78"><a href="#cb4-78"></a><span class="st">    Green: %s&lt;br/&gt;</span></span>
+<span id="cb4-79"><a href="#cb4-79"></a><span class="st">    &lt;/sup&gt;"</span>,</span>
+<span id="cb4-80"><a href="#cb4-80"></a>    data[, <span class="kw">paste0</span>(<span class="st">"NAME_"</span>, map_level)],</span>
+<span id="cb4-81"><a href="#cb4-81"></a>    <span class="kw">percent</span>(data<span class="op">$</span>Democrats2016),</span>
+<span id="cb4-82"><a href="#cb4-82"></a>    <span class="kw">percent</span>(data<span class="op">$</span>Republicans2016),</span>
+<span id="cb4-83"><a href="#cb4-83"></a>    <span class="kw">percent</span>(data<span class="op">$</span>Libertarians2016),</span>
+<span id="cb4-84"><a href="#cb4-84"></a>    <span class="kw">percent</span>(data<span class="op">$</span>Green2016)</span>
+<span id="cb4-85"><a href="#cb4-85"></a>  )</span>
+<span id="cb4-86"><a href="#cb4-86"></a>  labels <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">lapply</span>(htmltools<span class="op">::</span>HTML)</span>
+<span id="cb4-87"><a href="#cb4-87"></a>}</span>
+<span id="cb4-88"><a href="#cb4-88"></a></span>
+<span id="cb4-89"><a href="#cb4-89"></a><span class="co"># Define server for leafdown app</span></span>
+<span id="cb4-90"><a href="#cb4-90"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
+<span id="cb4-91"><a href="#cb4-91"></a>  <span class="co"># load the shapes for the two levels</span></span>
+<span id="cb4-92"><a href="#cb4-92"></a>  <span class="co"># </span><span class="al">TODO</span><span class="co"> load the shapes you have downloaded via the raster package</span></span>
+<span id="cb4-93"><a href="#cb4-93"></a>  states &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"us1.RDS"</span>)</span>
+<span id="cb4-94"><a href="#cb4-94"></a>  counties &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"us2.RDS"</span>)</span>
+<span id="cb4-95"><a href="#cb4-95"></a>  spdfs_list &lt;-<span class="st"> </span><span class="kw">list</span>(states, counties)</span>
+<span id="cb4-96"><a href="#cb4-96"></a></span>
+<span id="cb4-97"><a href="#cb4-97"></a>  <span class="co"># create leafdown object</span></span>
+<span id="cb4-98"><a href="#cb4-98"></a>  my_leafdown &lt;-<span class="st"> </span>Leafdown<span class="op">$</span><span class="kw">new</span>(spdfs_list, <span class="st">"leafdown"</span>, input)</span>
+<span id="cb4-99"><a href="#cb4-99"></a></span>
+<span id="cb4-100"><a href="#cb4-100"></a>  rv &lt;-<span class="st"> </span><span class="kw">reactiveValues</span>()</span>
+<span id="cb4-101"><a href="#cb4-101"></a>  rv<span class="op">$</span>update_leafdown &lt;-<span class="st"> </span><span class="dv">0</span></span>
+<span id="cb4-102"><a href="#cb4-102"></a></span>
+<span id="cb4-103"><a href="#cb4-103"></a>  <span class="co"># observers for the drilling buttons</span></span>
+<span id="cb4-104"><a href="#cb4-104"></a>  <span class="kw">observeEvent</span>(input<span class="op">$</span>drill_down, {</span>
+<span id="cb4-105"><a href="#cb4-105"></a>    my_leafdown<span class="op">$</span><span class="kw">drill_down</span>()</span>
+<span id="cb4-106"><a href="#cb4-106"></a>    rv<span class="op">$</span>update_leafdown &lt;-<span class="st"> </span>rv<span class="op">$</span>update_leafdown <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb4-107"><a href="#cb4-107"></a>  })</span>
+<span id="cb4-108"><a href="#cb4-108"></a></span>
+<span id="cb4-109"><a href="#cb4-109"></a>  <span class="kw">observeEvent</span>(input<span class="op">$</span>drill_up, {</span>
+<span id="cb4-110"><a href="#cb4-110"></a>    my_leafdown<span class="op">$</span><span class="kw">drill_up</span>()</span>
+<span id="cb4-111"><a href="#cb4-111"></a>    rv<span class="op">$</span>update_leafdown &lt;-<span class="st"> </span>rv<span class="op">$</span>update_leafdown <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb4-112"><a href="#cb4-112"></a>  })</span>
+<span id="cb4-113"><a href="#cb4-113"></a>  </span>
+<span id="cb4-114"><a href="#cb4-114"></a>  data &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
+<span id="cb4-115"><a href="#cb4-115"></a>    <span class="kw">req</span>(rv<span class="op">$</span>update_leafdown)</span>
+<span id="cb4-116"><a href="#cb4-116"></a>    <span class="co"># fetch the current metadata from the leafdown object</span></span>
+<span id="cb4-117"><a href="#cb4-117"></a>    data &lt;-<span class="st"> </span>my_leafdown<span class="op">$</span>curr_data</span>
+<span id="cb4-118"><a href="#cb4-118"></a></span>
+<span id="cb4-119"><a href="#cb4-119"></a>    <span class="co"># join the metadata with the election-data.</span></span>
+<span id="cb4-120"><a href="#cb4-120"></a>    <span class="co"># depending on the map_level we have different election-data so the 'by' columns for the join are different</span></span>
+<span id="cb4-121"><a href="#cb4-121"></a>    <span class="cf">if</span>(my_leafdown<span class="op">$</span>curr_map_level <span class="op">==</span><span class="st"> </span><span class="dv">2</span>) {</span>
+<span id="cb4-122"><a href="#cb4-122"></a>      data<span class="op">$</span>ST &lt;-<span class="st"> </span><span class="kw">substr</span>(data<span class="op">$</span>HASC_<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb4-123"><a href="#cb4-123"></a>      <span class="co"># there are counties with the same name in different states so we have to join on both</span></span>
+<span id="cb4-124"><a href="#cb4-124"></a>      data &lt;-<span class="st"> </span><span class="kw">left_join</span>(data, us_election_counties, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">"NAME_2"</span>, <span class="st">"ST"</span>))</span>
+<span id="cb4-125"><a href="#cb4-125"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-126"><a href="#cb4-126"></a>      data<span class="op">$</span>ST &lt;-<span class="st"> </span><span class="kw">substr</span>(data<span class="op">$</span>HASC_<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb4-127"><a href="#cb4-127"></a>      data &lt;-<span class="st"> </span><span class="kw">left_join</span>(data, us_election_states, <span class="dt">by =</span> <span class="st">"ST"</span>)</span>
+<span id="cb4-128"><a href="#cb4-128"></a>    }</span>
+<span id="cb4-129"><a href="#cb4-129"></a>    <span class="co"># add the data back to the leafdown object</span></span>
+<span id="cb4-130"><a href="#cb4-130"></a>    my_leafdown<span class="op">$</span><span class="kw">add_data</span>(data)</span>
+<span id="cb4-131"><a href="#cb4-131"></a>    data</span>
+<span id="cb4-132"><a href="#cb4-132"></a>  })</span>
+<span id="cb4-133"><a href="#cb4-133"></a></span>
+<span id="cb4-134"><a href="#cb4-134"></a>  <span class="co"># this is where the leafdown magic happens</span></span>
+<span id="cb4-135"><a href="#cb4-135"></a>  output<span class="op">$</span>leafdown &lt;-<span class="st"> </span><span class="kw">renderLeaflet</span>({</span>
+<span id="cb4-136"><a href="#cb4-136"></a>    <span class="kw">req</span>(spdfs_list)</span>
+<span id="cb4-137"><a href="#cb4-137"></a>    <span class="kw">req</span>(data)</span>
+<span id="cb4-138"><a href="#cb4-138"></a></span>
+<span id="cb4-139"><a href="#cb4-139"></a>    data &lt;-<span class="st"> </span><span class="kw">data</span>()</span>
+<span id="cb4-140"><a href="#cb4-140"></a></span>
+<span id="cb4-141"><a href="#cb4-141"></a>    <span class="co"># depending on the selected KPI in the dropdown we show different data</span></span>
+<span id="cb4-142"><a href="#cb4-142"></a>    <span class="cf">if</span>(input<span class="op">$</span>map_sel <span class="op">==</span><span class="st"> "unemployment"</span>) {</span>
+<span id="cb4-143"><a href="#cb4-143"></a>      data<span class="op">$</span>y &lt;-<span class="st"> </span>data<span class="op">$</span>Unemployment <span class="op">*</span><span class="st"> </span><span class="dv">100</span></span>
+<span id="cb4-144"><a href="#cb4-144"></a>      fillcolor &lt;-<span class="st"> </span>leaflet<span class="op">::</span><span class="kw">colorNumeric</span>(<span class="st">"Greens"</span>, data<span class="op">$</span>y)</span>
+<span id="cb4-145"><a href="#cb4-145"></a>      legend_title &lt;-<span class="st"> "Unemployment in Percent"</span></span>
+<span id="cb4-146"><a href="#cb4-146"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-147"><a href="#cb4-147"></a>      data<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">ifelse</span>(data<span class="op">$</span>Republicans2016 <span class="op">&gt;</span><span class="st"> </span>data<span class="op">$</span>Democrats2016, <span class="st">"Republicans"</span>, <span class="st">"Democrats"</span>)</span>
+<span id="cb4-148"><a href="#cb4-148"></a>      fillcolor &lt;-<span class="st"> </span>leaflet<span class="op">::</span><span class="kw">colorFactor</span>(<span class="kw">c</span>(<span class="st">"#232066"</span>, <span class="st">"#E91D0E"</span>), data<span class="op">$</span>y)</span>
+<span id="cb4-149"><a href="#cb4-149"></a>      legend_title &lt;-<span class="st"> "Winning Party"</span></span>
+<span id="cb4-150"><a href="#cb4-150"></a>    }</span>
+<span id="cb4-151"><a href="#cb4-151"></a></span>
+<span id="cb4-152"><a href="#cb4-152"></a>    labels &lt;-<span class="st"> </span><span class="kw">create_labels</span>(data, my_leafdown<span class="op">$</span>curr_map_level)</span>
+<span id="cb4-153"><a href="#cb4-153"></a>    <span class="co"># draw the leafdown object</span></span>
+<span id="cb4-154"><a href="#cb4-154"></a>    my_leafdown<span class="op">$</span><span class="kw">draw_leafdown</span>(</span>
+<span id="cb4-155"><a href="#cb4-155"></a>      <span class="dt">fillColor =</span> <span class="op">~</span><span class="kw">fillcolor</span>(data<span class="op">$</span>y),</span>
+<span id="cb4-156"><a href="#cb4-156"></a>      <span class="dt">weight =</span> <span class="dv">3</span>, <span class="dt">fillOpacity =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">"white"</span>, <span class="dt">label =</span> labels) <span class="op">%&gt;%</span></span>
+<span id="cb4-157"><a href="#cb4-157"></a><span class="st">      </span><span class="co"># set the view to be center on the USA</span></span>
+<span id="cb4-158"><a href="#cb4-158"></a><span class="st">      </span><span class="kw">setView</span>(<span class="op">-</span><span class="dv">95</span>, <span class="dv">39</span>,  <span class="dv">4</span>)  <span class="op">%&gt;%</span></span>
+<span id="cb4-159"><a href="#cb4-159"></a><span class="st">      </span><span class="co"># add a nice legend</span></span>
+<span id="cb4-160"><a href="#cb4-160"></a><span class="st">      </span><span class="kw">addLegend</span>(<span class="dt">pal =</span> fillcolor,</span>
+<span id="cb4-161"><a href="#cb4-161"></a>                <span class="dt">values =</span> <span class="op">~</span>data<span class="op">$</span>y,</span>
+<span id="cb4-162"><a href="#cb4-162"></a>                <span class="dt">title =</span> legend_title,</span>
+<span id="cb4-163"><a href="#cb4-163"></a>                <span class="dt">opacity =</span> <span class="dv">1</span>)</span>
+<span id="cb4-164"><a href="#cb4-164"></a>  })</span>
+<span id="cb4-165"><a href="#cb4-165"></a></span>
+<span id="cb4-166"><a href="#cb4-166"></a>    <span class="co"># depending on the selected KPI in the dropdown we show different data</span></span>
+<span id="cb4-167"><a href="#cb4-167"></a>    <span class="cf">if</span>(input<span class="op">$</span>map_sel <span class="op">==</span><span class="st"> "unemployment"</span>) {</span>
+<span id="cb4-168"><a href="#cb4-168"></a>      data<span class="op">$</span>y &lt;-<span class="st"> </span>data<span class="op">$</span>Unemployment <span class="op">*</span><span class="st"> </span><span class="dv">100</span></span>
+<span id="cb4-169"><a href="#cb4-169"></a>      fillcolor &lt;-<span class="st"> </span>leaflet<span class="op">::</span><span class="kw">colorNumeric</span>(<span class="st">"Greens"</span>, data<span class="op">$</span>y)</span>
+<span id="cb4-170"><a href="#cb4-170"></a>      legend_title &lt;-<span class="st"> "Unemployment in Percent"</span></span>
+<span id="cb4-171"><a href="#cb4-171"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-172"><a href="#cb4-172"></a>      data<span class="op">$</span>y &lt;-<span class="st"> </span><span class="kw">ifelse</span>(data<span class="op">$</span>Republicans2016 <span class="op">&gt;</span><span class="st"> </span>data<span class="op">$</span>Democrats2016, <span class="st">"Republicans"</span>, <span class="st">"Democrats"</span>)</span>
+<span id="cb4-173"><a href="#cb4-173"></a>      fillcolor &lt;-<span class="st"> </span>leaflet<span class="op">::</span><span class="kw">colorFactor</span>(<span class="kw">c</span>(<span class="st">"#232066"</span>, <span class="st">"#E91D0E"</span>), data<span class="op">$</span>y)</span>
+<span id="cb4-174"><a href="#cb4-174"></a>      legend_title &lt;-<span class="st"> "Winning Party"</span></span>
+<span id="cb4-175"><a href="#cb4-175"></a>    }</span>
+<span id="cb4-176"><a href="#cb4-176"></a></span>
+<span id="cb4-177"><a href="#cb4-177"></a>    <span class="co"># add the data back to the leafdown object</span></span>
+<span id="cb4-178"><a href="#cb4-178"></a>    my_leafdown<span class="op">$</span><span class="kw">add_data</span>(data)</span>
+<span id="cb4-179"><a href="#cb4-179"></a>    labels &lt;-<span class="st"> </span><span class="kw">create_labels</span>(data, my_leafdown<span class="op">$</span>curr_map_level)</span>
+<span id="cb4-180"><a href="#cb4-180"></a>    <span class="co"># draw the leafdown object</span></span>
+<span id="cb4-181"><a href="#cb4-181"></a>    my_leafdown<span class="op">$</span><span class="kw">draw_leafdown</span>(</span>
+<span id="cb4-182"><a href="#cb4-182"></a>      <span class="dt">fillColor =</span> <span class="op">~</span><span class="kw">fillcolor</span>(data<span class="op">$</span>y),</span>
+<span id="cb4-183"><a href="#cb4-183"></a>      <span class="dt">weight =</span> <span class="dv">3</span>, <span class="dt">fillOpacity =</span> <span class="dv">1</span>, <span class="dt">color =</span> <span class="st">"white"</span>, <span class="dt">label =</span> labels) <span class="op">%&gt;%</span></span>
+<span id="cb4-184"><a href="#cb4-184"></a><span class="st">      </span><span class="co"># set the view to be center on the USA</span></span>
+<span id="cb4-185"><a href="#cb4-185"></a><span class="st">      </span><span class="kw">setView</span>(<span class="op">-</span><span class="dv">95</span>, <span class="dv">39</span>,  <span class="dv">4</span>)  <span class="op">%&gt;%</span></span>
+<span id="cb4-186"><a href="#cb4-186"></a><span class="st">      </span><span class="co"># add a nice legend</span></span>
+<span id="cb4-187"><a href="#cb4-187"></a><span class="st">      </span><span class="kw">addLegend</span>(<span class="dt">pal =</span> fillcolor,</span>
+<span id="cb4-188"><a href="#cb4-188"></a>                <span class="dt">values =</span> <span class="op">~</span>data<span class="op">$</span>y,</span>
+<span id="cb4-189"><a href="#cb4-189"></a>                <span class="dt">title =</span> legend_title,</span>
+<span id="cb4-190"><a href="#cb4-190"></a>                <span class="dt">opacity =</span> <span class="dv">1</span>)</span>
+<span id="cb4-191"><a href="#cb4-191"></a>  }<span class="er">)</span></span>
+<span id="cb4-192"><a href="#cb4-192"></a></span>
+<span id="cb4-193"><a href="#cb4-193"></a>  <span class="co"># plots</span></span>
+<span id="cb4-194"><a href="#cb4-194"></a>  output<span class="op">$</span>socio &lt;-<span class="st"> </span><span class="kw">renderEcharts4r</span>({</span>
+<span id="cb4-195"><a href="#cb4-195"></a>    df &lt;-<span class="st"> </span>my_leafdown<span class="op">$</span><span class="kw">curr_sel_data</span>()</span>
+<span id="cb4-196"><a href="#cb4-196"></a>    <span class="co"># check whether any shape is selected, show basic info for the whole usa if nothing is selected</span></span>
+<span id="cb4-197"><a href="#cb4-197"></a>    <span class="cf">if</span>(<span class="kw">dim</span>(df)[<span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>){</span>
+<span id="cb4-198"><a href="#cb4-198"></a>      <span class="cf">if</span>(my_leafdown<span class="op">$</span>curr_map_level <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {</span>
+<span id="cb4-199"><a href="#cb4-199"></a>        df &lt;-<span class="st"> </span>df[, <span class="kw">c</span>(<span class="st">"State"</span>, <span class="st">"Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Asian"</span>, <span class="st">"Amerindian"</span>, <span class="st">"Other"</span>)]</span>
+<span id="cb4-200"><a href="#cb4-200"></a>        df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dv">2</span><span class="op">:</span><span class="dv">7</span>, <span class="st">"race"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(State)</span>
+<span id="cb4-201"><a href="#cb4-201"></a>        df<span class="op">$</span>value &lt;-<span class="st"> </span><span class="kw">round</span>(df<span class="op">$</span>value, <span class="dv">2</span>)</span>
+<span id="cb4-202"><a href="#cb4-202"></a>      } <span class="cf">else</span> {</span>
+<span id="cb4-203"><a href="#cb4-203"></a>        df &lt;-<span class="st"> </span>df[, <span class="kw">c</span>(<span class="st">"County"</span>, <span class="st">"Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Asian"</span>, <span class="st">"Amerindian"</span>, <span class="st">"Other"</span>)]</span>
+<span id="cb4-204"><a href="#cb4-204"></a>        df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dv">2</span><span class="op">:</span><span class="dv">7</span>, <span class="st">"race"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(County)</span>
+<span id="cb4-205"><a href="#cb4-205"></a>        df<span class="op">$</span>value &lt;-<span class="st"> </span><span class="kw">round</span>(df<span class="op">$</span>value<span class="op">/</span><span class="dv">100</span>, <span class="dv">2</span>)</span>
+<span id="cb4-206"><a href="#cb4-206"></a>      }</span>
+<span id="cb4-207"><a href="#cb4-207"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-208"><a href="#cb4-208"></a>      <span class="co"># show basic info for the whole usa as no state is selected</span></span>
+<span id="cb4-209"><a href="#cb4-209"></a>      df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb4-210"><a href="#cb4-210"></a>        <span class="dt">ST =</span> <span class="st">"USA"</span>,</span>
+<span id="cb4-211"><a href="#cb4-211"></a>        <span class="dt">race =</span> <span class="kw">c</span>(<span class="st">"Hispanic"</span>, <span class="st">"White"</span>, <span class="st">"Black"</span>, <span class="st">"Asian"</span>, <span class="st">"Amerindian"</span>, <span class="st">"Other"</span>),</span>
+<span id="cb4-212"><a href="#cb4-212"></a>        <span class="dt">value =</span> <span class="kw">c</span>(<span class="fl">0.15</span>, <span class="fl">0.634</span>, <span class="fl">0.134</span>, <span class="fl">0.059</span>, <span class="fl">0.015</span>, <span class="fl">0.027</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(ST)</span>
+<span id="cb4-213"><a href="#cb4-213"></a>    }</span>
+<span id="cb4-214"><a href="#cb4-214"></a>    <span class="co"># create the graph</span></span>
+<span id="cb4-215"><a href="#cb4-215"></a>    df <span class="op">%&gt;%</span></span>
+<span id="cb4-216"><a href="#cb4-216"></a><span class="st">      </span><span class="kw">e_charts</span>(race) <span class="op">%&gt;%</span></span>
+<span id="cb4-217"><a href="#cb4-217"></a><span class="st">      </span><span class="kw">e_bar</span>(value) <span class="op">%&gt;%</span></span>
+<span id="cb4-218"><a href="#cb4-218"></a><span class="st">      </span><span class="kw">e_tooltip</span>(<span class="dt">trigger =</span> <span class="st">"axis"</span>,<span class="dt">axisPointer =</span> <span class="kw">list</span>(<span class="dt">type =</span> <span class="st">"shadow"</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb4-219"><a href="#cb4-219"></a><span class="st">      </span><span class="kw">e_y_axis</span>(<span class="dt">splitArea =</span> <span class="kw">list</span>(<span class="dt">show =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb4-220"><a href="#cb4-220"></a>               <span class="dt">splitLine =</span> <span class="kw">list</span>(<span class="dt">show =</span> <span class="ot">FALSE</span>),</span>
+<span id="cb4-221"><a href="#cb4-221"></a>               <span class="dt">formatter =</span> <span class="kw">e_axis_formatter</span>(<span class="st">"percent"</span>, <span class="dt">digits =</span> <span class="dv">2</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb4-222"><a href="#cb4-222"></a><span class="st">      </span><span class="kw">e_legend</span>(<span class="dt">orient =</span> <span class="st">'vertical'</span>,<span class="dt">right =</span> <span class="dv">10</span>,<span class="dt">top =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-223"><a href="#cb4-223"></a><span class="st">      </span><span class="kw">e_color</span>(<span class="kw">brewer.pal</span>(<span class="kw">nrow</span>(df), <span class="st">"Set3"</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb4-224"><a href="#cb4-224"></a><span class="st">      </span><span class="kw">e_tooltip</span>(<span class="dt">formatter =</span> <span class="kw">e_tooltip_item_formatter</span>(<span class="st">"percent"</span>))</span>
+<span id="cb4-225"><a href="#cb4-225"></a>  })</span>
+<span id="cb4-226"><a href="#cb4-226"></a></span>
+<span id="cb4-227"><a href="#cb4-227"></a>  output<span class="op">$</span>party &lt;-<span class="st"> </span><span class="kw">renderEcharts4r</span>({</span>
+<span id="cb4-228"><a href="#cb4-228"></a>    df &lt;-<span class="st"> </span>my_leafdown<span class="op">$</span><span class="kw">curr_sel_data</span>()</span>
+<span id="cb4-229"><a href="#cb4-229"></a>    <span class="co"># check whether any shape is selected, show general election-result if nothing is selected</span></span>
+<span id="cb4-230"><a href="#cb4-230"></a>    <span class="cf">if</span>(<span class="kw">dim</span>(df)[<span class="dv">1</span>] <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>){</span>
+<span id="cb4-231"><a href="#cb4-231"></a>      <span class="cf">if</span>(my_leafdown<span class="op">$</span>curr_map_level <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) {</span>
+<span id="cb4-232"><a href="#cb4-232"></a>        df &lt;-<span class="st"> </span>df[, <span class="kw">c</span>(<span class="st">"ST"</span>, <span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>)]</span>
+<span id="cb4-233"><a href="#cb4-233"></a>        df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dv">2</span><span class="op">:</span><span class="dv">5</span>, <span class="st">"party"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(party)</span>
+<span id="cb4-234"><a href="#cb4-234"></a>      } <span class="cf">else</span> {</span>
+<span id="cb4-235"><a href="#cb4-235"></a>        df &lt;-<span class="st"> </span>df[, <span class="kw">c</span>(<span class="st">"County"</span>, <span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>)]</span>
+<span id="cb4-236"><a href="#cb4-236"></a>        df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pivot_longer</span>(<span class="dv">2</span><span class="op">:</span><span class="dv">5</span>, <span class="st">"party"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(party)</span>
+<span id="cb4-237"><a href="#cb4-237"></a>        df<span class="op">$</span>value &lt;-<span class="st"> </span>df<span class="op">$</span>value</span>
+<span id="cb4-238"><a href="#cb4-238"></a>        <span class="kw">names</span>(df)[<span class="dv">1</span>] &lt;-<span class="st"> "ST"</span></span>
+<span id="cb4-239"><a href="#cb4-239"></a>      }</span>
+<span id="cb4-240"><a href="#cb4-240"></a>    } <span class="cf">else</span> {</span>
+<span id="cb4-241"><a href="#cb4-241"></a>      <span class="co"># show general election-result as no state is selected</span></span>
+<span id="cb4-242"><a href="#cb4-242"></a>      df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb4-243"><a href="#cb4-243"></a>        <span class="dt">party =</span> <span class="kw">c</span>(<span class="st">"Democrats2016"</span>, <span class="st">"Republicans2016"</span>, <span class="st">"Libertarians2016"</span>, <span class="st">"Green2016"</span>),</span>
+<span id="cb4-244"><a href="#cb4-244"></a>        <span class="dt">ST =</span> <span class="st">"USA"</span>,</span>
+<span id="cb4-245"><a href="#cb4-245"></a>        <span class="dt">value =</span> <span class="kw">c</span>(<span class="fl">0.153</span>, <span class="fl">0.634</span>, <span class="fl">0.134</span>, <span class="fl">0.059</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(party)</span>
+<span id="cb4-246"><a href="#cb4-246"></a>    }</span>
+<span id="cb4-247"><a href="#cb4-247"></a>    <span class="co"># create the graph</span></span>
+<span id="cb4-248"><a href="#cb4-248"></a>    df <span class="op">%&gt;%</span></span>
+<span id="cb4-249"><a href="#cb4-249"></a><span class="st">      </span><span class="kw">e_charts</span>(ST, <span class="dt">stack=</span><span class="st">"grp"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-250"><a href="#cb4-250"></a><span class="st">      </span><span class="kw">e_bar</span>(value) <span class="op">%&gt;%</span></span>
+<span id="cb4-251"><a href="#cb4-251"></a><span class="st">      </span><span class="kw">e_y_axis</span>(<span class="dt">formatter =</span> <span class="kw">e_axis_formatter</span>(<span class="st">"percent"</span>, <span class="dt">digits =</span> <span class="dv">2</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb4-252"><a href="#cb4-252"></a><span class="st">      </span><span class="kw">e_tooltip</span>(<span class="dt">trigger =</span> <span class="st">"axis"</span>,<span class="dt">axisPointer =</span> <span class="kw">list</span>(<span class="dt">type =</span> <span class="st">"shadow"</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb4-253"><a href="#cb4-253"></a><span class="st">      </span><span class="kw">e_legend</span>(<span class="dt">right =</span> <span class="dv">10</span>,<span class="dt">top =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-254"><a href="#cb4-254"></a><span class="st">      </span><span class="kw">e_color</span>(<span class="kw">c</span>(<span class="st">"#232066"</span>, <span class="st">"#E91D0E"</span>, <span class="st">"#f3b300"</span>, <span class="st">"#006900"</span>))<span class="op">%&gt;%</span></span>
+<span id="cb4-255"><a href="#cb4-255"></a><span class="st">      </span><span class="kw">e_tooltip</span>(<span class="dt">formatter =</span> <span class="kw">e_tooltip_item_formatter</span>(<span class="st">"percent"</span>, <span class="dt">digits =</span> <span class="dv">2</span>))</span>
+<span id="cb4-256"><a href="#cb4-256"></a>  })</span>
+<span id="cb4-257"><a href="#cb4-257"></a><span class="er">}</span></span></code></pre></div>
 </details><p>You can find the <a href="https://pega.shinyapps.io/election16/">full demo app</a> hostet on shinyapps.io</p>
 </div>
   </div>

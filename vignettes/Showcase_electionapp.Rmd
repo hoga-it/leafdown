@@ -227,10 +227,8 @@ server <- function(input, output) {
     my_leafdown$drill_up()
     rv$update_leafdown <- rv$update_leafdown + 1
   })
-
-  # this is where the leafdown magic happens
-  output$leafdown <- renderLeaflet({
-    req(spdfs_list)
+  
+  data <- reactive({
     req(rv$update_leafdown)
     # fetch the current metadata from the leafdown object
     data <- my_leafdown$curr_data
@@ -245,6 +243,42 @@ server <- function(input, output) {
       data$ST <- substr(data$HASC_1, 4, 5)
       data <- left_join(data, us_election_states, by = "ST")
     }
+    # add the data back to the leafdown object
+    my_leafdown$add_data(data)
+    data
+  })
+
+  # this is where the leafdown magic happens
+  output$leafdown <- renderLeaflet({
+    req(spdfs_list)
+    req(data)
+
+    data <- data()
+
+    # depending on the selected KPI in the dropdown we show different data
+    if(input$map_sel == "unemployment") {
+      data$y <- data$Unemployment * 100
+      fillcolor <- leaflet::colorNumeric("Greens", data$y)
+      legend_title <- "Unemployment in Percent"
+    } else {
+      data$y <- ifelse(data$Republicans2016 > data$Democrats2016, "Republicans", "Democrats")
+      fillcolor <- leaflet::colorFactor(c("#232066", "#E91D0E"), data$y)
+      legend_title <- "Winning Party"
+    }
+
+    labels <- create_labels(data, my_leafdown$curr_map_level)
+    # draw the leafdown object
+    my_leafdown$draw_leafdown(
+      fillColor = ~fillcolor(data$y),
+      weight = 3, fillOpacity = 1, color = "white", label = labels) %>%
+      # set the view to be center on the USA
+      setView(-95, 39,  4)  %>%
+      # add a nice legend
+      addLegend(pal = fillcolor,
+                values = ~data$y,
+                title = legend_title,
+                opacity = 1)
+  })
 
     # depending on the selected KPI in the dropdown we show different data
     if(input$map_sel == "unemployment") {

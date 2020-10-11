@@ -11,6 +11,7 @@ percent <- function(x, digits = 2, format = "f", ...) {      # Create user-defin
 }
 
 create_labels <- function(data, map_level) {
+  print(names(data))
   labels <- sprintf(
     "<strong>%s</strong><br/>
     Democrats: %s<br/>
@@ -49,9 +50,7 @@ server <- function(input, output) {
     rv$update_leafdown <- rv$update_leafdown + 1
   })
 
-  # this is where the leafdown magic happens
-  output$leafdown <- renderLeaflet({
-    req(spdfs_list)
+  data <- reactive({
     req(rv$update_leafdown)
     # fetch the current metadata from the leafdown object
     data <- my_leafdown$curr_data
@@ -66,6 +65,17 @@ server <- function(input, output) {
       data$ST <- substr(data$HASC_1, 4, 5)
       data <- left_join(data, us_election_states, by = "ST")
     }
+    # add the data back to the leafdown object
+    my_leafdown$add_data(data)
+    data
+  })
+
+  # this is where the leafdown magic happens
+  output$leafdown <- renderLeaflet({
+    req(spdfs_list)
+    req(data)
+
+    data <- data()
 
     # depending on the selected KPI in the dropdown we show different data
     if(input$map_sel == "unemployment") {
@@ -78,8 +88,6 @@ server <- function(input, output) {
       legend_title <- "Winning Party"
     }
 
-    # add the data back to the leafdown object
-    my_leafdown$add_data(data)
     labels <- create_labels(data, my_leafdown$curr_map_level)
     # draw the leafdown object
     my_leafdown$draw_leafdown(
