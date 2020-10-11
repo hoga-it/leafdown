@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • leafdown</title>
+<title>Check whether the given spdf_list is a valid spdf_list and has all the required params. — check_spdf_list • leafdown</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Check whether the given spdf_list is a valid spdf_list and has all the required params. — check_spdf_list" />
+<meta property="og:description" content="The spdf_list must be a list of at most two elements.
+All elements must be a s4 class of type SpatialPolygonsDataFrame.
+Every element must have a GID_1" />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -118,78 +121,32 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Check whether the given spdf_list is a valid spdf_list and has all the required params.</h1>
+    
+    <div class="hidden name"><code>check_spdf_list.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>The spdf_list must be a list of at most two elements.
+All elements must be a s4 class of type SpatialPolygonsDataFrame.
+Every element must have a GID_1</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>check_spdf_list</span>(<span class='kw'>spdfs_list</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="check_draw_ellipsis.html">check_draw_ellipsis()</a></code> </p>
-        </td>
-        <td><p>Checks for undesired arguments in ellipsis in $draw_leafdown method</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="check_spdf_list.html">check_spdf_list()</a></code> </p>
-        </td>
-        <td><p>Check whether the given spdf_list is a valid spdf_list and has all the required params.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gdp_2014_admin_districts.html">gdp_2014_admin_districts</a></code> </p>
-        </td>
-        <td><p>GPD for administrative districts of Germany for 2014.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="gdp_2014_federal_states.html">gdp_2014_federal_states</a></code> </p>
-        </td>
-        <td><p>GPD for federal states of Germany for 2014.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="Leafdown.html">Leafdown</a></code> </p>
-        </td>
-        <td><p>Leafdown R6 Class</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="us_election_counties.html">us_election_counties</a></code> </p>
-        </td>
-        <td><p>Results of the 2016 US Presidential Election - County Level</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="us_election_states.html">us_election_states</a></code> </p>
-        </td>
-        <td><p>Results of the 2016 US Presidential Election - State Level</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>spdfs_list</th>
+      <td><p>A list with the spdfs of all map levels</p></td>
+    </tr>
     </table>
-  </div>
 
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

@@ -4,11 +4,13 @@
 \name{gdp_2014_federal_states}
 \alias{gdp_2014_federal_states}
 \title{GPD for federal states of Germany for 2014.}
-\format{A data frame with 16 rows and 2 variables:
+\format{
+A data frame with 16 rows and 2 variables:
 \describe{
   \item{Federal_State}{Name of the federal state}
   \item{GDP_2014}{GDP for the year 2014, in euro}
-}}
+}
+}
 \source{
 Arbeitskreis Volkswirtschaftliche Gesamtrechnungen der Laender:
 \url{http://www.deutschlandinzahlen.de}
