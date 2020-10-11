@@ -1,4 +1,5 @@
 library(bs4Dash)
+library(shiny)
 library(shinyjs)
 library(leaflet)
 library(leafdown)

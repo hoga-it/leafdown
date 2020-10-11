@@ -1,10 +1,20 @@
 library(leafdown)
+# Run before uploading
+#devtools::install_github("hoga-it/leafdown")
+
+# Comment this when uploading
+states <- readRDS("us1.RDS")
+counties <- readRDS("us2.RDS")
+
+# uncomment this when uploading
+#states <- readRDS("us1.RDS")
+#counties <- readRDS("us2.RDS")
+
+
 # Define server for leafdown app
 server <- function(input, output) {
   # load the shapes for the two levels
-  states <- readRDS("../extdata/us1.RDS")
-  states2 <- readRDS("../extdata/us2.RDS")
-  spdfs_list <- list(states, states2)
+  spdfs_list <- list(states, counties)
 
   # create leafdown object
   my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)

@@ -60,9 +60,6 @@
 #' }
 #' @source
 #' https://github.com/Deleetdk/USA.county.data
-#'
-#' Note that in this package we have slightly adapted some names of the
-#' administrative districts for a better match.
 "us_election_counties"
 
 #' Results of the 2016 US Presidential Election - State Level
