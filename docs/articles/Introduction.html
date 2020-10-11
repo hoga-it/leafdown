@@ -56,6 +56,9 @@
 <li>
       <a href="../articles/Introduction.html">Introduction</a>
     </li>
+    <li>
+      <a href="../articles/Showcase_electionapp.html">Showcase - Election App</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -170,8 +173,8 @@ For this we have to specify the:</p>
 <div id="data-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-1" class="anchor"></a>Data</h3>
-<p>In the next step we add data to our <code>leafdown</code> object. Using the method <code>$curr_metadata</code> we can retrieve the metadata of the current map level. With metadata we refer to the data that describes the polygons, such as region names, region IDs, etc. The metadata are automatically set with the <code>spdf_list[[i]]@data</code> where i is the current map level.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
+<p>In the next step we add data to our <code>leafdown</code> object. Using the attribute <code>$curr_data</code> we can retrieve the data of the current map level. With metadata we refer to the data that describes the polygons, such as region names, region IDs, etc. The metadata are automatically set with the <code>spdf_list[[i]]@data</code> where i is the current map level.</p>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_data</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">metadata</span>))
 <span class="co">#&gt;   GID_0  NAME_0   GID_1            NAME_1 VARNAME_1 NL_NAME_1</span>
 <span class="co">#&gt; 1   DEU Germany DEU.1_1 Baden-Württemberg      &lt;NA&gt;      &lt;NA&gt;</span>
@@ -247,9 +250,9 @@ For this we have to specify the:</p>
 <div id="data-2" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-2" class="anchor"></a>Data</h3>
-<p>The updated metadata can then again be retrieved via <code>$curr_metadata</code>.</p>
+<p>The updated data can then again be retrieved via <code>$curr_data</code>.</p>
 <div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">my_leafdown</span>$<span class="fu">drill_down</span>()
-<span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
+<span class="no">metadata</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_data</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">metadata</span>)</pre></body></html></div>
 <pre><code>#&gt;    GID_0  NAME_0   GID_1 NAME_1 NL_NAME_1     GID_2                     NAME_2
 #&gt; 46   DEU Germany DEU.2_1 Bayern      &lt;NA&gt; DEU.2.1_1          Aichach-Friedberg
@@ -356,7 +359,7 @@ For this we have to specify the:</p>
 
   <span class="no">output</span>$<span class="no">leafdown</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-shiny.html">renderLeaflet</a></span>({
     <span class="fu">update_leafdown</span>()
-    <span class="no">meta_data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_metadata</span>
+    <span class="no">meta_data</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_data</span>
     <span class="no">curr_map_level</span> <span class="kw">&lt;-</span> <span class="no">my_leafdown</span>$<span class="no">curr_map_level</span>
     <span class="kw">if</span> (<span class="no">curr_map_level</span> <span class="kw">==</span> <span class="fl">1</span>) {
       <span class="no">data</span> <span class="kw">&lt;-</span> <span class="no">meta_data</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(<span class="no">gdp_2014_federal_states</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"NAME_1"</span> <span class="kw">=</span> <span class="st">"Federal_State"</span>))
