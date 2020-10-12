@@ -53,8 +53,12 @@ You can find the documentation
 ## Showcase - Election Map
 
 To showcase the features of the `leafdown` package we have created a
-demo app. <br> The app shows the 2016 us presidential election results
-as well as some demographic information.<br> Click here for the [full
-demo app](https://pega.shinyapps.io/election16/) <br> Click here for the
+demo app. <br>
+
+The app shows the 2016 us presidential election results as well as some
+demographic information.<br> Click here for the [full demo
+app](https://pega.shinyapps.io/election16/) <br> Click here for the
 [documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html)
-<br> <br> <img src='man/figures/app_election_map.png'/>
+<br> <br>
+
+<img src='man/figures/app_election_map.png'/>
