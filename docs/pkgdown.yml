@@ -1,8 +1,12 @@
 pandoc: 2.7.3
-pkgdown: 1.6.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   Introduction: Introduction.html
   Showcase_electionapp: Showcase_electionapp.html
+<<<<<<< HEAD
 last_built: 2020-10-12T13:24Z
+=======
+last_built: 2020-10-12T07:06Z
+>>>>>>> de80d957bd7923dcfe83f0ee6fadfea6750462c5
 

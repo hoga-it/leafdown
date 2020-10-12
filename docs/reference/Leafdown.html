@@ -150,7 +150,7 @@ A leafdown object can <strong>only</strong> be used in a shiny app.</p>
 
     <h2 class="hasAnchor" id="public-fields"><a class="anchor" href="#public-fields"></a>Public fields</h2>
 
-    <p><div class="r6-fields"></p><dl>
+    <p><div class="r6-fields"></p><dl'>
 <dt><code>spdfs_list</code></dt><dd><p>The spdfs of all map levels. This is set in <code>initialize</code> and cannot be changed afterwards.
 At the moment only two map levels are possible.</p></dd>
 
@@ -165,7 +165,7 @@ unselected_parents All spdf shapes from the higher level which are not selected.
 </dl><p></div></p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
-    <p><div class="r6-active-bindings"></p><dl>
+    <p><div class="r6-active-bindings"></p><dl'>
 <dt><code>spdfs_list</code></dt><dd><p>The spdfs of all map levels. This is set in <code>initialize</code> and cannot be changed afterwards.
 At the moment only two map levels are possible.</p></dd>
 
@@ -193,7 +193,7 @@ unselected_parents All spdf shapes from the higher level which are not selected.
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
+<h3>Public methods</h3>
 
 <ul>
 <li><p><a href='#method-new'><code>Leafdown$new()</code></a></p></li>
@@ -205,17 +205,17 @@ unselected_parents All spdf shapes from the higher level which are not selected.
 <li><p><a href='#method-clone'><code>Leafdown$clone()</code></a></p></li>
 </ul>
 <p><hr>
-<a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
+<a id="method-new"></a></p><h3>Method <code>new()</code></h3>
 <p>Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
 Once a shape is clicked, it is added to (or removed from) <code>.curr_sel_ids</code>.
 The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.</p>
 
 <p>Initializes the leafdown object.
-This will not draw the map. First add data and then call <code>draw_leafdown</code> to draw the map.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>spdfs_list</span>, <span class='kw'>map_output_id</span>, <span class='kw'>input</span>)</pre><p></div></p>
+This will not draw the map. First add data and then call <code>draw_leafdown</code> to draw the map.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>new</span>(<span class='no'>spdfs_list</span>, <span class='no'>map_output_id</span>, <span class='no'>input</span>)</pre><p></div></p>
 
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
 <dt><code>spdfs_list</code></dt><dd><p>A list with the spdfs of all map levels. This cannot be changed later.</p></dd>
 
 <dt><code>map_output_id</code></dt><dd><p>The id from the shiny-ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>. Used to observe for _shape_click events.</p></dd>
@@ -224,60 +224,60 @@ This will not draw the map. First add data and then call <code>draw_leafdown</co
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-draw_leafdown"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>draw_leafdown()</code></h3>
-<p>Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>draw_leafdown</span>(<span class='kw'>...</span>)</pre><p></div></p>
+<a id="method-draw_leafdown"></a></p><h3>Method <code>draw_leafdown()</code></h3>
+<p>Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>draw_leafdown</span>(<span class='no'>...</span>)</pre><p></div></p>
 
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
 <dt><code>...</code></dt><dd><p>Additional arguments given to <code><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>leaflet::addPolygons</a></code></p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-add_data"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>add_data()</code></h3>
+<a id="method-add_data"></a></p><h3>Method <code>add_data()</code></h3>
 <p>Adds the data to the currently displayed shapes.
-This includes the meta-data AND the values to be visualized in the map.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>add_data</span>(<span class='kw'>data</span>)</pre><p></div></p>
+This includes the meta-data AND the values to be visualized in the map.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>add_data</span>(<span class='no'>data</span>)</pre><p></div></p>
 
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
 <dt><code>data</code></dt><dd><p>The new data existing of the meta-data and the values to display in the map(color)</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-drill_down"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>drill_down()</code></h3>
+<a id="method-drill_down"></a></p><h3>Method <code>drill_down()</code></h3>
 <p>Drills down to the lower level if:
 - there is a lower level (for now there are only two levels)
 - at least one shape is selected to drill down on
 !This will not redraw the map! Also call <code>add_data</code> to add data for the new level and then
-  <code>draw_leafdown</code> to redraw the map on the new level</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>drill_down</span>()</pre><p></div></p>
+  <code>draw_leafdown</code> to redraw the map on the new level</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>drill_down</span>()</pre><p></div></p>
 
 <p><hr>
-<a id="method-drill_up"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>drill_up()</code></h3>
+<a id="method-drill_up"></a></p><h3>Method <code>drill_up()</code></h3>
 <p>Drills up to the higher level if:
 - there is a higher level (for now there are only two levels)
 !This will not redraw the map! Also call <code>add_data</code> to add data for the new level and then
-  <code>draw_leafdown</code> to redraw the map on the new level</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>drill_up</span>()</pre><p></div></p>
+  <code>draw_leafdown</code> to redraw the map on the new level</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>drill_up</span>()</pre><p></div></p>
 
 <p><hr>
-<a id="method-toggle_shape_select"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>toggle_shape_select()</code></h3>
-<p>Selects the shape with the given shape id, or unselects it if it was already selected.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>toggle_shape_select</span>(<span class='kw'>shape_id</span>)</pre><p></div></p>
+<a id="method-toggle_shape_select"></a></p><h3>Method <code>toggle_shape_select()</code></h3>
+<p>Selects the shape with the given shape id, or unselects it if it was already selected.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>toggle_shape_select</span>(<span class='no'>shape_id</span>)</pre><p></div></p>
 
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
 <dt><code>shape_id</code></dt><dd><p>the id of the shape to select, has to be a character and in the current map-level.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
-<p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='kw'>Leafdown</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
+<a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
+<p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>clone</span>(<span class='kw'>deep</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre><p></div></p>
 
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl'>
 <dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
 
 </dl><p></div></p>
@@ -299,7 +299,7 @@ This includes the meta-data AND the values to be visualized in the map.</p><h4 c
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
