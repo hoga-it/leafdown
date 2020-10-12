@@ -28,7 +28,7 @@ knitr::include_graphics("../man/figures/app_germany_map.png")
 
 Let's first load the libraries we are going to use for our app. \
 
-```{r setup, message=FALSE}
+```{r setup, message=FALSE,warning=FALSE}
 library(leafdown)
 library(leaflet)
 library(shiny)
@@ -395,6 +395,25 @@ map <- my_leafdown$draw_leafdown(
 
 
 ## Shiny App
+
+### Preparation
+
+```{r, eval=FALSE}
+library(leafdown)
+library(leaflet)
+library(shiny)
+library(dplyr)
+library(shinyjs)
+ger1 <- raster::getData(country = "Germany", level = 1)
+ger2 <- raster::getData(country = "Germany", level = 2)
+ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
+  "Fürth (Kreisfreie Stadt)",
+  "München (Kreisfreie Stadt)",
+  "Osnabrück (Kreisfreie Stadt)",
+  "Würzburg (Kreisfreie Stadt)"
+)
+spdfs_list <- list(ger1, ger2)
+```
 
 ### UI
 ```{r, eval=FALSE}

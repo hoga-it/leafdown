@@ -321,10 +321,28 @@ For this we have to specify the:</p>
 <div id="shiny-app" class="section level2">
 <h2 class="hasAnchor">
 <a href="#shiny-app" class="anchor"></a>Shiny App</h2>
+<div id="preparation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#preparation" class="anchor"></a>Preparation</h3>
+<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">leafdown</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">leaflet</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shiny</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shinyjs</span>)
+<span class="no">ger1</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(<span class="kw">country</span> <span class="kw">=</span> <span class="st">"Germany"</span>, <span class="kw">level</span> <span class="kw">=</span> <span class="fl">1</span>)
+<span class="no">ger2</span> <span class="kw">&lt;-</span> <span class="kw pkg">raster</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/getData.html">getData</a></span>(<span class="kw">country</span> <span class="kw">=</span> <span class="st">"Germany"</span>, <span class="kw">level</span> <span class="kw">=</span> <span class="fl">2</span>)
+<span class="no">ger2</span>@<span class="kw">data</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">76</span>, <span class="fl">99</span>, <span class="fl">136</span>, <span class="fl">226</span>), <span class="st">"NAME_2"</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
+  <span class="st">"Fürth (Kreisfreie Stadt)"</span>,
+  <span class="st">"München (Kreisfreie Stadt)"</span>,
+  <span class="st">"Osnabrück (Kreisfreie Stadt)"</span>,
+  <span class="st">"Würzburg (Kreisfreie Stadt)"</span>
+)
+<span class="no">spdfs_list</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">ger1</span>, <span class="no">ger2</span>)</pre></body></html></div>
+</div>
 <div id="ui" class="section level3">
 <h3 class="hasAnchor">
 <a href="#ui" class="anchor"></a>UI</h3>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">ui</span> <span class="kw">&lt;-</span> <span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidPage</a></span>(
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="no">ui</span> <span class="kw">&lt;-</span> <span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html">fluidPage</a></span>(
   <span class="no">tags</span>$<span class="fu">style</span>(<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reexports.html">HTML</a></span>(<span class="st">".leaflet-container {background: #ffffff;}"</span>)),
   <span class="fu"><a href="https://rdrr.io/pkg/shinyjs/man/useShinyjs.html">useShinyjs</a></span>(),
   <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html">actionButton</a></span>(<span class="st">"drill_down"</span>, <span class="st">"Drill Down"</span>),
@@ -335,7 +353,7 @@ For this we have to specify the:</p>
 <div id="server" class="section level3">
 <h3 class="hasAnchor">
 <a href="#server" class="anchor"></a>Server</h3>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="co"># Little helper function for hover labels</span>
+<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="co"># Little helper function for hover labels</span>
 <span class="no">create_labels</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">data</span>, <span class="no">map_level</span>) {
   <span class="no">labels</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(
     <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g € per capita&lt;/sup&gt;"</span>,
@@ -343,7 +361,7 @@ For this we have to specify the:</p>
   )
   <span class="no">labels</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(<span class="kw pkg">htmltools</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span>)
 }</pre></body></html></div>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
   <span class="no">my_leafdown</span> <span class="kw">&lt;-</span> <span class="no">Leafdown</span>$<span class="fu">new</span>(<span class="no">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="no">input</span>)
   <span class="no">update_leafdown</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactiveVal.html">reactiveVal</a></span>(<span class="fl">0</span>)
 
@@ -387,7 +405,7 @@ For this we have to specify the:</p>
 <div id="run-app" class="section level3">
 <h3 class="hasAnchor">
 <a href="#run-app" class="anchor"></a>Run App</h3>
-<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
 <style>
 .shiny-app-frame {
   position: relative;

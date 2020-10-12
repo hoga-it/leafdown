@@ -34,8 +34,8 @@ devtools::install_github("hoga-it/leafdown")
 
 ## Documentation
 
-Please find the documentation
-[here](https://hoga-it.github.io/leafdown/index.html)
+You can find the documentation
+[here](https://hoga-it.github.io/leafdown/index.html).
 
 ## Features
 
@@ -46,8 +46,9 @@ Please find the documentation
   - Easy to use and well integrated into syntax of the
     [leaflet](https://rstudio.github.io/leaflet/) R package.
   - Allows communication of the map with other shiny elements
-    (e.g. Graphs).
-  - Computationally efficient as drilldown only for regions of interest.
+    (e.g. graphs).
+  - Computationally efficient as drilldown is only executed for selected
+    regions of interest.
 
 ## Showcase - Election Map
 
@@ -56,4 +57,4 @@ demo app. <br> The app shows the 2016 us presidential election results
 as well as some demographic information.<br> Click here for the [full
 demo app](https://pega.shinyapps.io/election16/) <br> Click here for the
 [documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html)
-<img src='man/figures/app_election_map.png'/>
+<br> <br> <img src='man/figures/app_election_map.png'/>
