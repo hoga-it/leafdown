@@ -35,6 +35,7 @@ Here we show the results of the US Presidential Election from 2016.
 In this section we want to demonstrate how simple it is to connect graphs or similar UI-elements with the map.
 
 We create two graphs that give more insight on the currently selected shapes. </br>
+
 - As the map only shows the winner, we create a barchart to show the percentages from every party. </br>
 - Additionally we add a graph showing the racial makeup.
 
