@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-In this article we demonstrate how easy it is to connect Graphs with a `leafdown` map. <br>
+In this article, we demonstrate how easy it is to connect Graphs with a `leafdown` map. <br>
 Click here for the [full demo app](https://pega.shinyapps.io/election16/)
 ```{r, echo=FALSE, out.width="100%"}
 knitr::include_graphics("../man/figures/app_election_map.png")
@@ -32,12 +32,12 @@ The structure of the map is pretty similar to the map from the [Introduction art
 Here we show the results of the US Presidential Election from 2016.
 
 ## Connecting Graphs to our Map
-In this section we want to demonstrate how simple it is to connect graphs or similar UI-elements with the map.
+In this section, we want to demonstrate how simple it is to connect graphs or similar UI-elements with the map.
 
-We create two graphs that give more insight on the currently selected shapes. </br>
+We create two graphs that give more insight into the currently selected shapes. </br>
 
 - As the map only shows the winner, we create a barchart to show the percentages from every party. </br>
-- Additionally we add a graph showing the racial makeup.
+- Additionally, we add a graph showing the racial makeup.
 
 The changes in the UI are straight forward:
 ```{r, eval = FALSE}
@@ -376,4 +376,4 @@ server <- function(input, output) {
 ```
 </details>
 
-You can find the [full demo app](https://pega.shinyapps.io/election16/) hostet on shinyapps.io
+You can find the [full demo app](https://pega.shinyapps.io/election16/) hosted on shinyapps.io

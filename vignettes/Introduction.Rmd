@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this article we would like to give an example of how to create a very simple 
+In this article, we would like to give an example of how to create a very simple 
 drilldown map with `leafdown`. \
 The goal is to create a map that:
 
@@ -50,7 +50,7 @@ For "Germany", `level = 1` contains the spdf for the federal states
 and `level = 2` the spdf for the administrative districts.
 
 If an `spdf` comes from a different source, it is important that the structure 
-is identical to the `spdfs` that comes from the `raster` package. It is especially 
+is identical to the `spdfs` that come from the `raster` package. It is especially 
 important that the data of both `spdfs` have a column `GID_1` that indicates 
 which subregions correspond to the regions of the first map level.
 
@@ -95,7 +95,7 @@ spdfs_list <- list(ger1, ger2)
 
 ## Data
 
-For this app we will use the example data sets that come with the `leafdown` package.
+For this app, we will use the example data sets that come with the `leafdown` package.
 The data.frame `gdp_2014_federal_states`  contains the GPD of 2014 for the federal 
 states and `gdp_2014_admin_districts` for the administrative districts of Germany.
 
@@ -113,7 +113,7 @@ head(gdp_2014_admin_districts)
 
 
 ## Leafdown workflow
-In this part we sketch and explain the typical `leafdown` workflow. \
+In this part, we sketch and explain the typical `leafdown` workflow. \
 
 ```{r, echo=FALSE, fig.width=7, eval=FALSE}
 DiagrammeR::grViz('
@@ -203,12 +203,12 @@ my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = inpu
 
 ### Data
 
-In the next step we add data to our `leafdown` object.
+In the next step, we add data to our `leafdown` object.
 Using the attribute `$curr_data` we can retrieve the data of the 
 current map level.
-With metadata we refer to the data that describes the polygons, such as region names, 
+With metadata, we refer to the data that describes the polygons, such as region names, 
 region IDs, etc.
-The metadata are automatically set with the `spdf_list[[i]]@data` where i is the current
+The metadata is automatically set with the `spdf_list[[i]]@data` where i is the current
 map level.
 
 ```{r}
@@ -277,7 +277,7 @@ my_leafdown$curr_sel_data()
 subset(my_leafdown$curr_data, NAME_1 %in% c("Bayern", "Hessen"))
 ```
 
-Note that this attribute is a `reactiveValue` which allows to update graphs and other 
+Note that this attribute is a `reactiveValue` that allows to update graphs and other 
 elements upon a user click. For more on the connection to other elements please
 see the following 
 [tutorial](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html).
@@ -355,7 +355,7 @@ ger2@data %>%
 ### Draw map
 
 After adding `GDP_2014` to our admin district data, we can again draw our map.
-Note that all non active parent regions grayed out in the background.
+Note that all non-active parent regions grayed out in the background.
 
 ```{r, eval=FALSE}
 my_leafdown$draw_leafdown(
