@@ -23,6 +23,8 @@ At the moment only two map levels are possible.}
 
 \item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
+\item{\code{gid_columns}}{A named vector with the columns to join the map levels by}
+
 \item{\code{curr_spdf}}{The spdfs of the current map level.
 curr_poly_ids The ids of all polygons of the current map level.
 selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
@@ -38,6 +40,8 @@ unselected_parents All spdf shapes from the higher level which are not selected.
 At the moment only two map levels are possible.}
 
 \item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+
+\item{\code{gid_columns}}{A named vector with the columns to join the map levels by}
 
 \item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
@@ -83,7 +87,12 @@ The outline of selected shapes is highlighted via the showGroup (hideGroup) func
 Initializes the leafdown object.
 This will not draw the map. First add data and then call \code{draw_leafdown} to draw the map.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(spdfs_list, map_output_id, input)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(
+  spdfs_list,
+  map_output_id,
+  input,
+  gid_columns = c(GID_1 = "GID_1")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -94,6 +103,8 @@ This will not draw the map. First add data and then call \code{draw_leafdown} to
 \item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
 \item{\code{input}}{The \code{input} from the shiny app}
+
+\item{\code{gid_columns}}{A named vector with the columns to join the map levels by}
 }
 \if{html}{\out{</div>}}
 }

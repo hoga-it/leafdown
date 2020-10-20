@@ -24,6 +24,8 @@ Leafdown <- R6::R6Class("Leafdown",
     .map_proxy = NULL,
     #' @field map_output_id The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     .map_output_id = NULL,
+    #' @field gid_columns A named vector with the columns to join the map levels by
+    .gid_columns = NULL,
     #' @field curr_data The metadata and (if available) the corresponding values of all currently displayed shapes.
     .curr_data = NULL,
     #' @field curr_sel_data A \code{reactiveValue} containing a data.frame with
@@ -90,9 +92,9 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @param spdfs_list A list with the spdfs of all map levels. This cannot be changed later.
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app
-    initialize = function(spdfs_list, map_output_id, input) {
+    #' @param gid_columns A named vector with the columns to join the map levels by
+    initialize = function(spdfs_list, map_output_id, input, gid_columns = c("GID_1" = "GID_1")) {
       check_spdf_list(spdfs_list)
-
       # check map_output_id
       checkmate::assert_character(map_output_id, min.chars = 1)
 
@@ -106,6 +108,7 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.selected_parents <- c()
       private$.spdfs_list <- spdfs_list
       private$.map_output_id <- map_output_id
+      private$.gid_columns <- check_gid_columns(gid_columns, spdfs_list)
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_data <- private$.curr_spdf@data
@@ -223,7 +226,8 @@ Leafdown <- R6::R6Class("Leafdown",
 
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
-      spdf_new <- spdf_new[spdf_new@data$GID_1 %in% private$.selected_parents@data$GID_1, ]
+      spdf_new <- spdf_new[spdf_new@data[, private$.gid_columns] %in%
+                             private$.selected_parents@data[, names(private$.gid_columns)], ]
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new

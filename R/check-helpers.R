@@ -68,4 +68,29 @@ check_spdf_list <- function (spdfs_list) {
   }
 }
 
+#' Check whether the given gid_columns is a valid .
+#' @description
+#' The gid_columns must be a named vector of at most one element.
+#' The columns specified in the vector must be in the spdfs_list.
+#'
+#' @param gid_columns A named vector to join the map levels by
+#' @param spdfs_list A list with the spdfs of all map levels
+check_gid_columns <- function (gid_columns, spdfs_list) {
+  if (!is.vector(gid_columns)) {
+    stop("The given gid_columns must be a vector")
+  }
+  if (is.null(names(gid_columns))) {
+    stop("The given gid_columns must be a NAMED vector.")
+  }
+  if (length(gid_columns) > 1) {
+    stop("Leafdown currently supports only two map levels. The given gid_columns can therefore only contain one named element.")
+  }
 
+  if (names(gid_columns[1]) %in% names(spdfs_list[[1]]) & gid_columns[1] %in% names(spdfs_list[[2]])) {
+    c(names(gid_columns[1]), gid_columns[1])
+  } else if (names(gid_columns[1]) %in% names(spdfs_list[[2]]) & gid_columns[1] %in% names(spdfs_list[[1]])) {
+    c(gid_columns[1], names(gid_columns[1]))
+  } else {
+    stop("The given gid_columns must specify the columns to join the map levels by.")
+  }
+}
