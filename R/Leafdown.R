@@ -233,8 +233,8 @@ Leafdown <- R6::R6Class("Leafdown",
 
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
-      spdf_new <- spdf_new[spdf_new@data[, private$.gid_columns] %in%
-                             private$.selected_parents@data[, names(private$.gid_columns)], ]
+      spdf_new <- spdf_new[spdf_new@data[, private$.gid_columns[1]] %in%
+                             private$.selected_parents@data[, names(private$.gid_columns[1])], ]
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new

@@ -19,9 +19,11 @@ ui <- shiny::fluidPage(
 # Define server for leafdown app
 server <- function(input, output) {
   states <- readRDS("us1-0005.RDS")
+  names(states)[names(states) == "GID_1"] <- "MATCH1"
   states2 <- readRDS("us2-0005.RDS")
+  names(states2)[names(states2) == "GID_1"] <- "MATCH2"
   spdfs_list <- list(states, states2)
-  my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input)
+  my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input, gid_columns = c("MATCH1" = "MATCH2"))
   eval_draw <- NULL
   rv <- reactiveValues()
   rv$update_leafdown <- 0
@@ -54,7 +56,7 @@ server <- function(input, output) {
         do.call(my_leafdown$draw_leafdown, input$args_leaflet)
       })
     }
-    my_leafdown$draw_leafdown(highlight = highlightOptions(bringToFront = TRUE))
+    my_leafdown$draw_leafdown()
   })
 
   exportTestValues(my_leafdown = { my_leafdown }, eval_draw = {eval_draw})

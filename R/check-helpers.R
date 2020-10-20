@@ -60,11 +60,6 @@ check_spdf_list <- function (spdfs_list) {
     if(!is_valid) {
       stop("The given spdfs_list must contain s4 classes of type SpatialPolygonsDataFrame")
     }
-
-    # Check whether the data of the given spdf_element has 'GID_1' column
-    if(!"GID_1" %in% names(spdfs_list[[i]]@data)) {
-      stop("The data of each element of the given spdfs_list must contain a 'GID_1' column")
-    }
   }
 }
 
@@ -87,10 +82,12 @@ check_gid_columns <- function (gid_columns, spdfs_list) {
   }
 
   if (names(gid_columns[1]) %in% names(spdfs_list[[1]]) & gid_columns[1] %in% names(spdfs_list[[2]])) {
-    c(names(gid_columns[1]), gid_columns[1])
+    gid_cols <- gid_columns
   } else if (names(gid_columns[1]) %in% names(spdfs_list[[2]]) & gid_columns[1] %in% names(spdfs_list[[1]])) {
-    c(gid_columns[1], names(gid_columns[1]))
+    gid_cols <- c(names(gid_columns[1]))
+    names(gid_cols) <- gid_columns[1]
   } else {
     stop("The given gid_columns must specify the columns to join the map levels by.")
   }
+  gid_cols
 }

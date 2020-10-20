@@ -16,12 +16,6 @@ test_that("function 'check_s4_spdf' correctly detects objects of class s4 and
   expect_false(check_s4_spdf(not_spdf))
 })
 
-test_that("function 'check_spdf_list' rejects spdf_lists without 'GID_1' columns", {
-  spdf_s4 <- list(readRDS("testapps/us1-0005.RDS"))
-  spdf_s4[[1]]@data$GID_1 <- NULL
-  expect_error(check_spdf_list(spdf_s4), "The data of each element of the given spdfs_list must contain a 'GID_1' column")
-})
-
 context("check_draw_ellipsis")
 
 test_that("function 'check_draw_ellipsis' correctly detects undesired input in $draw_leafdown and returns
