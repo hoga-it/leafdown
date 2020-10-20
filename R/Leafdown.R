@@ -182,7 +182,14 @@ Leafdown <- R6::R6Class("Leafdown",
 
       if(!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
         # check if the data was just reordered
-        data_reordered <- data[order(match(data[, "GID_1"], private$.curr_spdf@data[, "GID_1"])), ]
+        id_col <- "GID_1"
+        if (names(private$.gid_columns[1]) %in% names(data)) {
+          id_col <- names(private$.gid_columns[1])
+        } else if (private$.gid_columns[1] %in% names(data)) {
+          id_col <- private$.gid_columns[1]
+        }
+
+        data_reordered <- data[order(match(data[, id_col], private$.curr_spdf@data[, id_col])), ]
         if(isTRUE(all.equal(data_reordered[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
           stop("Please do not reorder the data. Use left_joins to add the data")
         } else {
