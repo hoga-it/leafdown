@@ -23,7 +23,7 @@ server <- function(input, output) {
   states2 <- readRDS("us2-0005.RDS")
   names(states2)[names(states2) == "GID_1"] <- "MATCH2"
   spdfs_list <- list(states, states2)
-  my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input, gid_columns = c("MATCH1" = "MATCH2"))
+  my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input, join_map_levels_by = c("MATCH1" = "MATCH2"))
   eval_draw <- NULL
   rv <- reactiveValues()
   rv$update_leafdown <- 0

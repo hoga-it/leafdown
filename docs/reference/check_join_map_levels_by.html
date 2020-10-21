@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Checks for undesired arguments in ellipsis in $draw_leafdown method — check_draw_ellipsis • leafdown</title>
+<title>Check whether the given join_map_levels_by is a valid . — check_join_map_levels_by • leafdown</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,9 @@
 
 
 
-<meta property="og:title" content="Checks for undesired arguments in ellipsis in $draw_leafdown method — check_draw_ellipsis" />
-<meta property="og:description" content="Checks arguments in ellipsis for undesired inputs such as `layerId` which may
-collide with internal structure of leafdown and returns a &quot;cleaned&quot; version of
-the arguments by removing or redefining problematic inputs.
-e.g. `layerId` is removed from arg_list when set." />
+<meta property="og:title" content="Check whether the given join_map_levels_by is a valid . — check_join_map_levels_by" />
+<meta property="og:description" content="The join_map_levels_by must be a named vector of at most one element.
+The columns specified in the vector must be in the spdfs_list." />
 
 
 
@@ -124,32 +122,31 @@ e.g. `layerId` is removed from arg_list when set." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Checks for undesired arguments in ellipsis in $draw_leafdown method</h1>
+    <h1>Check whether the given join_map_levels_by is a valid .</h1>
     
-    <div class="hidden name"><code>check_draw_ellipsis.Rd</code></div>
+    <div class="hidden name"><code>check_join_map_levels_by.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Checks arguments in ellipsis for undesired inputs such as `layerId` which may
-collide with internal structure of leafdown and returns a "cleaned" version of
-the arguments by removing or redefining problematic inputs.
-e.g. `layerId` is removed from arg_list when set.</p>
+    <p>The join_map_levels_by must be a named vector of at most one element.
+The columns specified in the vector must be in the spdfs_list.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_draw_ellipsis</span>(<span class='kw'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>check_join_map_levels_by</span>(<span class='kw'>join_map_levels_by</span>, <span class='kw'>spdfs_list</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Additional arguments given to <code><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>leaflet::addPolygons</a></code></p></td>
+      <th>join_map_levels_by</th>
+      <td><p>A named vector with the columns to join the map levels by</p></td>
+    </tr>
+    <tr>
+      <th>spdfs_list</th>
+      <td><p>A list with the spdfs of all map levels</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>List containing arguments in ... as elements</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

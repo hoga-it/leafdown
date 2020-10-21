@@ -191,6 +191,9 @@ For this we have to specify the:
 - `spdfs_list`: The list containing the spdfs of both map levels.
 - `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
 - `input`: The `input` from the shiny app
+- `join_map_levels_by` (optional): A named vector with the columns to join the map levels by. 
+As a Default this is set to `c("GID_1" = "GID_1")`. <br>
+If you use 'world' as first level and the individual countries as second level you have to set it to `c("ISO" = "GID_0")`
 
 ```{r, echo=FALSE}
 input <- reactiveValues(foo = "bar") # a little helper as we are currently not in a shiny session

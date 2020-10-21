@@ -23,7 +23,7 @@ At the moment only two map levels are possible.}
 
 \item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
-\item{\code{gid_columns}}{A named vector with the columns to join the map levels by}
+\item{\code{join_map_levels_by}}{A named vector with the columns to join the map levels by}
 
 \item{\code{curr_spdf}}{The spdfs of the current map level.
 curr_poly_ids The ids of all polygons of the current map level.
@@ -41,7 +41,7 @@ At the moment only two map levels are possible.}
 
 \item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
 
-\item{\code{gid_columns}}{A named vector with the columns to join the map levels by}
+\item{\code{join_map_levels_by}}{A named vector with the columns to join the map levels by}
 
 \item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
@@ -91,7 +91,7 @@ This will not draw the map. First add data and then call \code{draw_leafdown} to
   spdfs_list,
   map_output_id,
   input,
-  gid_columns = c(GID_1 = "GID_1")
+  join_map_levels_by = c(GID_1 = "GID_1")
 )}\if{html}{\out{</div>}}
 }
 
@@ -104,7 +104,7 @@ This will not draw the map. First add data and then call \code{draw_leafdown} to
 
 \item{\code{input}}{The \code{input} from the shiny app}
 
-\item{\code{gid_columns}}{A named vector with the columns to join the map levels by}
+\item{\code{join_map_levels_by}}{A named vector with the columns to join the map levels by}
 }
 \if{html}{\out{</div>}}
 }

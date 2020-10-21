@@ -63,31 +63,31 @@ check_spdf_list <- function (spdfs_list) {
   }
 }
 
-#' Check whether the given gid_columns is a valid .
+#' Check whether the given join_map_levels_by is a valid .
 #' @description
-#' The gid_columns must be a named vector of at most one element.
+#' The join_map_levels_by must be a named vector of at most one element.
 #' The columns specified in the vector must be in the spdfs_list.
 #'
-#' @param gid_columns A named vector to join the map levels by
+#' @param join_map_levels_by A named vector with the columns to join the map levels by
 #' @param spdfs_list A list with the spdfs of all map levels
-check_gid_columns <- function (gid_columns, spdfs_list) {
-  if (!is.vector(gid_columns)) {
-    stop("The given gid_columns must be a vector")
+check_join_map_levels_by <- function (join_map_levels_by, spdfs_list) {
+  if (!is.vector(join_map_levels_by)) {
+    stop("The given join_map_levels_by must be a vector")
   }
-  if (is.null(names(gid_columns))) {
-    stop("The given gid_columns must be a NAMED vector.")
+  if (is.null(names(join_map_levels_by))) {
+    stop("The given join_map_levels_by must be a NAMED vector.")
   }
-  if (length(gid_columns) > 1) {
-    stop("Leafdown currently supports only two map levels. The given gid_columns can therefore only contain one named element.")
+  if (length(join_map_levels_by) > 1) {
+    stop("Leafdown currently supports only two map levels. The given join_map_levels_by can therefore only contain one named element.")
   }
 
-  if (names(gid_columns[1]) %in% names(spdfs_list[[1]]) & gid_columns[1] %in% names(spdfs_list[[2]])) {
-    gid_cols <- gid_columns
-  } else if (names(gid_columns[1]) %in% names(spdfs_list[[2]]) & gid_columns[1] %in% names(spdfs_list[[1]])) {
-    gid_cols <- c(names(gid_columns[1]))
-    names(gid_cols) <- gid_columns[1]
+  if (names(join_map_levels_by[1]) %in% names(spdfs_list[[1]]) & join_map_levels_by[1] %in% names(spdfs_list[[2]])) {
+    join_by <- join_map_levels_by
+  } else if (names(join_map_levels_by[1]) %in% names(spdfs_list[[2]]) & join_map_levels_by[1] %in% names(spdfs_list[[1]])) {
+    join_by <- c(names(join_map_levels_by[1]))
+    names(join_by) <- join_map_levels_by[1]
   } else {
-    stop("The given gid_columns must specify the columns to join the map levels by.")
+    stop("The given join_map_levels_by must specify the columns to join the map levels by.")
   }
-  gid_cols
+  join_by
 }
