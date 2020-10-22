@@ -17,7 +17,10 @@ the metadata and (if available) the corresponding values of all currently select
 \item{\code{curr_map_level}}{Index of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...).
-At the moment only two map levels are possible.}
+At the moment only two map levels are possible.
+Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
+The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.}
 }
 \if{html}{\out{</div>}}
 }
@@ -37,13 +40,7 @@ At the moment only two map levels are possible.}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
-Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
-The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
-
-
 Initializes the leafdown object.
-This will not draw the map. First add data and then call \code{draw_leafdown} to draw the map.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(
   spdfs_list,
@@ -58,11 +55,12 @@ This will not draw the map. First add data and then call \code{draw_leafdown} to
 \describe{
 \item{\code{spdfs_list}}{A list with the spdfs of all map levels. This cannot be changed later.}
 
-\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}.
+Used to observe for _shape_click events.}
 
-\item{\code{input}}{The \code{input} from the shiny app}
+\item{\code{input}}{The \code{input} from the shiny app.}
 
-\item{\code{join_map_levels_by}}{A named vector with the columns to join the map levels by}
+\item{\code{join_map_levels_by}}{A named vector with the columns by which the map levels should be joined.}
 }
 \if{html}{\out{</div>}}
 }

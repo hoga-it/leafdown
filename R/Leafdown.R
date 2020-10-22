@@ -42,7 +42,6 @@ Leafdown <- R6::R6Class("Leafdown",
     .unselected_parents = NULL,
 
 
-    #' @description
     #' Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
     #' Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
     #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
@@ -80,7 +79,6 @@ Leafdown <- R6::R6Class("Leafdown",
   public = list(
     #' @description
     #' Initializes the leafdown object.
-    #' This will not draw the map. First add data and then call \code{draw_leafdown} to draw the map.
     #' @param spdfs_list A list with the spdfs of all map levels. This cannot be changed later.
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}.
     #' Used to observe for _shape_click events.
