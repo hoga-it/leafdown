@@ -47,6 +47,8 @@ check_draw_ellipsis <- function(...) {
 #' Every element must have a GID_1
 #'
 #' @param spdfs_list A list with the spdfs of all map levels
+#'
+#' @return TRUE if spdf_list is valid.
 check_spdf_list <- function (spdfs_list) {
   if(!is.list(spdfs_list)) {
     stop("The given spdfs_list must be a list")
@@ -63,13 +65,14 @@ check_spdf_list <- function (spdfs_list) {
   }
 }
 
-#' Check whether the given join_map_levels_by is a valid .
+#' Check whether the given join_map_levels_by is valid
+#'
 #' @description
 #' The join_map_levels_by must be a named vector of at most one element.
-#' The columns specified in the vector must be in the spdfs_list.
+#' The columns specified in the vector must be data slots of the spdfs in the spdfs_list.
 #'
-#' @param join_map_levels_by A named vector with the columns to join the map levels by
-#' @param spdfs_list A list with the spdfs of all map levels
+#' @param join_map_levels_by A named vector with the columns to join the map levels by.
+#' @param spdfs_list A list with the spdfs of all map levels.
 check_join_map_levels_by <- function (join_map_levels_by, spdfs_list) {
   if (!is.vector(join_map_levels_by)) {
     stop("The given join_map_levels_by must be a vector")

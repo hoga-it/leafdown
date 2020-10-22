@@ -4,45 +4,11 @@
 \alias{Leafdown}
 \title{Leafdown R6 Class}
 \description{
-This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
-\itemize{
-  \item select shapes / regions
-  \item drill down on these selected shapes
-  \item drill up
-}
-
-The active bindings of the class provide convenient interfaces between the leafdown map
-and other elements in the shiny app e.g. graphs, tables etc.
-A leafdown object can \strong{only} be used in a shiny app.
-}
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
-At the moment only two map levels are possible.}
-
-\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
-
-\item{\code{join_map_levels_by}}{A named vector with the columns to join the map levels by}
-
-\item{\code{curr_spdf}}{The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.
-selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
-unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)}
-}
-\if{html}{\out{</div>}}
+This class acts as a wrapper around a leafdown map.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
-At the moment only two map levels are possible.}
-
-\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
-
-\item{\code{join_map_levels_by}}{A named vector with the columns to join the map levels by}
-
 \item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
 \item{\code{curr_sel_data}}{A \code{reactiveValue} containing a data.frame with
@@ -51,15 +17,7 @@ the metadata and (if available) the corresponding values of all currently select
 \item{\code{curr_map_level}}{Index of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...).
-At the moment only two map levels are possible.
-curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
-Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
-
-\item{\code{curr_spdf}}{The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.
-selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
-unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)}
+At the moment only two map levels are possible.}
 }
 \if{html}{\out{</div>}}
 }

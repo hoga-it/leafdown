@@ -9,6 +9,9 @@ check_spdf_list(spdfs_list)
 \arguments{
 \item{spdfs_list}{A list with the spdfs of all map levels}
 }
+\value{
+TRUE if spdf_list is valid.
+}
 \description{
 The spdf_list must be a list of at most two elements.
 All elements must be a s4 class of type SpatialPolygonsDataFrame.

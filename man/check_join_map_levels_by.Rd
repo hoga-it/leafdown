@@ -2,16 +2,16 @@
 % Please edit documentation in R/check-helpers.R
 \name{check_join_map_levels_by}
 \alias{check_join_map_levels_by}
-\title{Check whether the given join_map_levels_by is a valid .}
+\title{Check whether the given join_map_levels_by is valid}
 \usage{
 check_join_map_levels_by(join_map_levels_by, spdfs_list)
 }
 \arguments{
-\item{join_map_levels_by}{A named vector with the columns to join the map levels by}
+\item{join_map_levels_by}{A named vector with the columns to join the map levels by.}
 
-\item{spdfs_list}{A list with the spdfs of all map levels}
+\item{spdfs_list}{A list with the spdfs of all map levels.}
 }
 \description{
 The join_map_levels_by must be a named vector of at most one element.
-The columns specified in the vector must be in the spdfs_list.
+The columns specified in the vector must be data slots of the spdfs in the spdfs_list.
 }
