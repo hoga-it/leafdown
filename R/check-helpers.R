@@ -44,7 +44,6 @@ check_draw_ellipsis <- function(...) {
 #' @description
 #' The spdf_list must be a list of at most two elements.
 #' All elements must be a s4 class of type SpatialPolygonsDataFrame.
-#' Every element must have a GID_1
 #'
 #' @param spdfs_list A list with the spdfs of all map levels
 #'
@@ -73,6 +72,7 @@ check_spdf_list <- function (spdfs_list) {
 #'
 #' @param join_map_levels_by A named vector with the columns to join the map levels by.
 #' @param spdfs_list A list with the spdfs of all map levels.
+#' @return the join_map_levels_by in the right order
 check_join_map_levels_by <- function (join_map_levels_by, spdfs_list) {
   if (!is.vector(join_map_levels_by)) {
     stop("The given join_map_levels_by must be a vector")

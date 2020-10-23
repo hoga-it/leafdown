@@ -159,6 +159,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Adds the data to the currently displayed shapes.
     #' This includes the meta-data AND the values to be visualized in the map.
+    #' The data has to be in the same order as the metadata returned from `curr_data`.
     #' @param data The new data existing of the meta-data and the values to display in the map(color)
     add_data = function(data) {
       # check if the given data contains the correct metadata:
