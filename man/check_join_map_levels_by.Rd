@@ -11,6 +11,9 @@ check_join_map_levels_by(join_map_levels_by, spdfs_list)
 
 \item{spdfs_list}{A list with the spdfs of all map levels.}
 }
+\value{
+the join_map_levels_by in the right order
+}
 \description{
 The join_map_levels_by must be a named vector of at most one element.
 The columns specified in the vector must be data slots of the spdfs in the spdfs_list.

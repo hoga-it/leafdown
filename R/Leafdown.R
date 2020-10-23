@@ -90,7 +90,7 @@ Leafdown <- R6::R6Class("Leafdown",
       checkmate::assert_character(map_output_id, min.chars = 1)
 
       # check 'input' reactive vals from shiny
-      if(!shiny::is.reactivevalues(input)) {
+      if (!shiny::is.reactivevalues(input)) {
         stop("The given 'input' argument must be the 'input' from the shiny app")
       }
 
@@ -116,7 +116,7 @@ Leafdown <- R6::R6Class("Leafdown",
       # e.g. 'layerId' is removed from arg_list when set
       arg_list <- check_draw_ellipsis(...)
       curr_spdf <- private$.curr_spdf
-      if(!is.null(private$.curr_data)) {
+      if (!is.null(private$.curr_data)) {
         curr_spdf@data <- private$.curr_data
       }
       # Using proxy to avoid redrawing of map when highlighting
@@ -139,7 +139,7 @@ Leafdown <- R6::R6Class("Leafdown",
           map <- map %>%
             addPolylines(
               data = private$.unselected_parents,
-              stroke = F, weight = 2, color="#929292",
+              stroke = F, weight = 2, color = "#929292",
               highlight = highlightOptions(bringToFront = T)
             ) %>%
             addPolygons(
@@ -159,20 +159,19 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Adds the data to the currently displayed shapes.
     #' This includes the meta-data AND the values to be visualized in the map.
-    #' The data has to be in the same order as the metadata returned from `curr_data`.
     #' @param data The new data existing of the meta-data and the values to display in the map(color)
     add_data = function(data) {
       # check if the given data contains the correct metadata:
       # - The metadata has to be the same as the old metadata
       # - Optionally value column(s) can be added
-      if(!is.data.frame(data)) {
+      if (!is.data.frame(data)) {
         stop("The given data must be a data.frame")
       }
-      if(!all(names(private$.curr_spdf@data) %in% names(data))) {
+      if (!all(names(private$.curr_spdf@data) %in% names(data))) {
         stop("You cannot remove columns from the existing meta-data. Only add to it")
       }
 
-      if(!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+      if (!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
         # check if the data was just reordered
         id_col <- "GID_1"
         if (names(private$.join_map_levels_by[1]) %in% names(data)) {
@@ -182,7 +181,7 @@ Leafdown <- R6::R6Class("Leafdown",
         }
 
         data_reordered <- data[order(match(data[, id_col], private$.curr_spdf@data[, id_col])), ]
-        if(isTRUE(all.equal(data_reordered[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+        if (isTRUE(all.equal(data_reordered[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
           stop("Please do not reorder the data. Use left_joins to add the data")
         } else {
           stop("You cannot change the existing meta-data. Only add to it")
@@ -199,18 +198,20 @@ Leafdown <- R6::R6Class("Leafdown",
     },
     #' @description
     #' Drills down to the lower level if:
-    #' - there is a lower level (for now there are only two levels)
-    #' - at least one shape is selected to drill down on
-    #' !This will not redraw the map! Also call \code{add_data} to add data for the new level and then
-    #'   \code{draw_leafdown} to redraw the map on the new level
+    #' \itemize{
+    #'  \item there is a lower level (for now there are only two levels)
+    #'  \item at least one shape is selected to drill down on
+    #' }
+    #' This will not redraw the map. Also call \code{add_data} to add data for the new level and then
+    #'   \code{draw_leafdown} to redraw the map on the new level.
     drill_down = function() {
       # check whether we can drill_down further (just 2 levels for now)
-      if(private$.curr_map_level == length(private$.spdfs_list)) {
+      if (private$.curr_map_level == length(private$.spdfs_list)) {
         shinyjs::alert("The lowest level is reached. Cannot drill lower!")
         req(FALSE)
       }
       # check for selection (we can only drill_down if there are shapes selected)
-      if(length(private$.curr_sel_ids[[private$.curr_map_level]]) < 1) {
+      if (length(private$.curr_sel_ids[[private$.curr_map_level]]) < 1) {
         shinyjs::alert("Please select the area to drill down!")
         req(FALSE)
       }
@@ -226,7 +227,7 @@ Leafdown <- R6::R6Class("Leafdown",
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
       spdf_new <- spdf_new[spdf_new@data[, private$.join_map_levels_by[1]] %in%
-                             private$.selected_parents@data[, names(private$.join_map_levels_by[1])], ]
+        private$.selected_parents@data[, names(private$.join_map_levels_by[1])], ]
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new
@@ -237,12 +238,14 @@ Leafdown <- R6::R6Class("Leafdown",
     },
     #' @description
     #' Drills up to the higher level if:
-    #' - there is a higher level (for now there are only two levels)
-    #' !This will not redraw the map! Also call \code{add_data} to add data for the new level and then
-    #'   \code{draw_leafdown} to redraw the map on the new level
+    #' \itemize{
+    #'  \item there is a higher level (for now there are only two levels)
+    #' }
+    #' This will not redraw the map. Also call \code{add_data} to add data for the new level and then
+    #'   \code{draw_leafdown} to redraw the map on the new level.
     drill_up = function() {
       # check whether we can drill_up further
-      if(private$.curr_map_level <= 1) {
+      if (private$.curr_map_level <= 1) {
         shinyjs::alert("The highest level is reached. Cannot drill higher!")
         req(FALSE)
       }
@@ -259,7 +262,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @param shape_id the id of the shape to select, has to be a character and in the current map-level.
     toggle_shape_select = function(shape_id) {
       checkmate::assert_character(shape_id, min.chars = 1)
-      if(!shape_id %in% private$.curr_poly_ids) {
+      if (!shape_id %in% private$.curr_poly_ids) {
         stop("Please make sure the selected shape_id is in the current level")
       }
 

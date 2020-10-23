@@ -105,10 +105,12 @@ This includes the meta-data AND the values to be visualized in the map.
 \if{latex}{\out{\hypertarget{method-drill_down}{}}}
 \subsection{Method \code{drill_down()}}{
 Drills down to the lower level if:
-- there is a lower level (for now there are only two levels)
-- at least one shape is selected to drill down on
-!This will not redraw the map! Also call \code{add_data} to add data for the new level and then
-  \code{draw_leafdown} to redraw the map on the new level
+\itemize{
+ \item there is a lower level (for now there are only two levels)
+ \item at least one shape is selected to drill down on
+}
+This will not redraw the map. Also call \code{add_data} to add data for the new level and then
+  \code{draw_leafdown} to redraw the map on the new level.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$drill_down()}\if{html}{\out{</div>}}
 }
@@ -119,9 +121,11 @@ Drills down to the lower level if:
 \if{latex}{\out{\hypertarget{method-drill_up}{}}}
 \subsection{Method \code{drill_up()}}{
 Drills up to the higher level if:
-- there is a higher level (for now there are only two levels)
-!This will not redraw the map! Also call \code{add_data} to add data for the new level and then
-  \code{draw_leafdown} to redraw the map on the new level
+\itemize{
+ \item there is a higher level (for now there are only two levels)
+}
+This will not redraw the map. Also call \code{add_data} to add data for the new level and then
+  \code{draw_leafdown} to redraw the map on the new level.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$drill_up()}\if{html}{\out{</div>}}
 }

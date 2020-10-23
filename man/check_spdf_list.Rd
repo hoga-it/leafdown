@@ -15,5 +15,4 @@ TRUE if spdf_list is valid.
 \description{
 The spdf_list must be a list of at most two elements.
 All elements must be a s4 class of type SpatialPolygonsDataFrame.
-Every element must have a GID_1
 }
