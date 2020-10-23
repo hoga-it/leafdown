@@ -50,9 +50,7 @@ For "Germany", `level = 1` contains the spdf for the federal states
 and `level = 2` the spdf for the administrative districts.
 
 If an `spdf` comes from a different source, it is important that the structure 
-is identical to the `spdfs` that come from the `raster` package. It is especially 
-important that the data of both `spdfs` have a column `GID_1` that indicates 
-which subregions correspond to the regions of the first map level.
+is identical to the `spdfs` that come from the `raster` package.
 
 ```{r, echo=FALSE}
 ger1 <- readRDS("../inst/extdata/ger1-005.R")
@@ -191,6 +189,11 @@ For this we have to specify the:
 - `spdfs_list`: The list containing the spdfs of both map levels.
 - `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
 - `input`: The `input` from the shiny app
+- `join_map_levels_by` (optional). A named vector with the columns by which the map levels 
+should be joined. By default this is set to c("GID_1" = "GID_1"), which is 
+appropriate when 'Provinces/States' is the first and 'Districts' the second map level.
+If you use 'Countries' as first  and 'Provinces/States' as second level you have to set 
+it to `c("ISO" = "GID_0")`
 
 ```{r, echo=FALSE}
 input <- reactiveValues(foo = "bar") # a little helper as we are currently not in a shiny session
@@ -206,9 +209,10 @@ my_leafdown <- Leafdown$new(spdfs_list, map_output_id = "leafdown", input = inpu
 In the next step, we add data to our `leafdown` object.
 Using the attribute `$curr_data` we can retrieve the data of the 
 current map level.
+At the beginning `$curr_data` only contains metadata.
 With metadata, we refer to the data that describes the polygons, such as region names, 
 region IDs, etc.
-The metadata is automatically set with the `spdf_list[[i]]@data` where i is the current
+The metadata is automatically set with the `spdf_list[[i]]@data` where `i` is the current
 map level.
 
 ```{r}

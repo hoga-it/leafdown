@@ -16,7 +16,6 @@ test_that("drill_down drills to correct subshapes", {
   curr_selection <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
   expect_equal(curr_selection[[1]], c("6", "7"))
 
-
   # drill down
   app$setInputs(drill_down = "click")
   curr_map_level <- app$getAllValues()$export$my_leafdown$curr_map_level

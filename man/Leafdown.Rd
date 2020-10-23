@@ -4,41 +4,11 @@
 \alias{Leafdown}
 \title{Leafdown R6 Class}
 \description{
-This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
-\itemize{
-  \item select shapes / regions
-  \item drill down on these selected shapes
-  \item drill up
-}
-
-The active bindings of the class provide convenient interfaces between the leafdown map
-and other elements in the shiny app e.g. graphs, tables etc.
-A leafdown object can \strong{only} be used in a shiny app.
-}
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
-At the moment only two map levels are possible.}
-
-\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
-
-\item{\code{curr_spdf}}{The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.
-selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
-unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)}
-}
-\if{html}{\out{</div>}}
+This class acts as a wrapper around a leafdown map.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{spdfs_list}}{The spdfs of all map levels. This is set in \code{initialize} and cannot be changed afterwards.
-At the moment only two map levels are possible.}
-
-\item{\code{map_output_id}}{The id from the shiny ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
-
 \item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
 \item{\code{curr_sel_data}}{A \code{reactiveValue} containing a data.frame with
@@ -48,14 +18,9 @@ the metadata and (if available) the corresponding values of all currently select
 This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...).
 At the moment only two map levels are possible.
-curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
-Calling \code{drill_down}, the drill down functionality is executed for these shapes.}
-
-\item{\code{curr_spdf}}{The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.
-selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
-unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)}
+Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
+The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.}
 }
 \if{html}{\out{</div>}}
 }
@@ -75,15 +40,14 @@ unselected_parents All spdf shapes from the higher level which are not selected.
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
-Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
-The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
-
-
 Initializes the leafdown object.
-This will not draw the map. First add data and then call \code{draw_leafdown} to draw the map.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(spdfs_list, map_output_id, input)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(
+  spdfs_list,
+  map_output_id,
+  input,
+  join_map_levels_by = c(GID_1 = "GID_1")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -91,9 +55,12 @@ This will not draw the map. First add data and then call \code{draw_leafdown} to
 \describe{
 \item{\code{spdfs_list}}{A list with the spdfs of all map levels. This cannot be changed later.}
 
-\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}. Used to observe for _shape_click events.}
+\item{\code{map_output_id}}{The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}.
+Used to observe for _shape_click events.}
 
-\item{\code{input}}{The \code{input} from the shiny app}
+\item{\code{input}}{The \code{input} from the shiny app.}
+
+\item{\code{join_map_levels_by}}{A named vector with the columns by which the map levels should be joined.}
 }
 \if{html}{\out{</div>}}
 }

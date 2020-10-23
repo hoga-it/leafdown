@@ -40,15 +40,7 @@
 
 
 <meta property="og:title" content="Leafdown R6 Class — Leafdown" />
-<meta property="og:description" content="This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:
-select shapes / regions
-drill down on these selected shapes
-drill up
-
-
-The active bindings of the class provide convenient interfaces between the leafdown map
-and other elements in the shiny app e.g. graphs, tables etc.
-A leafdown object can only be used in a shiny app." />
+<meta property="og:description" content="This class acts as a wrapper around a leafdown map." />
 
 
 
@@ -135,42 +127,14 @@ A leafdown object can only be used in a shiny app." />
     </div>
 
     <div class="ref-description">
-    <p>This class acts as a wrapper around the leaflet map. A leaflet map allows the user of the shiny app to:</p><ul>
-<li><p>select shapes / regions</p></li>
-<li><p>drill down on these selected shapes</p></li>
-<li><p>drill up</p></li>
-</ul>
-
-<p>The active bindings of the class provide convenient interfaces between the leafdown map
-and other elements in the shiny app e.g. graphs, tables etc.
-A leafdown object can <strong>only</strong> be used in a shiny app.</p>
+    <p>This class acts as a wrapper around a leafdown map.</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="public-fields"><a class="anchor" href="#public-fields"></a>Public fields</h2>
-
-    <p><div class="r6-fields"></p><dl'>
-<dt><code>spdfs_list</code></dt><dd><p>The spdfs of all map levels. This is set in <code>initialize</code> and cannot be changed afterwards.
-At the moment only two map levels are possible.</p></dd>
-
-<dt><code>map_output_id</code></dt><dd><p>The id from the shiny ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>. Used to observe for _shape_click events.</p></dd>
-
-<dt><code>curr_spdf</code></dt><dd><p>The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.
-selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
-unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)</p></dd>
-
-</dl><p></div></p>
     <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
 
     <p><div class="r6-active-bindings"></p><dl'>
-<dt><code>spdfs_list</code></dt><dd><p>The spdfs of all map levels. This is set in <code>initialize</code> and cannot be changed afterwards.
-At the moment only two map levels are possible.</p></dd>
-
-<dt><code>map_output_id</code></dt><dd><p>The id from the shiny ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>. Used to observe for _shape_click events.</p></dd>
-
 <dt><code>curr_data</code></dt><dd><p>The metadata and (if available) the corresponding values of all currently displayed shapes.</p></dd>
 
 <dt><code>curr_sel_data</code></dt><dd><p>A <code>reactiveValue</code> containing a data.frame with
@@ -180,14 +144,9 @@ the metadata and (if available) the corresponding values of all currently select
 This corresponds to the position of the shapes in the <code>spdfs_list</code>.
 (i.e The highest-level is 1, the next is 2 and so on...).
 At the moment only two map levels are possible.
-curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
-Calling <code>drill_down</code>, the drill down functionality is executed for these shapes.</p></dd>
-
-<dt><code>curr_spdf</code></dt><dd><p>The spdfs of the current map level.
-curr_poly_ids The ids of all polygons of the current map level.
-selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
-unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
-(Subset of spdfs_list)</p></dd>
+Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+Once a shape is clicked, it is added to (or removed from) <code>.curr_sel_ids</code>.
+The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -206,21 +165,24 @@ unselected_parents All spdf shapes from the higher level which are not selected.
 </ul>
 <p><hr>
 <a id="method-new"></a></p><h3>Method <code>new()</code></h3>
-<p>Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
-Once a shape is clicked, it is added to (or removed from) <code>.curr_sel_ids</code>.
-The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.</p>
-
-<p>Initializes the leafdown object.
-This will not draw the map. First add data and then call <code>draw_leafdown</code> to draw the map.</p><h3>Usage</h3>
-<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>new</span>(<span class='no'>spdfs_list</span>, <span class='no'>map_output_id</span>, <span class='no'>input</span>)</pre><p></div></p>
+<p>Initializes the leafdown object.</p><h3>Usage</h3>
+<p><div class="r"></p><pre><span class='no'>Leafdown</span>$<span class='fu'>new</span>(
+  <span class='no'>spdfs_list</span>,
+  <span class='no'>map_output_id</span>,
+  <span class='no'>input</span>,
+  <span class='kw'>join_map_levels_by</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>GID_1</span> <span class='kw'>=</span> <span class='st'>"GID_1"</span>)
+)</pre><p></div></p>
 
 <h3>Arguments</h3>
 <p><div class="arguments"></p><dl'>
 <dt><code>spdfs_list</code></dt><dd><p>A list with the spdfs of all map levels. This cannot be changed later.</p></dd>
 
-<dt><code>map_output_id</code></dt><dd><p>The id from the shiny-ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>. Used to observe for _shape_click events.</p></dd>
+<dt><code>map_output_id</code></dt><dd><p>The id from the shiny-ui used in the <code>leafletOutput("&lt;&lt;id&gt;&gt;")</code>.
+Used to observe for _shape_click events.</p></dd>
 
-<dt><code>input</code></dt><dd><p>The <code>input</code> from the shiny app</p></dd>
+<dt><code>input</code></dt><dd><p>The <code>input</code> from the shiny app.</p></dd>
+
+<dt><code>join_map_levels_by</code></dt><dd><p>A named vector with the columns by which the map levels should be joined.</p></dd>
 
 </dl><p></div></p>
 <p><hr>

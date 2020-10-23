@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check whether the given spdf_list is a valid spdf_list and has all the required params. — check_spdf_list • leafdown</title>
+<title>Check whether the given join_map_levels_by is valid — check_join_map_levels_by • leafdown</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="Check whether the given spdf_list is a valid spdf_list and has all the required params. — check_spdf_list" />
-<meta property="og:description" content="The spdf_list must be a list of at most two elements.
-All elements must be a s4 class of type SpatialPolygonsDataFrame.
-Every element must have a GID_1" />
+<meta property="og:title" content="Check whether the given join_map_levels_by is valid — check_join_map_levels_by" />
+<meta property="og:description" content="The join_map_levels_by must be a named vector of at most one element.
+The columns specified in the vector must be data slots of the spdfs in the spdfs_list." />
 
 
 
@@ -123,31 +122,31 @@ Every element must have a GID_1" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check whether the given spdf_list is a valid spdf_list and has all the required params.</h1>
+    <h1>Check whether the given join_map_levels_by is valid</h1>
     
-    <div class="hidden name"><code>check_spdf_list.Rd</code></div>
+    <div class="hidden name"><code>check_join_map_levels_by.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The spdf_list must be a list of at most two elements.
-All elements must be a s4 class of type SpatialPolygonsDataFrame.
-Every element must have a GID_1</p>
+    <p>The join_map_levels_by must be a named vector of at most one element.
+The columns specified in the vector must be data slots of the spdfs in the spdfs_list.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>check_spdf_list</span>(<span class='no'>spdfs_list</span>)</pre>
+    <pre class="usage"><span class='fu'>check_join_map_levels_by</span>(<span class='no'>join_map_levels_by</span>, <span class='no'>spdfs_list</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>join_map_levels_by</th>
+      <td><p>A named vector with the columns to join the map levels by.</p></td>
+    </tr>
+    <tr>
       <th>spdfs_list</th>
-      <td><p>A list with the spdfs of all map levels</p></td>
+      <td><p>A list with the spdfs of all map levels.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>TRUE if spdf_list is valid.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
