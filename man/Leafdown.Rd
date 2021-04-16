@@ -9,18 +9,17 @@ This class acts as a wrapper around a leafdown map.
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
-
 \item{\code{curr_sel_data}}{A \code{reactiveValue} containing a data.frame with
 the metadata and (if available) the corresponding values of all currently selected shapes.}
+
+\item{\code{curr_data}}{The metadata and (if available) the corresponding values of all currently displayed shapes.}
 
 \item{\code{curr_map_level}}{Index of the current map level.
 This corresponds to the position of the shapes in the \code{spdfs_list}.
 (i.e The highest-level is 1, the next is 2 and so on...).
-At the moment only two map levels are possible.
-Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
-Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
-The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.}
+At the moment only two map levels are possible.}
+
+\item{\code{curr_poly_ids}}{The ids of all polygons of the current map level.}
 }
 \if{html}{\out{</div>}}
 }
@@ -40,6 +39,11 @@ The outline of selected shapes is highlighted via the showGroup (hideGroup) func
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
+The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
+
+
 Initializes the leafdown object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(

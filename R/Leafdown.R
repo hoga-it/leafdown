@@ -18,22 +18,18 @@ Leafdown <- R6::R6Class("Leafdown",
     # join_map_levels_by A named vector with the columns by which the map levels should be joined.
     # By default this is set to c("GID_1" = "GID_1").
     .join_map_levels_by = NULL,
-    #' @field curr_data The metadata and (if available) the corresponding values of all currently displayed shapes.
+    # see documentation at corresponding active field
     .curr_data = NULL,
-    #' @field curr_sel_data A \code{reactiveValue} containing a data.frame with
-    #' the metadata and (if available) the corresponding values of all currently selected shapes.
+    # see documentation at corresponding active field
     .curr_sel_data = NULL,
-    #' @field curr_map_level Index of the current map level.
-    #' This corresponds to the position of the shapes in the \code{spdfs_list}.
-    #' (i.e The highest-level is 1, the next is 2 and so on...).
-    #' At the moment only two map levels are possible.
+    # see documentation at corresponding active field
     .curr_map_level = NULL,
     # curr_sel_ids The ids of the selected shapes of the current level. They will be highlighted on the map.
     # Calling \code{drill_down}, the drill down functionality is executed for these shapes.
     .curr_sel_ids = NULL,
     # curr_spdf The spdfs of the current map level.
     .curr_spdf = NULL,
-    # curr_poly_ids The ids of all polygons of the current map level.
+    # see documentation at corresponding active field
     .curr_poly_ids = NULL,
     # selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
     .selected_parents = NULL,
@@ -41,10 +37,9 @@ Leafdown <- R6::R6Class("Leafdown",
     # (Subset of spdfs_list)
     .unselected_parents = NULL,
 
-
-    #' Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
-    #' Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
-    #' The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
+    # Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
+    # Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
+    # The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
     init_click_observer = function(input, map_output_id) {
       shiny::observeEvent(input[[paste0(map_output_id, "_shape_click")]], {
         clicked_id <- input[[paste0(map_output_id, "_shape_click")]]$id
@@ -54,6 +49,8 @@ Leafdown <- R6::R6Class("Leafdown",
     }
   ),
   active = list(
+    #' @field curr_sel_data A \code{reactiveValue} containing a data.frame with
+    #' the metadata and (if available) the corresponding values of all currently selected shapes.
     curr_sel_data = function(value) {
       if (missing(value)) {
         private$.curr_sel_data
@@ -61,6 +58,7 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("`$curr_sel_data` is read only", call. = FALSE)
       }
     },
+    #' @field curr_data The metadata and (if available) the corresponding values of all currently displayed shapes.
     curr_data = function(value) {
       if (missing(value)) {
         private$.curr_data
@@ -68,11 +66,23 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("`$.curr_data` is read only", call. = FALSE)
       }
     },
+    #' @field curr_map_level Index of the current map level.
+    #' This corresponds to the position of the shapes in the \code{spdfs_list}.
+    #' (i.e The highest-level is 1, the next is 2 and so on...).
+    #' At the moment only two map levels are possible.
     curr_map_level = function(value) {
       if (missing(value)) {
         private$.curr_map_level
       } else {
         stop("`$curr_map_level` is read only", call. = FALSE)
+      }
+    },
+    #' @field curr_poly_ids The ids of all polygons of the current map level.
+    curr_poly_ids = function(value) {
+      if (missing(value)) {
+        private$.curr_poly_ids
+      } else {
+        stop("`$curr_poly_ids` is read only", call. = FALSE)
       }
     }
   ),
@@ -171,7 +181,9 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("You cannot remove columns from the existing meta-data. Only add to it")
       }
 
-      if (!isTRUE(all.equal(data[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+      metadata_initial <- private$.curr_spdf@data
+      metadata_given <- data[, names(private$.curr_spdf@data)]
+      if (!isTRUE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
         # check if the data was just reordered
         id_col <- "GID_1"
         if (names(private$.join_map_levels_by[1]) %in% names(data)) {
@@ -181,7 +193,9 @@ Leafdown <- R6::R6Class("Leafdown",
         }
 
         data_reordered <- data[order(match(data[, id_col], private$.curr_spdf@data[, id_col])), ]
-        if (isTRUE(all.equal(data_reordered[, names(private$.curr_spdf@data)], private$.curr_spdf@data, check.attributes = FALSE))) {
+        metadata_given_reordered <- data_reordered[, names(private$.curr_spdf@data)]
+
+        if (isTRUE(all.equal(metadata_given_reordered, metadata_initial, check.attributes = FALSE))) {
           stop("Please do not reorder the data. Use left_joins to add the data")
         } else {
           stop("You cannot change the existing meta-data. Only add to it")
