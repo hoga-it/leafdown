@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# leafdown
+# leafdown <a href='https://dplyr.tidyverse.org'><img src='vignettes/hex-leafdown.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -57,7 +57,7 @@ demo app. <br>
 
 The app shows the 2016 us presidential election results as well as some
 demographic information.<br> Click here for the [full demo
-app](https://pega.shinyapps.io/election16/) <br> Click here for the
+app](https://pega.shinyapps.io/election16/) and here for the
 [documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html)
 <br> <br>
 
