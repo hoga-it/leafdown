@@ -4,6 +4,7 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -13,14 +14,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-# leafdown
+
+
+# `r sprintf("leafdown <a><img src='%s' align='right' height='139' /></a>", paste0(getwd(), "/man/figures/hex-leafdown.png"))`
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build status](https://travis-ci.com/hoga-it/leafdown.svg?branch=master)](https://travis-ci.com/hoga-it/leafdown)
 <!-- badges: end -->
 
-The goal of leafdown is to provide drilldown functionality for leaflet choropleths.
+The leafdown package provides drilldown functionality for leaflet choropleths in R Shiny apps.
+
 
 <img src='man/figures/select_drilldown.PNG'/>
 
@@ -55,8 +59,7 @@ You can find the documentation [here](https://hoga-it.github.io/leafdown/index.h
 To showcase the features of the `leafdown` package we have created a demo app. <br>
 
 This app shows the 2016 us presidential election results as well as some demographic information.<br>
-Click here for the [full demo app](https://pega.shinyapps.io/election16/) <br>
-Click here for the [documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html)
+Click here for the [full demo app](https://pega.shinyapps.io/election16/) and here for the [documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html).
 <br>
 <br>
 

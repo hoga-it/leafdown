@@ -1,6 +1,6 @@
 library(leafdown)
 # Run this before uploading
-# devtools::install_github("https://github.com/hoga-it/leafdown", ref = "pkgdown_website")
+# devtools::install_github("https://github.com/hoga-it/leafdown")
 library(leaflet)
 library(shiny)
 library(dplyr)
@@ -8,12 +8,12 @@ library(shinycssloaders)
 library(shinyjs)
 
 # Uncomment this when uploading
-ger1 <- readRDS("extdata/ger1-005.R")
-ger2 <- readRDS("extdata/ger2-005.R")
+# ger1 <- readRDS("ger1-005.R")
+# ger2 <- readRDS("ger2-005.R")
 
 # Comment this when uploading
-#ger1 <- readRDS("../inst/extdata/ger1-005.R")
-#ger2 <- readRDS("../inst/extdata/ger2-005.R")
+ger1 <- readRDS("../extdata/ger1-005.R")
+ger2 <- readRDS("../extdata/ger2-005.R")
 
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
@@ -57,7 +57,7 @@ server <- function(input, output) {
 
   output$leafdown <- renderLeaflet({
     update_leafdown()
-    meta_data <- my_leafdown$curr_metadata
+    meta_data <- my_leafdown$curr_data
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
       data <- meta_data %>% left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
@@ -68,12 +68,13 @@ server <- function(input, output) {
     my_leafdown$add_data(data)
     labels <- create_labels(data, curr_map_level)
     my_leafdown$draw_leafdown(
-      fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014),
+      fillColor = ~ colorNumeric("Greens", GDP_2014)(GDP_2014),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
     ) %>%
-      addLegend("topright",
-        pal = colorNumeric("Blues", data$GDP_2014),
+      addLegend(
+        "topright",
+        pal = colorNumeric("Greens", data$GDP_2014),
         values = data$GDP_2014,
         title = "GDP per capita (2014)",
         labFormat = labelFormat(suffix = "€"),
@@ -83,3 +84,4 @@ server <- function(input, output) {
 }
 
 shinyApp(ui, server)
+

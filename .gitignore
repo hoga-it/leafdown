@@ -41,4 +41,4 @@ vignettes/*.pdf
 inst/doc
 
 # Upload helpers
-app_germany/app_germany_upload_helper.R
+inst/app_germany/app_germany_upload_helper.R

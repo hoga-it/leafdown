@@ -22,7 +22,7 @@ The goal is to create a map that:
 -  allows the user to drill down to the administrative districts of selected federal states.
 
 
-```{r, echo=FALSE, out.width=400, out.height=400}
+```{r, echo=FALSE, out.width=550, out.height=400}
 knitr::include_graphics("../man/figures/app_germany_map.png")
 ```
 
