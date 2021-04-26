@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# leafdown <a><img src='C:/Users/andre/OneDrive/Dokumente/Arbeit/GBR/Projects/leafdown/man/figures/hex-leafdown.png' align='right' height='139' /></a>
+# leafdown <a><img src='man/figures/hex-leafdown.png' align='right' height='139' /></a>
 
 <!-- badges: start -->
 
