@@ -14,9 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+# leafdown <a><img src='man/figures/hex-leafdown.png' align="right" height="139" /></a>
 
-
-# `r sprintf("leafdown <a><img src='%s' align='right' height='139' /></a>", paste0(getwd(), "/man/figures/hex-leafdown.png"))`
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
