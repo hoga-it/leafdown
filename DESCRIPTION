@@ -1,12 +1,12 @@
 Package: leafdown
 Type: Package
 Title: Adds drill down functionality for leaflet choropleths
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person("Andreas", "Hofheinz", email = "andreas.hofheinz@outlook.com", role = "cre"),
     person("Peter", "Gandenberger", email = "peter.gandenberger@gmail.com", role = "aut"))
 Maintainer: Andreas Hofheinz, Peter Gandenberger <hofheinz.gandenberger.it@gmail.com>
-Description: The leafdown package provides drill down functionality for leaflet choropleths.
+Description: The leafdown package provides drill down functionality for leaflet choropleths in R Shiny apps.
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
