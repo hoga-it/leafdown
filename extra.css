@@ -1,13 +1,5 @@
-.navbar {
-  background-color: #3d9a2b;
-}
 
-
-.fa-lg {
-  background-color: #4b4949;
-}
-
-
+/* general */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   color: #4b4949;
 }
@@ -16,9 +8,45 @@ a {
   color: #3d9a2b;
 }
 
+/* navbar */
+.navbar {
+  background-color: #3d9a2b;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+  color: #ffffff;
+  background-color: #346124;
+}
+
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
-    color: #ffffff;
-    background-color: #4b4949;
+  color: #ffffff;
+  background-color: #346124;
+}
+
+/* drop downs */
+.navbar-default .dropdown-menu {
+  color: #ffffff;
+  background-color: #3d9a2b;
+}
+
+.navbar-default .dropdown-menu>a:hover, .navbar-default .dropdown-menu>a:focus{
+  color: #ffffff;
+  background-color: #346124;
+}
+
+.dropdown-menu .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+  color: #ffffff;
+  background-color: #346124;
+}
+
+.navbar-default .dropdown-menu>li>a:hover, .navbar-default .dropdown-menu>li>a:focus {
+  color: #ffffff;
+  background-color: #346124;
+}
+
+/* label */
+.fa-lg {
+  background-color: transparent;
 }
 
 .label-default {
