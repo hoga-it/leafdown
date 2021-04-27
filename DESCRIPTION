@@ -6,10 +6,7 @@ Authors@R: c(
     person("Andreas", "Hofheinz", email = "andreas.hofheinz@outlook.com", role = "cre"),
     person("Peter", "Gandenberger", email = "peter.gandenberger@gmail.com", role = "aut"))
 Maintainer: Andreas Hofheinz, Peter Gandenberger <hofheinz.gandenberger.it@gmail.com>
-Description: The goal of leafdown is to provide drill down functionality for leaflet choropleths.
-    - Adds drill-down functionality for leaflet choropleths maps.
-    - Allows selection of regions / shapes in map.
-    - Easy to use and well integrated into syntax of leaflet r package.
+Description: The leafdown package provides drill down functionality for leaflet choropleths.
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
