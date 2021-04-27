@@ -10,7 +10,7 @@
 #'   \item{GDP_2014}{GDP for the year 2014, in euro}
 #' }
 #' @source Arbeitskreis Volkswirtschaftliche Gesamtrechnungen der Laender:
-#' \url{http://www.deutschlandinzahlen.de}
+#' \url{https://www.deutschlandinzahlen.de}
 "gdp_2014_federal_states"
 
 #' GPD for administrative districts of Germany for 2014.

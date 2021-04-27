@@ -39,11 +39,6 @@ At the moment only two map levels are possible.}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
-Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
-The outline of selected shapes is highlighted via the showGroup (hideGroup) functions.
-
-
 Initializes the leafdown object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Leafdown$new(
