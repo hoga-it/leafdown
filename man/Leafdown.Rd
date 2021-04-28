@@ -6,6 +6,64 @@
 \description{
 This class acts as a wrapper around a leafdown map.
 }
+\examples{
+\dontrun{
+
+library(leafdown)
+library(leaflet)
+library(shiny)
+library(dplyr)
+library(shinyjs)
+
+ger1 <- raster::getData(country = "Germany", level = 1)
+ger2 <- raster::getData(country = "Germany", level = 2)
+spdfs_list <- list(ger1, ger2)
+
+ui <- shiny::fluidPage(
+  useShinyjs(),
+  actionButton("drill_down", "Drill Down"),
+  actionButton("drill_up", "Drill Up"),
+  leafletOutput("leafdown")
+)
+
+server <- function(input, output) {
+  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
+  update_leafdown <- reactiveVal(0)
+
+  observeEvent(input$drill_down, {
+    my_leafdown$drill_down()
+    update_leafdown(update_leafdown() + 1)
+  })
+
+  observeEvent(input$drill_up, {
+    my_leafdown$drill_up()
+   update_leafdown(update_leafdown() + 1)
+ })
+
+  output$leafdown <- renderLeaflet({
+    update_leafdown()
+    meta_data <- my_leafdown$curr_data
+    curr_map_level <- my_leafdown$curr_map_level
+    if (curr_map_level == 1) {
+      data <- meta_data \%>\%
+        left_join(gdp_2014_federal_states, by = c("NAME_1" = "Federal_State"))
+    } else {
+      data <- meta_data \%>\%
+        left_join(gdp_2014_admin_districts, by = c("NAME_2" = "Admin_District"))
+    }
+
+    my_leafdown$add_data(data)
+    my_leafdown$draw_leafdown(
+      fillColor = ~ colorNumeric("Greens", GDP_2014)(GDP_2014), weight = 2, color = "grey"
+    )
+  })
+}
+
+shinyApp(ui, server)
+
+}
+
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
