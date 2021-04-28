@@ -3,6 +3,9 @@ library(leafdown)
 
 context("Drilling")
 
+# Due to Error: PhantomJS not found.
+skip_on_cran()
+
 test_that("drill_down drills to correct subshapes", {
   app <- ShinyDriver$new("testapps")
 

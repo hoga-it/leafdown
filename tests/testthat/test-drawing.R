@@ -1,6 +1,9 @@
 library(shinytest)
 library(leaflet)
 
+# Due to Error: PhantomJS not found.
+skip_on_cran()
+
 context("Drawing")
 
 test_that("Argument 'layerId' in draw_leafdown is ingored if set", {

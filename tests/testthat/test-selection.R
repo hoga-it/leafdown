@@ -1,6 +1,9 @@
 library(shinytest)
 library(leaflet)
 
+# Due to Error: PhantomJS not found.
+skip_on_cran()
+
 context("Selection")
 
 test_that("selection and deselection works", {
