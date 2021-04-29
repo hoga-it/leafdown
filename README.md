@@ -18,11 +18,12 @@ choropleths in R Shiny apps.
 
 ## Installation
 
-<!--You can install the released version of leafdown from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of leafdown from
+[CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 install.packages("leafdown")
-```-->
+```
 
 You can install the development version from
 [GitHub](https://github.com/) with:
