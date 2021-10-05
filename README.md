@@ -63,3 +63,15 @@ app](https://pega.shinyapps.io/election16/) and here for the
 <br> <br>
 
 <img src='man/figures/app_election_map.png'/>
+
+## Showcase - healthdown
+
+The healthdown app allows interactive comparison of various health
+factors at the U.S. state and county level. It was honored as “Runners
+up” in the Shiny Contest 2021.
+
+Link to healthdown: <https://hoga.shinyapps.io/healthdown/>.
+
+Code: <https://github.com/hoga-it/healthdown>
+
+<img src='man/figures/healthdown_app.jpg'/>
