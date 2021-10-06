@@ -76,7 +76,7 @@
 
       
 
-      </header><script src="Introduction_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="Introduction_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction</h1>
@@ -387,7 +387,7 @@ For this we have to specify the:</p>
 <code class="sourceCode R"><span class="co"># Little helper function for hover labels</span>
 <span class="va">create_labels</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">map_level</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span>
-    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g € per capita&lt;/sup&gt;"</span>",
+    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g € per capita&lt;/sup&gt;"</span>,
     <span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"NAME_"</span>, <span class="va">map_level</span><span class="op">)</span><span class="op">]</span>, <span class="va">data</span><span class="op">$</span><span class="va">GDP_2014</span>
   <span class="op">)</span>
   <span class="va">labels</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu">htmltools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html">HTML</a></span><span class="op">)</span>
@@ -428,7 +428,7 @@ For this we have to specify the:</p>
         pal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html">colorNumeric</a></span><span class="op">(</span><span class="st">"Blues"</span>, <span class="va">data</span><span class="op">$</span><span class="va">GDP_2014</span><span class="op">)</span>,
         values <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">GDP_2014</span>,
         title <span class="op">=</span> <span class="st">"GDP per capita (2014)"</span>,
-        labFormat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addLegend.html">labelFormat</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"€"</span><span class="op">)</span>),
+        labFormat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addLegend.html">labelFormat</a></span><span class="op">(</span>suffix <span class="op">=</span> <span class="st">"€"</span><span class="op">)</span>,
         opacity <span class="op">=</span> <span class="fl">1</span>
       <span class="op">)</span>
   <span class="op">}</span><span class="op">)</span>
