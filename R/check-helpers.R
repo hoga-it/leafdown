@@ -52,9 +52,6 @@ check_spdf_list <- function (spdfs_list) {
   if(!is.list(spdfs_list)) {
     stop("The given spdfs_list must be a list")
   }
-  if(length(spdfs_list) > 2) {
-    stop("Leafdown currently supports only two map levels. The given spdf_list can therefore only contain two elements.")
-  }
   for(i in length(spdfs_list)) {
     # Check whether the given spdf_element is an s4 class of type SpatialPolygonsDataFrame.
     is_valid <- check_s4_spdf(spdfs_list[[i]])
@@ -80,8 +77,11 @@ check_join_map_levels_by <- function (join_map_levels_by, spdfs_list) {
   if (is.null(names(join_map_levels_by))) {
     stop("The given join_map_levels_by must be a NAMED vector.")
   }
-  if (length(join_map_levels_by) > 1) {
-    stop("Leafdown currently supports only two map levels. The given join_map_levels_by can therefore only contain one named element.")
+  if ((length(join_map_levels_by) + 1) != length(spdfs_list)) {
+    print(length(join_map_levels_by))
+    print(length(spdfs_list))
+    stop("The given join_map_levels_by must specify the columns to join all map levels by.
+         Therefore, there must be one more spdfs_list than join_map_levels_by elements")
   }
 
   if (names(join_map_levels_by[1]) %in% names(spdfs_list[[1]]) & join_map_levels_by[1] %in% names(spdfs_list[[2]])) {

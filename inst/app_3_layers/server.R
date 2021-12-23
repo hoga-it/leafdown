@@ -11,10 +11,10 @@ us2 <- readRDS("data/shapes/usa2.RDS")
 # Define server for leafdown app
 server <- function(input, output) {
   # load the shapes for the two levels
-  spdfs_list <- list(us0, us1)
+  spdfs_list <- list(us0, us1, us2)
 
   # create leafdown object
-  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input, join_map_levels_by = c("GID_0" = "GID_0"))
+  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input, join_map_levels_by = c("GID_0" = "GID_0", "GID_1" = "GID_1"))
 
   rv <- reactiveValues()
   rv$update_leafdown <- 0
