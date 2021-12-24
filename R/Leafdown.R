@@ -152,8 +152,8 @@ Leafdown <- R6::R6Class("Leafdown",
     #' Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app.
     #' @param join_map_levels_by A named vector with the columns by which the map levels should be joined.
-    initialize = function(spdfs_list, map_output_id, input, join_map_levels_by = c("GID_1" = "GID_1")) {
-      check_spdf_list(spdfs_list)
+    initialize = function(spdfs_list, map_output_id, input, join_map_levels_by = NULL) {
+      assert_spdf_list(spdfs_list)
       # check map_output_id
       checkmate::assert_character(map_output_id, min.chars = 1)
 
@@ -162,13 +162,18 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("The given 'input' argument must be the 'input' from the shiny app")
       }
 
+      if (is.null(join_map_levels_by) & length(spdfs_list) > 1) {
+        join_map_levels_by = paste0("GID_", seq_len(length(spdfs_list) - 1))
+        names(join_map_levels_by) = join_map_levels_by
+      }
+
       private$.curr_map_level <- 1
       private$.curr_sel_ids <- list(c())
       private$.selected_parents <- list(c())
       private$.unselected_parents <- list(c())
       private$.spdfs_list <- spdfs_list
       private$.map_output_id <- map_output_id
-      private$.join_map_levels_by <- check_join_map_levels_by(join_map_levels_by, spdfs_list)
+      private$.join_map_levels_by <- assert_join_map_levels_by(join_map_levels_by, spdfs_list)
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_data <- private$.curr_spdf@data
