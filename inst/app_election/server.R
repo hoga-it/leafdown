@@ -3,8 +3,8 @@ library(leafdown)
 #devtools::install_github("hoga-it/leafdown")
 
 # Comment this when uploading
-states <- readRDS("us1.RDS")
-counties <- readRDS("us2.RDS")
+states <- readRDS("../extdata/us1.RDS")
+counties <- readRDS("../extdata/us2.RDS")
 
 percent <- function(x, digits = 2, format = "f", ...) {      # Create user-defined function
   paste0(formatC(x * 100, format = format, digits = digits, ...), "%")
