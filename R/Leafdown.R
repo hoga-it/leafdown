@@ -250,22 +250,7 @@ Leafdown <- R6::R6Class("Leafdown",
       metadata_initial <- private$.curr_spdf@data
       metadata_given <- data[, names(private$.curr_spdf@data)]
       if (!isTRUE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
-        # check if the data was just reordered
-        id_col <- "GID_1"
-        if (names(private$.join_map_levels_by[1]) %in% names(data)) {
-          id_col <- names(private$.join_map_levels_by[1])
-        } else if (private$.join_map_levels_by[1] %in% names(data)) {
-          id_col <- private$.join_map_levels_by[1]
-        }
-
-        data_reordered <- data[order(match(data[, id_col], private$.curr_spdf@data[, id_col])), ]
-        metadata_given_reordered <- data_reordered[, names(private$.curr_spdf@data)]
-
-        if (isTRUE(all.equal(metadata_given_reordered, metadata_initial, check.attributes = FALSE))) {
-          stop("Please do not reorder the data. Use left_joins to add the data")
-        } else {
-          stop("You cannot change the existing meta-data. Only add to it")
-        }
+        stop("You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
       }
 
       private$.curr_data <- data
@@ -333,7 +318,7 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_map_level <- private$.curr_map_level - 1
-      private$.unselected_parents <- private$.unselected_parents[][1:(private$.curr_map_level-1)]
+      private$.unselected_parents <- private$.unselected_parents[1:(private$.curr_map_level-1)]
       private$.curr_data <- private$.curr_spdf@data
     },
     #' @description
