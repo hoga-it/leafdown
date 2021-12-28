@@ -282,17 +282,19 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       # Information about parent polygons
-      parents <- private$.spdfs_list[[private$.curr_map_level]]
-      all_poly_ids_parents <- private$.curr_poly_ids
-      curr_sel_parents <- private$.curr_sel_ids[[private$.curr_map_level]]
-      index_sel_parents <- all_poly_ids_parents %in% curr_sel_parents
-      private$.selected_parents[[private$.curr_map_level]] <- parents[index_sel_parents, ]
-      private$.unselected_parents[[private$.curr_map_level]] <- parents[!index_sel_parents, ]
+      parents <- private$.curr_spdf
+      all_parents_poly_ids <- sapply(parents@polygons, slot, "ID")
+      curr_sel_parent_poly_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      index_sel_parents_poly_ids <- all_parents_poly_ids %in% curr_sel_parent_poly_ids
+      curr_sel_parents <- parents[index_sel_parents_poly_ids, ]
+      private$.selected_parents[[private$.curr_map_level]] <- curr_sel_parents
+      private$.unselected_parents[[private$.curr_map_level]] <- parents[!index_sel_parents_poly_ids, ]
 
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
+
       spdf_new <- spdf_new[spdf_new@data[, private$.join_map_levels_by[private$.curr_map_level]] %in%
-        private$.selected_parents[[private$.curr_map_level]]@data[, names(private$.join_map_levels_by[private$.curr_map_level])], ]
+                             curr_sel_parents@data[, names(private$.join_map_levels_by[private$.curr_map_level])], ]
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new
