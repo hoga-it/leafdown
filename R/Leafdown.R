@@ -315,7 +315,13 @@ Leafdown <- R6::R6Class("Leafdown",
         req(FALSE)
       }
       # Update leafdown object
-      private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
+      curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
+      curr_spdf <- curr_spdf[curr_spdf@data[, private$.join_map_levels_by[private$.curr_map_level - 1]] %in%
+                               c(private$.selected_parents[[private$.curr_map_level - 1]]@data[, names(private$.join_map_levels_by[private$.curr_map_level - 1])],
+                                 private$.unselected_parents[[private$.curr_map_level - 1]]@data[, names(private$.join_map_levels_by[private$.curr_map_level - 1])])
+                             , ]
+      private$.curr_spdf <- curr_spdf
+
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_map_level <- private$.curr_map_level - 1
       private$.unselected_parents <- private$.unselected_parents[1:(private$.curr_map_level-1)]
