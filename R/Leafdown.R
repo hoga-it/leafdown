@@ -253,7 +253,7 @@ Leafdown <- R6::R6Class("Leafdown",
 
       metadata_initial <- private$.curr_spdf@data
       metadata_given <- data[, names(private$.curr_spdf@data)]
-      if (!isTRUE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
+      if (isFALSE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
         stop("You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
       }
 
