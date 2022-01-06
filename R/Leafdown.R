@@ -91,7 +91,7 @@ Leafdown <- R6::R6Class("Leafdown",
     .curr_poly_ids = NULL,
     # selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
     .selected_parents = NULL,
-    # unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
+    # unselected_parents All spdf shapes from the higher level that are not selected. They will be drawn in gray.
     # (Subset of spdfs_list)
     .unselected_parents = NULL,
 
@@ -127,7 +127,6 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @field curr_map_level Index of the current map level.
     #' This corresponds to the position of the shapes in the \code{spdfs_list}.
     #' (i.e The highest-level is 1, the next is 2 and so on...).
-    #' At the moment only two map levels are possible.
     curr_map_level = function(value) {
       if (missing(value)) {
         private$.curr_map_level
@@ -163,8 +162,8 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       if (is.null(join_map_levels_by) & length(spdfs_list) > 1) {
-        join_map_levels_by = paste0("GID_", seq_len(length(spdfs_list) - 1))
-        names(join_map_levels_by) = join_map_levels_by
+        join_map_levels_by <- paste0("GID_", seq_len(length(spdfs_list) - 1))
+        names(join_map_levels_by) <- join_map_levels_by
       }
 
       private$.curr_map_level <- 1
@@ -204,18 +203,23 @@ Leafdown <- R6::R6Class("Leafdown",
       map <- do.call(addPolygons, arg_list)
       map <- addPolylines(
         map = map,
-        group = all_poly_ids, stroke = TRUE, weight = 4, color = "#FFCC00",
-        highlight = highlightOptions(bringToFront = T, weight = 4)
+        group = all_poly_ids,
+        stroke = TRUE,
+        weight = 4,
+        color = "#FFCC00",
+        highlightOptions = highlightOptions(bringToFront = TRUE, weight = 4)
       )
       if (private$.curr_map_level != 1) {
         # If there are unselected parent polygons then draw them as gray background
-        for(unselected_parents_on_level in private$.unselected_parents) {
+        for (unselected_parents_on_level in private$.unselected_parents) {
           if (length(unselected_parents_on_level) > 0) {
             map <- map %>%
               addPolylines(
                 data = unselected_parents_on_level,
-                stroke = F, weight = 2, color = "#929292",
-                highlight = highlightOptions(bringToFront = T)
+                stroke = FALSE,
+                weight = 2,
+                color = "#929292",
+                highlightOptions = highlightOptions(bringToFront = TRUE)
               ) %>%
               addPolygons(
                 data = unselected_parents_on_level,
@@ -285,16 +289,17 @@ Leafdown <- R6::R6Class("Leafdown",
       parents <- private$.curr_spdf
       all_parents_poly_ids <- sapply(parents@polygons, slot, "ID")
       curr_sel_parent_poly_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
-      index_sel_parents_poly_ids <- all_parents_poly_ids %in% curr_sel_parent_poly_ids
-      curr_sel_parents <- parents[index_sel_parents_poly_ids, ]
+      mask_sel_parents_poly_ids <- all_parents_poly_ids %in% curr_sel_parent_poly_ids
+      curr_sel_parents <- parents[mask_sel_parents_poly_ids, ]
       private$.selected_parents[[private$.curr_map_level]] <- curr_sel_parents
-      private$.unselected_parents[[private$.curr_map_level]] <- parents[!index_sel_parents_poly_ids, ]
+      private$.unselected_parents[[private$.curr_map_level]] <- parents[!mask_sel_parents_poly_ids, ]
 
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
-
-      spdf_new <- spdf_new[spdf_new@data[, private$.join_map_levels_by[private$.curr_map_level]] %in%
-                             curr_sel_parents@data[, names(private$.join_map_levels_by[private$.curr_map_level])], ]
+      rhs <- private$.join_map_levels_by[private$.curr_map_level]
+      lhs <- names(private$.join_map_levels_by[private$.curr_map_level])
+      is_child_of_selected_parents <- spdf_new@data[, rhs] %in% curr_sel_parents@data[, lhs]
+      spdf_new <- spdf_new[is_child_of_selected_parents, ]
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new
@@ -317,16 +322,19 @@ Leafdown <- R6::R6Class("Leafdown",
         req(FALSE)
       }
       # Update leafdown object
-      curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
-      curr_spdf <- curr_spdf[curr_spdf@data[, private$.join_map_levels_by[private$.curr_map_level - 1]] %in%
-                               c(private$.selected_parents[[private$.curr_map_level - 1]]@data[, names(private$.join_map_levels_by[private$.curr_map_level - 1])],
-                                 private$.unselected_parents[[private$.curr_map_level - 1]]@data[, names(private$.join_map_levels_by[private$.curr_map_level - 1])])
-                             , ]
-      private$.curr_spdf <- curr_spdf
+      spdf_new <- private$.spdfs_list[[private$.curr_map_level - 1]]
+      rhs <- private$.join_map_levels_by[private$.curr_map_level - 1]
+      lhs <- names(private$.join_map_levels_by[private$.curr_map_level - 1])
+      selected_grandparents_data <- private$.selected_parents[[private$.curr_map_level - 1]]@data
+      unselected_grandparents_data <- private$.unselected_parents[[private$.curr_map_level - 1]]@data
+      all_grandparents_data <- rbind(selected_grandparents_data, unselected_grandparents_data)
+      is_child_of_selected_grandparents <- spdf_new@data[, rhs] %in% all_grandparents_data[, lhs]
+      spdf_new <- spdf_new[is_child_of_selected_grandparents, ]
+      private$.curr_spdf <- spdf_new
 
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_map_level <- private$.curr_map_level - 1
-      private$.unselected_parents <- private$.unselected_parents[1:(private$.curr_map_level-1)]
+      private$.unselected_parents <- private$.unselected_parents[seq_len(private$.curr_map_level - 1)]
       private$.curr_data <- private$.curr_spdf@data
     },
     #' @description
