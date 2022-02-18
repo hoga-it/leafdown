@@ -10,8 +10,8 @@ library(RColorBrewer)
 
 ui = bs4DashPage(
   title = "Leafdown Showcase - USA Election Data",
-  navbar = bs4DashNavbar(tags$h3("Leafdown Showcase - USA Election Data", style = "margin-bottom: .2rem;")),
-  bs4DashSidebar(disable = TRUE),
+  header = bs4DashNavbar(tags$h3("Leafdown Showcase - USA Election Data", style = "margin-bottom: .2rem;")),
+  sidebar = bs4DashSidebar(disable = TRUE),
   body = bs4DashBody(
     # set the background of the map-container to be white
     tags$head(
