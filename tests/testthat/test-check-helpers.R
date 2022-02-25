@@ -5,7 +5,7 @@ context("check_spdf")
 
 test_that("function 'check_s4_spdf' correctly detects objects of class s4 and
           type SpatialPolygonsDataFrame", {
-  spdf_s4 <- readRDS("testapps/us1-0005.RDS")
+  spdf_s4 <- readRDS("../../inst/extdata/usa1.RDS")
   expect_true(check_s4_spdf(spdf_s4))
   expect_false(check_s4_spdf(1:10))
   not_s4 <- 1:10
