@@ -91,7 +91,7 @@ Leafdown <- R6::R6Class("Leafdown",
     .curr_poly_ids = NULL,
     # selected_parents The selected spdf shapes from the higher level. (Subset of spdfs_list)
     .selected_parents = NULL,
-    # unselected_parents All spdf shapes from the higher level which are not selected. They will be drawn in gray.
+    # unselected_parents All spdf shapes from the higher level that are not selected. They will be drawn in gray.
     # (Subset of spdfs_list)
     .unselected_parents = NULL,
 
@@ -127,7 +127,6 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @field curr_map_level Index of the current map level.
     #' This corresponds to the position of the shapes in the \code{spdfs_list}.
     #' (i.e The highest-level is 1, the next is 2 and so on...).
-    #' At the moment only two map levels are possible.
     curr_map_level = function(value) {
       if (missing(value)) {
         private$.curr_map_level
@@ -151,9 +150,14 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}.
     #' Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app.
-    #' @param join_map_levels_by A named vector with the columns by which the map levels should be joined.
-    initialize = function(spdfs_list, map_output_id, input, join_map_levels_by = c("GID_1" = "GID_1")) {
-      check_spdf_list(spdfs_list)
+    #' @param join_map_levels_by A named vector of length \code{length(spdfs_list) - 1} with the columns by which the map
+    #' levels should be joined. The first element defines how the first and second map levels should be joined, the second
+    #' element does the same for the second and third map levels and so on. The name of an element defines the name of
+    #' the join column in the upper map level and the actual element the join column of the lower map level.
+    #' By default this is set to c("GID_0" = "GID_0", "GID_1" = "GID_1", ..., "GID_n" = "GID_n"),
+    #' where n is \code{length(spdfs_list) - 1}.
+    initialize = function(spdfs_list, map_output_id, input, join_map_levels_by = NULL) {
+      assert_spdf_list(spdfs_list)
       # check map_output_id
       checkmate::assert_character(map_output_id, min.chars = 1)
 
@@ -162,12 +166,18 @@ Leafdown <- R6::R6Class("Leafdown",
         stop("The given 'input' argument must be the 'input' from the shiny app")
       }
 
+      if (is.null(join_map_levels_by) & length(spdfs_list) > 1) {
+        join_map_levels_by <- paste0("GID_", seq_len(length(spdfs_list) - 1))
+        names(join_map_levels_by) <- join_map_levels_by
+      }
+
       private$.curr_map_level <- 1
       private$.curr_sel_ids <- list(c())
-      private$.selected_parents <- c()
+      private$.selected_parents <- list(c())
+      private$.unselected_parents <- list(c())
       private$.spdfs_list <- spdfs_list
       private$.map_output_id <- map_output_id
-      private$.join_map_levels_by <- check_join_map_levels_by(join_map_levels_by, spdfs_list)
+      private$.join_map_levels_by <- assert_join_map_levels_by(join_map_levels_by, spdfs_list)
       private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level]]
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_data <- private$.curr_spdf@data
@@ -198,24 +208,31 @@ Leafdown <- R6::R6Class("Leafdown",
       map <- do.call(addPolygons, arg_list)
       map <- addPolylines(
         map = map,
-        group = all_poly_ids, stroke = TRUE, weight = 4, color = "#FFCC00",
-        highlight = highlightOptions(bringToFront = T, weight = 4)
+        group = all_poly_ids,
+        stroke = TRUE,
+        weight = 4,
+        color = "#FFCC00",
+        highlightOptions = highlightOptions(bringToFront = TRUE, weight = 4)
       )
       if (private$.curr_map_level != 1) {
         # If there are unselected parent polygons then draw them as gray background
-        if (length(private$.unselected_parents@polygons) > 0) {
-          map <- map %>%
-            addPolylines(
-              data = private$.unselected_parents,
-              stroke = F, weight = 2, color = "#929292",
-              highlight = highlightOptions(bringToFront = T)
-            ) %>%
-            addPolygons(
-              data = private$.unselected_parents,
-              fillOpacity = 0.4,
-              color = "#A4A4A5",
-              weight = 1
-            )
+        for (unselected_parents_on_level in private$.unselected_parents) {
+          if (length(unselected_parents_on_level) > 0) {
+            map <- map %>%
+              addPolylines(
+                data = unselected_parents_on_level,
+                stroke = FALSE,
+                weight = 2,
+                color = "#929292",
+                highlightOptions = highlightOptions(bringToFront = TRUE)
+              ) %>%
+              addPolygons(
+                data = unselected_parents_on_level,
+                fillOpacity = 0.4,
+                color = "#A4A4A5",
+                weight = 1
+              )
+          }
         }
       }
       # On drill up highlight the polylines which were selected before drill down
@@ -241,23 +258,11 @@ Leafdown <- R6::R6Class("Leafdown",
 
       metadata_initial <- private$.curr_spdf@data
       metadata_given <- data[, names(private$.curr_spdf@data)]
+
+      # use of !isTRUE is intentional, as all.equal returns either TRUE or gives an error message (do not change to isFALSE)
       if (!isTRUE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
-        # check if the data was just reordered
-        id_col <- "GID_1"
-        if (names(private$.join_map_levels_by[1]) %in% names(data)) {
-          id_col <- names(private$.join_map_levels_by[1])
-        } else if (private$.join_map_levels_by[1] %in% names(data)) {
-          id_col <- private$.join_map_levels_by[1]
-        }
-
-        data_reordered <- data[order(match(data[, id_col], private$.curr_spdf@data[, id_col])), ]
-        metadata_given_reordered <- data_reordered[, names(private$.curr_spdf@data)]
-
-        if (isTRUE(all.equal(metadata_given_reordered, metadata_initial, check.attributes = FALSE))) {
-          stop("Please do not reorder the data. Use left_joins to add the data")
-        } else {
-          stop("You cannot change the existing meta-data. Only add to it")
-        }
+        stop(paste("You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering.",
+                    "Error:", all.equal(metadata_given, metadata_initial, check.attributes = FALSE)))
       }
 
       private$.curr_data <- data
@@ -289,17 +294,20 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       # Information about parent polygons
-      parents <- private$.spdfs_list[[private$.curr_map_level]]
-      all_poly_ids_parents <- private$.curr_poly_ids
-      curr_sel_parents <- private$.curr_sel_ids[[private$.curr_map_level]]
-      index_sel_parents <- all_poly_ids_parents %in% curr_sel_parents
-      private$.selected_parents <- parents[index_sel_parents, ]
-      private$.unselected_parents <- parents[!index_sel_parents, ]
+      parents <- private$.curr_spdf
+      all_parents_poly_ids <- sapply(parents@polygons, slot, "ID")
+      curr_sel_parent_poly_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      mask_sel_parents_poly_ids <- all_parents_poly_ids %in% curr_sel_parent_poly_ids
+      curr_sel_parents <- parents[mask_sel_parents_poly_ids, ]
+      private$.selected_parents[[private$.curr_map_level]] <- curr_sel_parents
+      private$.unselected_parents[[private$.curr_map_level]] <- parents[!mask_sel_parents_poly_ids, ]
 
       # spdf_new contains the child polygons of the selected parents
       spdf_new <- private$.spdfs_list[[private$.curr_map_level + 1]]
-      spdf_new <- spdf_new[spdf_new@data[, private$.join_map_levels_by[1]] %in%
-        private$.selected_parents@data[, names(private$.join_map_levels_by[1])], ]
+      rhs <- private$.join_map_levels_by[private$.curr_map_level]
+      lhs <- names(private$.join_map_levels_by[private$.curr_map_level])
+      is_child_of_selected_parents <- spdf_new@data[, rhs] %in% curr_sel_parents@data[, lhs]
+      spdf_new <- spdf_new[is_child_of_selected_parents, ]
 
       # Update leafdown object
       private$.curr_spdf <- spdf_new
@@ -321,12 +329,26 @@ Leafdown <- R6::R6Class("Leafdown",
         shinyjs::alert("The highest level is reached. Cannot drill higher!")
         req(FALSE)
       }
-
       # Update leafdown object
-      private$.curr_spdf <- private$.spdfs_list[[private$.curr_map_level - 1]]
+      spdf_new <- private$.spdfs_list[[private$.curr_map_level - 1]]
+
+      # check if there are grandparents and only select shapes where the grandparents are selected
+      # if we drill up to the highest level, we do not need this check as there are no grandparents
+      if ((private$.curr_map_level - 1) > 1) {
+        rhs <- private$.join_map_levels_by[private$.curr_map_level - 1]
+        lhs <- names(private$.join_map_levels_by[private$.curr_map_level - 1])
+        selected_grandparents_data <- private$.selected_parents[[private$.curr_map_level - 1]]@data
+        unselected_grandparents_data <- private$.unselected_parents[[private$.curr_map_level - 1]]@data
+        all_grandparents_data <- rbind(selected_grandparents_data, unselected_grandparents_data)
+        is_child_of_selected_grandparents <- spdf_new@data[, rhs] %in% all_grandparents_data[, lhs]
+        spdf_new <- spdf_new[is_child_of_selected_grandparents, ]
+      }
+
+      private$.curr_spdf <- spdf_new
+
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
       private$.curr_map_level <- private$.curr_map_level - 1
-      private$.unselected_parents <- NULL
+      private$.unselected_parents <- private$.unselected_parents[seq_len(private$.curr_map_level - 1)]
       private$.curr_data <- private$.curr_spdf@data
     },
     #' @description
