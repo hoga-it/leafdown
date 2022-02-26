@@ -32,7 +32,7 @@ test_that("Changed values in data throws error", {
   row <- 42
   data[row, col] <- NA
 
-  expect_error(my_leafdown$add_data(data), "You cannot change the existing meta-data. Only add to it")
+  expect_error(my_leafdown$add_data(data), "You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
 })
 
 test_that("Missing columns in data throws error", {
@@ -56,7 +56,7 @@ test_that("Missing row in data throws error", {
   row <- floor(runif(1, min=1, max=dim(data)[1]))
   data <- data[-row, ]
 
-  expect_error(my_leafdown$add_data(data), "You cannot change the existing meta-data. Only add to it")
+  expect_error(my_leafdown$add_data(data), "You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
 })
 
 test_that("Reordering Data throws correct error", {
@@ -66,5 +66,5 @@ test_that("Reordering Data throws correct error", {
 
   data <- data[order(data$y), ]
 
-  expect_error(my_leafdown$add_data(data), "Please do not reorder the data. Use left_joins to add the data")
+  expect_error(my_leafdown$add_data(data), "You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
 })

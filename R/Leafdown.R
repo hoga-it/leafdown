@@ -258,8 +258,11 @@ Leafdown <- R6::R6Class("Leafdown",
 
       metadata_initial <- private$.curr_spdf@data
       metadata_given <- data[, names(private$.curr_spdf@data)]
-      if (isFALSE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
-        stop("You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
+
+      # use of !isTRUE is intentional, as all.equal returns either TRUE or gives an error message (do not change to isFALSE)
+      if (!isTRUE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
+        stop(paste("You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering.",
+                    "Error:", all.equal(metadata_given, metadata_initial, check.attributes = FALSE)))
       }
 
       private$.curr_data <- data
@@ -328,13 +331,19 @@ Leafdown <- R6::R6Class("Leafdown",
       }
       # Update leafdown object
       spdf_new <- private$.spdfs_list[[private$.curr_map_level - 1]]
-      rhs <- private$.join_map_levels_by[private$.curr_map_level - 1]
-      lhs <- names(private$.join_map_levels_by[private$.curr_map_level - 1])
-      selected_grandparents_data <- private$.selected_parents[[private$.curr_map_level - 1]]@data
-      unselected_grandparents_data <- private$.unselected_parents[[private$.curr_map_level - 1]]@data
-      all_grandparents_data <- rbind(selected_grandparents_data, unselected_grandparents_data)
-      is_child_of_selected_grandparents <- spdf_new@data[, rhs] %in% all_grandparents_data[, lhs]
-      spdf_new <- spdf_new[is_child_of_selected_grandparents, ]
+
+      # check if there are grandparents and only select shapes where the grandparents are selected
+      # if we drill up to the highest level, we do not need this check as there are no grandparents
+      if ((private$.curr_map_level - 1) > 1) {
+        rhs <- private$.join_map_levels_by[private$.curr_map_level - 1]
+        lhs <- names(private$.join_map_levels_by[private$.curr_map_level - 1])
+        selected_grandparents_data <- private$.selected_parents[[private$.curr_map_level - 1]]@data
+        unselected_grandparents_data <- private$.unselected_parents[[private$.curr_map_level - 1]]@data
+        all_grandparents_data <- rbind(selected_grandparents_data, unselected_grandparents_data)
+        is_child_of_selected_grandparents <- spdf_new@data[, rhs] %in% all_grandparents_data[, lhs]
+        spdf_new <- spdf_new[is_child_of_selected_grandparents, ]
+      }
+
       private$.curr_spdf <- spdf_new
 
       private$.curr_poly_ids <- sapply(private$.curr_spdf@polygons, slot, "ID")
