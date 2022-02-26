@@ -150,7 +150,12 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @param map_output_id The id from the shiny-ui used in the \code{leafletOutput("<<id>>")}.
     #' Used to observe for _shape_click events.
     #' @param input The \code{input} from the shiny app.
-    #' @param join_map_levels_by A named vector with the columns by which the map levels should be joined.
+    #' @param join_map_levels_by A named vector of length \code{length(spdfs_list) - 1} with the columns by which the map
+    #' levels should be joined. The first element defines how the first and second map levels should be joined, the second
+    #' element does the same for the second and third map levels and so on. The name of an element defines the name of
+    #' the join column in the upper map level and the actual element the join column of the lower map level.
+    #' By default this is set to c("GID_0" = "GID_0", "GID_1" = "GID_1", ..., "GID_n" = "GID_n"),
+    #' where n is \code{length(spdfs_list) - 1}.
     initialize = function(spdfs_list, map_output_id, input, join_map_levels_by = NULL) {
       assert_spdf_list(spdfs_list)
       # check map_output_id

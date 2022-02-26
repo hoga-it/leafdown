@@ -33,7 +33,10 @@ library(leafdown)
 library(leaflet)
 library(shiny)
 library(dplyr)
+library(shinycssloaders)
 library(shinyjs)
+library(dplyr)
+library(raster)
 ```
 
 (Note that the `shinyjs` package is loaded for some automatic warning messages that the 
@@ -42,7 +45,7 @@ library(shinyjs)
 
 ## SpatialPolygonsDataFrames
 
-`leafdown` requires a list of SpatialPolygonsDataFrames (spdfs) for the regions 
+`leafdown` requires a list of `SpatialPolygonsDataFrames` (`spdfs`) for the regions 
 we want to display on our map.
 
 To get these spdfs we can use the `getData` function of the `raster` package.
@@ -53,8 +56,8 @@ If an `spdf` comes from a different source, it is important that the structure
 is identical to the `spdfs` that come from the `raster` package.
 
 ```{r, echo=FALSE}
-ger1 <- readRDS("../inst/extdata/ger1-005.R")
-ger2 <- readRDS("../inst/extdata/ger2-005.R")
+ger1 <- readRDS("../inst/extdata/ger1-005.RDS")
+ger2 <- readRDS("../inst/extdata/ger2-005.RDS")
 ```
 
 ```{r, eval=FALSE}
@@ -190,7 +193,7 @@ For this we have to specify the:
 - `map_output_id`: The output_id we specify in our ui via `leafletOutput("<<map_output_id>>")`
 - `input`: The `input` from the shiny app
 - `join_map_levels_by` (optional). A named vector with the columns by which the map levels 
-should be joined. By default this is set to c("GID_1" = "GID_1"), which is 
+should be joined. In case of two map levels this is set by default to c("GID_1" = "GID_1"), which is 
 appropriate when 'Provinces/States' is the first and 'Districts' the second map level.
 If you use 'Countries' as first  and 'Provinces/States' as second level you have to set 
 it to `c("ISO" = "GID_0")`
@@ -246,7 +249,7 @@ The specified arguments in the method are internally handed over to the
 
 ```{r, eval=FALSE}
 map <- my_leafdown$draw_leafdown(
-  fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014)
+  fillColor = ~ colorNumeric("Greens", GDP_2014)(GDP_2014)
 ) 
 ```
 
@@ -257,7 +260,7 @@ This also allows us to add a legend or a background to our map.
 ```{r, eval=FALSE}
 map <- map %>%
   addLegend(
-    pal = colorNumeric("Blues", data$GDP_2014),
+    pal = colorNumeric("Grees", data$GDP_2014),
     values = data$GDP_2014
   )
 ```
@@ -472,7 +475,7 @@ server <- function(input, output) {
     my_leafdown$add_data(data)
     labels <- create_labels(data, curr_map_level)
     my_leafdown$draw_leafdown(
-      fillColor = ~ colorNumeric("Blues", GDP_2014)(GDP_2014),
+      fillColor = ~ colorNumeric("Greens", GDP_2014)(GDP_2014),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
     ) %>%
