@@ -20,7 +20,7 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-
+    
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -46,7 +46,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-
+     
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -73,22 +73,22 @@
 </div>
 <!--/.navbar -->
 
-
+      
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>More than two map levels</h1>
-
-
-
+            
+      
+      
       <div class="hidden name"><code>Multilevel.Rmd</code></div>
 
     </div>
 
-
-
-<p>In this article, we demonstrate how to set up a <code>leafdown</code> map with three map levels and show that it is a natural extension of the two map level case. (More than two map levels is supported as of <code>leafdown</code> version 1.1.)</p>
+    
+    
+<p>In this article, we demonstrate how to set up a <code>leafdown</code> map with three map levels and show that it is an natural extension of the two map level case. (More than two map levels is supported from <code>leafdown</code> version 1.1.)</p>
 <p><img src="../reference/figures/app_dach_map.png" width="70%"></p>
 <p>Let’s first load the libraries we are going to use for our app.<br></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -104,9 +104,9 @@
 <div class="section level2">
 <h2 id="spatialpolygonsdataframes">SpatialPolygonsDataFrames<a class="anchor" aria-label="anchor" href="#spatialpolygonsdataframes"></a>
 </h2>
-<p>As usual, we first create a list of <code>SpatialPolygonsDataFrames</code> (<code>spdfs</code>) for the regions we want to display on our map. (further details can be found in the <a href="https://hoga-it.github.io/leafdown/articles/Introduction.html" class="external-link">Introduction article.</a>).</p>
+<p>As usual, we first create a list of <code>SpatialPolygonsDataFrames</code> (<code>spdfs</code>) for the regions we want to display on our map. (Further details can be found in the <a href="https://hoga-it.github.io/leafdown/articles/Introduction.html" class="external-link">Introduction article</a>.)</p>
 <pre><code>list (spdfs_list)
-│
+│   
 └───spdf (spdf of first map level)
 │
 └───spdf (spdf of second map level)
@@ -131,7 +131,7 @@
 <div class="section level2">
 <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h2>
-<p>For this app, we will simply generate some random data.</p>
+<p>For this app, we simply generate random target values <code>y</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20220106</span><span class="op">)</span>
 <span class="co"># Simulate data</span>
@@ -169,14 +169,13 @@
 <div class="section level2">
 <h2 id="joining-map-levels">Joining map levels<a class="anchor" aria-label="anchor" href="#joining-map-levels"></a>
 </h2>
-<p>In order for <code>leafdown</code> to know which shapes of a lower map level belong to the shapes in the upper map level, we need to specify how the data of the <code>spdfs</code> of different map levels need to be joined.</p>
-<p>The <code>join_map_levels_by</code> argument is a named vector of length <code>length(spdfs_list) - 1</code>, whereby</p>
+<p>In order for a <code>leafdown</code> map to know which shapes of a lower map level belong to the shapes in the upper map level, we need to specify how the data of the <code>spdfs</code> of different map levels need to be joined.  This is defined by the <code>join_map_levels_by</code> argument, which is a named vector of length <code>length(spdfs_list) - 1</code>, whereby</p>
 <ul>
-<li>the first (named) element tells <code>leafdown</code> how to join the first and the second map level</li>
-<li>the second (named) element tells <code>leafdown</code> how to join the second and the third map level</li>
+<li>the first (named) element specifies how to join the first and the second map level</li>
+<li>the second (named) element specifies how to join the second and the third map level</li>
 <li>and so on.</li>
 </ul>
-<p>The name of an element specifies the name of the join column in the upper map level and the actual element the join column of the lower map level.</p>
+<p>The name of an element specifies the join column in the respective upper map level and the actual element the join column of the lower map level.</p>
 <p>Let’s have a look at the data of our the <code>spdfs</code> in <code>spdf_list</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">)</span>
@@ -193,7 +192,7 @@
 <span class="co">#&gt; 4   AUT Austria AUT.4_1   Oberösterreich</span>
 <span class="co">#&gt; 5   AUT Austria AUT.5_1         Salzburg</span>
 <span class="co">#&gt; 6   AUT Austria AUT.6_1       Steiermark</span></code></pre></div>
-<p>In this example, map levels 1 and 2 can be joined via columns “GID_0”. So the name of first element is “GID_0” (the respective column name of the first map level) and the first element is also “GID_0” (the respective column name of the first map level):</p>
+<p>In this example, map levels 1 and 2 can be joined by their column “GID_0”. So the name of first element is “GID_0” (the respective column name of the first map level) and the first element is also “GID_0” (the respective column name of the first map level):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span>, <span class="st">"NAME_0"</span>, <span class="st">"GID_1"</span>, <span class="st">"NAME_1"</span>, <span class="st">"GID_2"</span>, <span class="st">"NAME_2"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;   GID_0  NAME_0   GID_1     NAME_1     GID_2              NAME_2</span>
@@ -203,9 +202,8 @@
 <span class="co">#&gt; 4   AUT Austria AUT.1_1 Burgenland AUT.1.4_1         Jennersdorf</span>
 <span class="co">#&gt; 5   AUT Austria AUT.1_1 Burgenland AUT.1.5_1         Mattersburg</span>
 <span class="co">#&gt; 6   AUT Austria AUT.1_1 Burgenland AUT.1.6_1     Neusiedl am See</span></code></pre></div>
-<p>We see, that map levels 2 and 3 can be joined by the columns “GID_1”.</p>
-<p><br></p>
-<p>This translates into the following we use the <code>join_map_levels_by</code> argument:</p>
+<p>We see, that map levels 2 and 3 can be joined by their column “GID_1”.</p>
+<p>This translates into the following <code>join_map_levels_by</code> argument:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">my_leafdown</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Leafdown.html">Leafdown</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   <span class="va">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="va">input</span>, join_map_levels_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span> <span class="op">=</span> <span class="st">"GID_0"</span>, <span class="st">"GID_1"</span> <span class="op">=</span> <span class="st">"GID_1"</span><span class="op">)</span>
@@ -398,10 +396,10 @@
       </footer>
 </div>
 
+  
 
 
-
-
+  
 
   </body>
 </html>

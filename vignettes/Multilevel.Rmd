@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 
 In this article, we demonstrate how to set up a `leafdown` map with three map levels and show that it is an natural
-extension of the two map level case. (More than two map levels is supported as of `leafdown` version 1.1.)
+extension of the two map level case. (More than two map levels is supported from `leafdown` version 1.1.)
 
 ```{r, echo=FALSE, out.width="70%"}
 knitr::include_graphics("../man/figures/app_dach_map.png")
@@ -42,7 +42,7 @@ library(raster)
 ## SpatialPolygonsDataFrames
 
 As usual, we first create a list of `SpatialPolygonsDataFrames` (`spdfs`) for the regions we want to display on our map.
-(further details can be found in the [Introduction article.](https://hoga-it.github.io/leafdown/articles/Introduction.html)).
+(Further details can be found in the [Introduction article](https://hoga-it.github.io/leafdown/articles/Introduction.html).)
 
 ```
 list (spdfs_list)
@@ -88,7 +88,7 @@ spdfs_list <- list(rbind(aut0, ch0, ger0), rbind(aut1, ch1, ger1), rbind(aut2, c
 
 ## Data
 
-For this app, we will simply generate some random data.
+For this app, we simply generate random target values `y`.
 
 ```{r, message=FALSE}
 set.seed(20220106)
@@ -120,16 +120,15 @@ head(data_sim_y)
 
 ## Joining map levels
 
-In order for `leafdown` to know which shapes of a lower map level belong to the shapes in the upper map level, we
-need to specify how the data of the `spdfs` of different map levels need to be joined.
+In order for a `leafdown` map to know which shapes of a lower map level belong to the shapes in the upper map level, we
+need to specify how the data of the `spdfs` of different map levels need to be joined. \newline
+This is defined by the `join_map_levels_by` argument, which is a named vector of length `length(spdfs_list) - 1`, whereby
 
-The `join_map_levels_by` argument is a named vector of length `length(spdfs_list) - 1`, whereby
-
-- the first (named) element tells `leafdown` how to join the first and the second map level
-- the second (named) element tells `leafdown` how to join the second and the third map level
+- the first (named) element specifies how to join the first and the second map level
+- the second (named) element specifies how to join the second and the third map level
 - and so on.
 
-The name of an element specifies the name of the join column in the upper map level and the actual element the join column 
+The name of an element specifies the join column in the respective upper map level and the actual element the join column 
 of the lower map level.
 
 Let's have a look at the data of our the `spdfs` in `spdf_list`:
@@ -142,7 +141,7 @@ head(spdfs_list[[1]]@data)
 head(spdfs_list[[2]]@data[, c("GID_0", "NAME_0", "GID_1", "NAME_1")])
 ```
 
-In this example, map levels 1 and 2 can be joined via columns "GID_0". So the name of first element is "GID_0" 
+In this example, map levels 1 and 2 can be joined by their column "GID_0". So the name of first element is "GID_0" 
 (the respective column name of the first map level) and the first element is also "GID_0" (the respective column name of 
 the first map level):
 
@@ -150,11 +149,9 @@ the first map level):
 head(spdfs_list[[3]]@data[, c("GID_0", "NAME_0", "GID_1", "NAME_1", "GID_2", "NAME_2")])
 ```
 
-We see, that map levels 2 and 3 can be joined by the columns "GID_1".
+We see, that map levels 2 and 3 can be joined by their column "GID_1".
 
-<br>
-
-This translates into the following we use the `join_map_levels_by` argument:
+This translates into the following `join_map_levels_by` argument:
 
 ```{r, eval=FALSE}
 my_leafdown <- Leafdown$new(
