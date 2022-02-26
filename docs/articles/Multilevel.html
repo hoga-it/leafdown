@@ -96,7 +96,10 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/" class="external-link">leaflet</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://deanattali.com/shinyjs/" class="external-link">shinyjs</a></span><span class="op">)</span></code></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/daattali/shinycssloaders" class="external-link">shinycssloaders</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://deanattali.com/shinyjs/" class="external-link">shinyjs</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></code></pre></div>
 <p>(Note that the <code>shinyjs</code> package is loaded for some automatic warning messages that the <code>leafdown</code> map can return to the user of the shiny app.)</p>
 <div class="section level2">
 <h2 id="spatialpolygonsdataframes">SpatialPolygonsDataFrames<a class="anchor" aria-label="anchor" href="#spatialpolygonsdataframes"></a>
@@ -133,7 +136,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20220106</span><span class="op">)</span>
 <span class="co"># Simulate data</span>
 <span class="va">data_sim_y_level_3</span> <span class="op">&lt;-</span> <span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span>
-<span class="va">data_sim_y_level_3</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data_sim_y_level_3</span><span class="op">)</span>, <span class="fl">1e2</span>, sd <span class="op">=</span> <span class="fl">5e2</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="va">data_sim_y_level_3</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/ncell.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data_sim_y_level_3</span><span class="op">)</span>, <span class="fl">1e2</span>, sd <span class="op">=</span> <span class="fl">5e2</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="va">data_sim_y_level_2</span> <span class="op">&lt;-</span> <span class="va">data_sim_y_level_3</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">NAME_0</span>, <span class="va">NAME_1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>
 <span class="va">data_sim_y_level_1</span> <span class="op">&lt;-</span> <span class="va">data_sim_y_level_2</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">NAME_0</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span>
 
@@ -154,7 +157,7 @@
   <span class="va">data_sim_y_level_1</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"area"</span>, <span class="st">"y"</span>, <span class="st">"level"</span><span class="op">)</span><span class="op">]</span>
 <span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_sim_y</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_sim_y</span><span class="op">)</span>
 <span class="co">#&gt;                  area    y level</span>
 <span class="co">#&gt; 1          Eisenstadt 1086     3</span>
 <span class="co">#&gt; 2 Eisenstadt Umgebung  404     3</span>
@@ -176,13 +179,13 @@
 <p>The name of an element specifies the name of the join column in the upper map level and the actual element the join column of the lower map level.</p>
 <p>Let’s have a look at the data of our the <code>spdfs</code> in <code>spdf_list</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">)</span>
 <span class="co">#&gt;   GID_0      NAME_0</span>
 <span class="co">#&gt; 1   AUT     Austria</span>
 <span class="co">#&gt; 2   CHE Switzerland</span>
 <span class="co">#&gt; 3   DEU     Germany</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span>, <span class="st">"NAME_0"</span>, <span class="st">"GID_1"</span>, <span class="st">"NAME_1"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span>, <span class="st">"NAME_0"</span>, <span class="st">"GID_1"</span>, <span class="st">"NAME_1"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;   GID_0  NAME_0   GID_1           NAME_1</span>
 <span class="co">#&gt; 1   AUT Austria AUT.1_1       Burgenland</span>
 <span class="co">#&gt; 2   AUT Austria AUT.2_1          Kärnten</span>
@@ -192,7 +195,7 @@
 <span class="co">#&gt; 6   AUT Austria AUT.6_1       Steiermark</span></code></pre></div>
 <p>In this example, map levels 1 and 2 can be joined via columns “GID_0”. So the name of first element is “GID_0” (the respective column name of the first map level) and the first element is also “GID_0” (the respective column name of the first map level):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span>, <span class="st">"NAME_0"</span>, <span class="st">"GID_1"</span>, <span class="st">"NAME_1"</span>, <span class="st">"GID_2"</span>, <span class="st">"NAME_2"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spdfs_list</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span>, <span class="st">"NAME_0"</span>, <span class="st">"GID_1"</span>, <span class="st">"NAME_1"</span>, <span class="st">"GID_2"</span>, <span class="st">"NAME_2"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;   GID_0  NAME_0   GID_1     NAME_1     GID_2              NAME_2</span>
 <span class="co">#&gt; 1   AUT Austria AUT.1_1 Burgenland AUT.1.2_1          Eisenstadt</span>
 <span class="co">#&gt; 2   AUT Austria AUT.1_1 Burgenland AUT.1.1_1 Eisenstadt Umgebung</span>
@@ -293,8 +296,8 @@
 <code class="sourceCode R"><span class="co"># Little helper function for hover labels</span>
 <span class="va">create_labels</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">map_level</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span>
-    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g € per capita&lt;/sup&gt;"</span>,
-    <span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"NAME_"</span>, <span class="va">map_level</span><span class="op">)</span><span class="op">]</span>, <span class="va">data</span><span class="op">$</span><span class="va">GDP_2014</span>
+    <span class="st">"&lt;strong&gt;%s&lt;/strong&gt;&lt;br/&gt;%g&lt;/sup&gt;"</span>,
+    <span class="va">data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"NAME_"</span>, <span class="va">map_level</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span>, <span class="va">data</span><span class="op">$</span><span class="va">y</span>
   <span class="op">)</span>
   <span class="va">labels</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu">htmltools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html" class="external-link">HTML</a></span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
@@ -302,7 +305,9 @@
 <code class="sourceCode R"><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span>
 
   <span class="co"># create leafdown object</span>
-  <span class="va">my_leafdown</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Leafdown.html">Leafdown</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="va">input</span>, join_map_levels_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span> <span class="op">=</span> <span class="st">"GID_0"</span>, <span class="st">"GID_1"</span> <span class="op">=</span> <span class="st">"GID_1"</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">my_leafdown</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Leafdown.html">Leafdown</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
+    <span class="va">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="va">input</span>, join_map_levels_by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GID_0"</span> <span class="op">=</span> <span class="st">"GID_0"</span>, <span class="st">"GID_1"</span> <span class="op">=</span> <span class="st">"GID_1"</span><span class="op">)</span>
+  <span class="op">)</span>
 
   <span class="va">rv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveValues.html" class="external-link">reactiveValues</a></span><span class="op">(</span><span class="op">)</span>
   <span class="va">rv</span><span class="op">$</span><span class="va">update_leafdown</span> <span class="op">&lt;-</span> <span class="fl">0</span>
@@ -354,7 +359,7 @@
 <style>
 .shiny-app-frame {
   position: relative;
-  height: 700px;
+  height: 1100px;
 }
 .shiny-app-frame iframe {
   width: 100%;

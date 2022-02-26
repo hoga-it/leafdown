@@ -314,7 +314,7 @@ shinyApp(ui, server)
 <style>
 .shiny-app-frame {
   position: relative;
-  height: 900px;
+  height: 1100px;
 }
 .shiny-app-frame iframe {
   width: 100%;
