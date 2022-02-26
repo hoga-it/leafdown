@@ -10,6 +10,9 @@
     <loc>/articles/Introduction.html</loc>
   </url>
   <url>
+    <loc>/articles/Multilevel.html</loc>
+  </url>
+  <url>
     <loc>/articles/Showcase_electionapp.html</loc>
   </url>
   <url>
@@ -28,13 +31,13 @@
     <loc>/reference/Leafdown.html</loc>
   </url>
   <url>
+    <loc>/reference/assert_join_map_levels_by.html</loc>
+  </url>
+  <url>
+    <loc>/reference/assert_spdf_list.html</loc>
+  </url>
+  <url>
     <loc>/reference/check_draw_ellipsis.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_join_map_levels_by.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_spdf_list.html</loc>
   </url>
   <url>
     <loc>/reference/gdp_2014_admin_districts.html</loc>
