@@ -187,7 +187,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.
     #' @param ... Additional arguments given to \code{leaflet::addPolygons}
-    draw_leafdown = function(...) {
+    draw_leafdown = function(input, ...) {
       # Checks arguments in ellipsis for undesired inputs such as 'layerId' which may
       # collide with internal structure of leafdown and returns a "cleaned" version of
       # the arguments by removing or redefining problematic inputs.
@@ -239,8 +239,27 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.map_proxy %>%
         hideGroup(all_poly_ids) %>%
         showGroup(private$.curr_sel_ids[[private$.curr_map_level]])
+
       map
     },
+
+    #' @description
+    #' Keeps the zoom after \code{drill_down} and \code{drill_up} events
+    #' @param map the map output from \code{draw_leafdown}
+    #' @param input the input object from the shiny app
+    keep_zoom = function(map, input) {
+      isolate({
+        map_zoom <- input[[paste0(private$.map_output_id, "_zoom")]]
+        map_center <- input[[paste0(private$.map_output_id, "_center")]]
+      })
+
+      if (!is.null(map_zoom) && !is.null(map_center)) {
+        map <- map %>% setView(map_center$lng, map_center$lat, map_zoom)
+      }
+
+      map
+    },
+
     #' @description
     #' Adds the data to the currently displayed shapes.
     #' This includes the meta-data AND the values to be visualized in the map.
