@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">leafdown</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -198,11 +198,11 @@ The full code of the election map…
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span>
 
-<span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/dashboardPage.html" class="external-link">bs4DashPage</a></span><span class="op">(</span>
+<span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashPage.html" class="external-link">bs4DashPage</a></span><span class="op">(</span>
   title <span class="op">=</span> <span class="st">"Leafdown Showcase - USA Election Data"</span>,
-  navbar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/dashboardHeader.html" class="external-link">bs4DashNavbar</a></span><span class="op">(</span><span class="va">tags</span><span class="op">$</span><span class="fu">h3</span><span class="op">(</span><span class="st">"Leafdown Showcase - USA Election Data"</span>, style <span class="op">=</span> <span class="st">"margin-bottom: .2rem;"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/dashboardSidebar.html" class="external-link">bs4DashSidebar</a></span><span class="op">(</span>disable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/dashboardBody.html" class="external-link">bs4DashBody</a></span><span class="op">(</span>
+  navbar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashNavbar.html" class="external-link">bs4DashNavbar</a></span><span class="op">(</span><span class="va">tags</span><span class="op">$</span><span class="fu">h3</span><span class="op">(</span><span class="st">"Leafdown Showcase - USA Election Data"</span>, style <span class="op">=</span> <span class="st">"margin-bottom: .2rem;"</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashSidebar.html" class="external-link">bs4DashSidebar</a></span><span class="op">(</span>disable <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4DashBody.html" class="external-link">bs4DashBody</a></span><span class="op">(</span>
     <span class="co"># set the background of the map-container to be white</span>
     <span class="va">tags</span><span class="op">$</span><span class="fu">head</span><span class="op">(</span>
       <span class="va">tags</span><span class="op">$</span><span class="fu">style</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html" class="external-link">HTML</a></span><span class="op">(</span><span class="st">".leaflet-container { background: #fff; height: 100%}"</span><span class="op">)</span><span class="op">)</span>,
@@ -216,7 +216,7 @@ The full code of the election map…
     <span class="fu"><a href="https://rdrr.io/pkg/shinyjs/man/useShinyjs.html" class="external-link">useShinyjs</a></span><span class="op">(</span><span class="op">)</span>,
     <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidRow</a></span><span class="op">(</span>
       <span class="co"># a card for the map</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/box.html" class="external-link">bs4Card</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4Card.html" class="external-link">bs4Card</a></span><span class="op">(</span>
         title <span class="op">=</span> <span class="st">"Map"</span>,
         closable <span class="op">=</span> <span class="cn">FALSE</span>,
         collapsible <span class="op">=</span> <span class="cn">FALSE</span>,
@@ -237,7 +237,7 @@ The full code of the election map…
       <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html" class="external-link">column</a></span><span class="op">(</span>
         width <span class="op">=</span> <span class="fl">6</span>,
         <span class="co"># box for racial makeup graph</span>
-        <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/box.html" class="external-link">bs4Card</a></span><span class="op">(</span>
+        <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4Card.html" class="external-link">bs4Card</a></span><span class="op">(</span>
           width <span class="op">=</span> <span class="fl">12</span>,
           closable <span class="op">=</span> <span class="cn">F</span>,
           collapsible <span class="op">=</span> <span class="cn">F</span>,
@@ -245,7 +245,7 @@ The full code of the election map…
           <span class="fu"><a href="http://echarts4r.john-coene.com/reference/echarts4r-shiny.html" class="external-link">echarts4rOutput</a></span><span class="op">(</span><span class="st">"socio"</span><span class="op">)</span>
         <span class="op">)</span>,
         <span class="co"># box for party percent graph</span>
-        <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/box.html" class="external-link">bs4Card</a></span><span class="op">(</span>
+        <span class="fu"><a href="https://rdrr.io/pkg/bs4Dash/man/bs4Card.html" class="external-link">bs4Card</a></span><span class="op">(</span>
           width <span class="op">=</span> <span class="fl">12</span>,
           closable <span class="op">=</span> <span class="cn">F</span>,
           collapsible <span class="op">=</span> <span class="cn">F</span>,

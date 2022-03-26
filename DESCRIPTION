@@ -1,7 +1,7 @@
 Package: leafdown
 Type: Package
 Title: Provides Drill Down Functionality for 'leaflet' Choropleths
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(
     person("Andreas", "Hofheinz", email = "andreas.hofheinz@outlook.com", role = "cre"),
     person("Peter", "Gandenberger", email = "peter.gandenberger@gmail.com", role = "aut"))
