@@ -346,6 +346,9 @@ For this we have to specify the:</p>
 <code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="va">my_leafdown</span><span class="op">$</span><span class="fu">draw_leafdown</span><span class="op">(</span>
   fillColor <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html" class="external-link">colorNumeric</a></span><span class="op">(</span><span class="st">"Blues"</span>, <span class="va">GDP_2014</span><span class="op">)</span><span class="op">(</span><span class="va">GDP_2014</span><span class="op">)</span>
 <span class="op">)</span> </code></pre></div>
+<p>We can use the <code>keep_zoom()</code> method to keep the current zoom level as well as the current view center of the user after the map is drawn.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">map</span> <span class="op">&lt;-</span> <span class="va">my_leafdown</span><span class="op">$</span><span class="fu">keep_zoom</span><span class="op">(</span><span class="va">map</span>, <span class="va">input</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -354,7 +357,7 @@ For this we have to specify the:</p>
 <div class="section level3">
 <h3 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
 </h3>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">leafdown</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/" class="external-link">leaflet</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span>
@@ -373,7 +376,7 @@ For this we have to specify the:</p>
 <div class="section level3">
 <h3 id="ui">UI<a class="anchor" aria-label="anchor" href="#ui"></a>
 </h3>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span>
   <span class="va">tags</span><span class="op">$</span><span class="fu">style</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html" class="external-link">HTML</a></span><span class="op">(</span><span class="st">".leaflet-container {background: #ffffff;}"</span><span class="op">)</span><span class="op">)</span>,
   <span class="fu"><a href="https://rdrr.io/pkg/shinyjs/man/useShinyjs.html" class="external-link">useShinyjs</a></span><span class="op">(</span><span class="op">)</span>,
@@ -385,7 +388,7 @@ For this we have to specify the:</p>
 <div class="section level3">
 <h3 id="server">Server<a class="anchor" aria-label="anchor" href="#server"></a>
 </h3>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Little helper function for hover labels</span>
 <span class="va">create_labels</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">map_level</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span>
@@ -394,7 +397,7 @@ For this we have to specify the:</p>
   <span class="op">)</span>
   <span class="va">labels</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu">htmltools</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/htmltools/man/HTML.html" class="external-link">HTML</a></span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">my_leafdown</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Leafdown.html">Leafdown</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">spdfs_list</span>, <span class="st">"leafdown"</span>, <span class="va">input</span><span class="op">)</span>
   <span class="va">update_leafdown</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveVal.html" class="external-link">reactiveVal</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>
@@ -425,7 +428,8 @@ For this we have to specify the:</p>
       fillColor <span class="op">=</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html" class="external-link">colorNumeric</a></span><span class="op">(</span><span class="st">"Greens"</span>, <span class="va">GDP_2014</span><span class="op">)</span><span class="op">(</span><span class="va">GDP_2014</span><span class="op">)</span>,
       weight <span class="op">=</span> <span class="fl">2</span>, fillOpacity <span class="op">=</span> <span class="fl">0.8</span>, color <span class="op">=</span> <span class="st">"grey"</span>, label <span class="op">=</span> <span class="va">labels</span>,
       highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html" class="external-link">highlightOptions</a></span><span class="op">(</span>weight <span class="op">=</span> <span class="fl">5</span>, color <span class="op">=</span> <span class="st">"#666"</span>, fillOpacity <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
-    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span>
+    <span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> 
+      <span class="va">my_leafdown</span><span class="op">$</span><span class="fu">keep_zoom</span><span class="op">(</span><span class="va">input</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> 
       <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/addLegend.html" class="external-link">addLegend</a></span><span class="op">(</span><span class="st">"topright"</span>,
         pal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/colorNumeric.html" class="external-link">colorNumeric</a></span><span class="op">(</span><span class="st">"Blues"</span>, <span class="va">data</span><span class="op">$</span><span class="va">GDP_2014</span><span class="op">)</span>,
         values <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">GDP_2014</span>,
@@ -439,7 +443,7 @@ For this we have to specify the:</p>
 <div class="section level3">
 <h3 id="run-app">Run App<a class="anchor" aria-label="anchor" href="#run-app"></a>
 </h3>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></code></pre></div>
 <style>
 .shiny-app-frame {

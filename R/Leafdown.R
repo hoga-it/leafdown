@@ -187,7 +187,7 @@ Leafdown <- R6::R6Class("Leafdown",
     #' @description
     #' Draws the leaflet map on the current map level. All unselected parents will be drawn in gray.
     #' @param ... Additional arguments given to \code{leaflet::addPolygons}
-    draw_leafdown = function(input, ...) {
+    draw_leafdown = function(...) {
       # Checks arguments in ellipsis for undesired inputs such as 'layerId' which may
       # collide with internal structure of leafdown and returns a "cleaned" version of
       # the arguments by removing or redefining problematic inputs.
@@ -244,7 +244,7 @@ Leafdown <- R6::R6Class("Leafdown",
     },
 
     #' @description
-    #' Keeps the zoom after \code{drill_down} and \code{drill_up} events
+    #' Keeps the zoom after \code{drill_down} and \code{drill_up} events.
     #' @param map the map output from \code{draw_leafdown}
     #' @param input the input object from the shiny app
     keep_zoom = function(map, input) {

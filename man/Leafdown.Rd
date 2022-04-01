@@ -85,6 +85,7 @@ This corresponds to the position of the shapes in the \code{spdfs_list}.
 \itemize{
 \item \href{#method-new}{\code{Leafdown$new()}}
 \item \href{#method-draw_leafdown}{\code{Leafdown$draw_leafdown()}}
+\item \href{#method-keep_zoom}{\code{Leafdown$keep_zoom()}}
 \item \href{#method-add_data}{\code{Leafdown$add_data()}}
 \item \href{#method-drill_down}{\code{Leafdown$drill_down()}}
 \item \href{#method-drill_up}{\code{Leafdown$drill_up()}}
@@ -134,6 +135,25 @@ Draws the leaflet map on the current map level. All unselected parents will be d
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{...}}{Additional arguments given to \code{leaflet::addPolygons}}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-keep_zoom"></a>}}
+\if{latex}{\out{\hypertarget{method-keep_zoom}{}}}
+\subsection{Method \code{keep_zoom()}}{
+Keeps the zoom after \code{drill_down} and \code{drill_up} events.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Leafdown$keep_zoom(map, input)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{map}}{the map output from \code{draw_leafdown}}
+
+\item{\code{input}}{the input object from the shiny app}
 }
 \if{html}{\out{</div>}}
 }

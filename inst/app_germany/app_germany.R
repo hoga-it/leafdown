@@ -8,12 +8,12 @@ library(shinycssloaders)
 library(shinyjs)
 
 # Uncomment this when uploading
-# ger1 <- readRDS("ger1-005.R")
-# ger2 <- readRDS("ger2-005.R")
+# ger1 <- readRDS("ger1-005.RDS")
+# ger2 <- readRDS("ger2-005.RDS")
 
 # Comment this when uploading
-ger1 <- readRDS("../extdata/ger1-005.R")
-ger2 <- readRDS("../extdata/ger2-005.R")
+ger1 <- readRDS("../extdata/ger1-005.RDS")
+ger2 <- readRDS("../extdata/ger2-005.RDS")
 
 ger2@data[c(76, 99, 136, 226), "NAME_2"] <- c(
   "Fürth (Kreisfreie Stadt)",
@@ -71,7 +71,7 @@ server <- function(input, output) {
       fillColor = ~ colorNumeric("Greens", GDP_2014)(GDP_2014),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
-    ) %>%
+    ) %>% my_leafdown$keep_zoom(input) %>%
       addLegend(
         "topright",
         pal = colorNumeric("Greens", data$GDP_2014),
