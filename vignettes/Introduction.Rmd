@@ -196,7 +196,7 @@ For this we have to specify the:
 should be joined. In case of two map levels this is set by default to c("GID_1" = "GID_1"), which is 
 appropriate when 'Provinces/States' is the first and 'Districts' the second map level.
 If you use 'Countries' as first  and 'Provinces/States' as second level you have to set 
-it to `c("ISO" = "GID_0")`
+it to `c("ISO" = "GID_0")`. For more information, see the Section *Joining map levels* in the [Multilevel article.](https://hoga-it.github.io/leafdown/articles/Multilevel.html)
 
 ```{r, echo=FALSE}
 input <- reactiveValues(foo = "bar") # a little helper as we are currently not in a shiny session
