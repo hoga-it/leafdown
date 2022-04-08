@@ -94,6 +94,7 @@ This corresponds to the position of the shapes in the <code>spdfs_list</code>.
 
 <ul><li><p><a href="#method-new"><code>Leafdown$new()</code></a></p></li>
 <li><p><a href="#method-draw_leafdown"><code>Leafdown$draw_leafdown()</code></a></p></li>
+<li><p><a href="#method-keep_zoom"><code>Leafdown$keep_zoom()</code></a></p></li>
 <li><p><a href="#method-add_data"><code>Leafdown$add_data()</code></a></p></li>
 <li><p><a href="#method-drill_down"><code>Leafdown$drill_down()</code></a></p></li>
 <li><p><a href="#method-drill_up"><code>Leafdown$drill_up()</code></a></p></li>
@@ -149,16 +150,36 @@ where n is <code>length(spdfs_list) - 1</code>.</p></dd>
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-add_data"></a><div class="section">
-<h3 id="method-add-data-">Method <code>add_data()</code><a class="anchor" aria-label="anchor" href="#method-add-data-"></a></h3>
-<p>Adds the data to the currently displayed shapes.
-This includes the meta-data AND the values to be visualized in the map.</p><div class="section">
+</div><p></p><hr><a id="method-keep_zoom"></a><div class="section">
+<h3 id="method-keep-zoom-">Method <code>keep_zoom()</code><a class="anchor" aria-label="anchor" href="#method-keep-zoom-"></a></h3>
+<p>Keeps the zoom after <code>drill_down</code> and <code>drill_up</code> events.</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">add_data</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">keep_zoom</span><span class="op">(</span><span class="va">map</span>, <span class="va">input</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>map</code></dt>
+<dd><p>the map output from <code>draw_leafdown</code></p></dd>
+
+
+<dt><code>input</code></dt>
+<dd><p>the input object from the shiny app</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div><p></p><hr><a id="method-add_data"></a><div class="section">
+<h3 id="method-add-data-">Method <code>add_data()</code><a class="anchor" aria-label="anchor" href="#method-add-data-"></a></h3>
+<p>Adds the data to the currently displayed shapes.
+This includes the meta-data AND the values to be visualized in the map.</p><div class="section">
+<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">add_data</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>data</code></dt>
 <dd><p>The new data existing of the meta-data and the values to display in the map(color)</p></dd>
 
@@ -172,7 +193,7 @@ This includes the meta-data AND the values to be visualized in the map.</p><div 
 <li><p>at least one shape is selected to drill down on</p></li>
 </ul><p>This will not redraw the map. Also call <code>add_data</code> to add data for the new level and then
   <code>draw_leafdown</code> to redraw the map on the new level.</p><div class="section">
-<h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
+<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">drill_down</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -182,7 +203,7 @@ This includes the meta-data AND the values to be visualized in the map.</p><div 
 <p>Drills up to the higher level if:</p><ul><li><p>there is a higher level (for now there are only two levels)</p></li>
 </ul><p>This will not redraw the map. Also call <code>add_data</code> to add data for the new level and then
   <code>draw_leafdown</code> to redraw the map on the new level.</p><div class="section">
-<h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
+<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">drill_up</span><span class="op">(</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
@@ -190,12 +211,12 @@ This includes the meta-data AND the values to be visualized in the map.</p><div 
 </div><p></p><hr><a id="method-toggle_shape_select"></a><div class="section">
 <h3 id="method-toggle-shape-select-">Method <code>toggle_shape_select()</code><a class="anchor" aria-label="anchor" href="#method-toggle-shape-select-"></a></h3>
 <p>Selects the shape with the given shape id, or unselects it if it was already selected.</p><div class="section">
-<h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
+<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">toggle_shape_select</span><span class="op">(</span><span class="va">shape_id</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>shape_id</code></dt>
 <dd><p>the id of the shape to select, has to be a character and in the current map-level.</p></dd>
 
@@ -206,12 +227,12 @@ This includes the meta-data AND the values to be visualized in the map.</p><div 
 </div><p></p><hr><a id="method-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
+<h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span class="va">Leafdown</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
