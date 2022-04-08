@@ -239,8 +239,27 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.map_proxy %>%
         hideGroup(all_poly_ids) %>%
         showGroup(private$.curr_sel_ids[[private$.curr_map_level]])
+
       map
     },
+
+    #' @description
+    #' Keeps the zoom after \code{drill_down} and \code{drill_up} events.
+    #' @param map the map output from \code{draw_leafdown}
+    #' @param input the input object from the shiny app
+    keep_zoom = function(map, input) {
+      isolate({
+        map_zoom <- input[[paste0(private$.map_output_id, "_zoom")]]
+        map_center <- input[[paste0(private$.map_output_id, "_center")]]
+      })
+
+      if (!is.null(map_zoom) && !is.null(map_center)) {
+        map <- map %>% setView(map_center$lng, map_center$lat, map_zoom)
+      }
+
+      map
+    },
+
     #' @description
     #' Adds the data to the currently displayed shapes.
     #' This includes the meta-data AND the values to be visualized in the map.

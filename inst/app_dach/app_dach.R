@@ -99,6 +99,8 @@ server <- function(input, output) {
   observeEvent(input$drill_down, {
     my_leafdown$drill_down()
     rv$update_leafdown <- rv$update_leafdown + 1
+
+
   })
 
   observeEvent(input$drill_up, {
@@ -127,10 +129,12 @@ server <- function(input, output) {
     data <- data()
     labels <- create_labels(data, my_leafdown$curr_map_level)
     # draw the leafdown object
-    my_leafdown$draw_leafdown(
+    map <- my_leafdown$draw_leafdown(
       fillColor = ~leaflet::colorNumeric("Greens", data$y)(data$y),
       weight = 3, fillOpacity = 1, color = "grey", label = labels
-    )
+    ) %>% my_leafdown$keep_zoom(input)
+
+    map
   })
 }
 

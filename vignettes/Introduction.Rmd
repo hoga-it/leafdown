@@ -399,6 +399,12 @@ map <- my_leafdown$draw_leafdown(
 ) 
 ```
 
+We can use the `keep_zoom()` method to keep the current zoom level as well as the current view center of the 
+user after the map is drawn.
+
+```{r, eval=FALSE}
+map <- my_leafdown$keep_zoom(map, input)
+```
 
 
 ## Shiny App
@@ -478,7 +484,8 @@ server <- function(input, output) {
       fillColor = ~ colorNumeric("Greens", GDP_2014)(GDP_2014),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
-    ) %>%
+    ) %>% 
+      my_leafdown$keep_zoom(input) %>% 
       addLegend("topright",
         pal = colorNumeric("Blues", data$GDP_2014),
         values = data$GDP_2014,
