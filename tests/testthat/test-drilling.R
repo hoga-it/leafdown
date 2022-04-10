@@ -5,6 +5,7 @@ context("Drilling")
 
 # Due to Error: PhantomJS not found.
 skip_on_cran()
+skip_on_ci()
 
 test_that("drill_down drills to correct subshapes", {
   app <- ShinyDriver$new("testapps")

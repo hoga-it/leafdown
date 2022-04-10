@@ -3,6 +3,7 @@ library(leaflet)
 
 # Due to Error: PhantomJS not found.
 skip_on_cran()
+skip_on_ci()
 
 context("Selection")
 

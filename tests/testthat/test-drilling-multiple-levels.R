@@ -5,6 +5,7 @@ context("Drilling_Multi_Level")
 
 # Due to Error: PhantomJS not found.
 skip_on_cran()
+skip_on_ci()
 
 test_that("drill_down drills multiple times correctly", {
   app <- ShinyDriver$new("testapp_multi_level")
