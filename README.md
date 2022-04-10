@@ -7,8 +7,7 @@
 
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![Travis build
-status](https://travis-ci.com/hoga-it/leafdown.svg?branch=master)](https://travis-ci.com/hoga-it/leafdown)
+[![R-CMD-check](https://github.com/hoga-it/leafdown/workflows/R-CMD-check/badge.svg)](https://github.com/hoga-it/leafdown/actions)
 <!-- badges: end -->
 
 The leafdown package provides drilldown functionality for leaflet
