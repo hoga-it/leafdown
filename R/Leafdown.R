@@ -4,7 +4,6 @@
 #' This class acts as a wrapper around a leafdown map.
 #'
 #' @importFrom magrittr "%>%"
-#' @import leaflet
 #'
 #' @examples
 #' \dontrun{
