@@ -1,3 +1,7 @@
+# leafdown 1.1.1
+
+* Option to keep the zoom (zoom level, lat, long) after `$drill_down` and `$drill_up` calls with the `$keep_zoom` method.
+
 # leafdown 1.1.0
 
 * Support of more than two map levels.
