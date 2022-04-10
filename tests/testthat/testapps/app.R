@@ -18,9 +18,9 @@ ui <- shiny::fluidPage(
 
 # Define server for leafdown app
 server <- function(input, output) {
-  states <- readRDS("../../../inst/extdata/usa1.RDS")
+  states <- readRDS("../res/usa1.RDS")
   names(states)[names(states) == "GID_1"] <- "MATCH1"
-  states2 <- readRDS("../../../inst/extdata/usa2.RDS")
+  states2 <- readRDS("../res/usa2.RDS")
   names(states2)[names(states2) == "GID_1"] <- "MATCH2"
   spdfs_list <- list(states, states2)
   my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input, join_map_levels_by = c("MATCH1" = "MATCH2"))
