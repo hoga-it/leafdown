@@ -21,8 +21,8 @@ server <- function(input, output) {
   us0 <- readRDS("../res/usa0.RDS")
   us1 <- readRDS("../res/usa1.RDS")
   us2 <- readRDS("../res/usa2.RDS")
-  ger0 <- readRDS("../res/ger0-005.RDS")
-  ger1 <- readRDS("../res/ger1-005.RDS")
+  ger0 <- readRDS("../res/ger0-0005.RDS")
+  ger1 <- readRDS("../res/ger1-0005.RDS")
   ger2 <- readRDS("../res/ger2-005.RDS")
 
   spdfs_list <- list(raster::union(us0, ger0), raster::union(us1, ger1), raster::union(us2, ger2))
