@@ -277,6 +277,16 @@ Leafdown <- R6::R6Class("Leafdown",
       metadata_initial <- private$.curr_spdf@data
       metadata_given <- data[, names(private$.curr_spdf@data)]
 
+      n_row_metadata_given <- nrow(metadata_given)
+      n_row_metadata_initial <- nrow(metadata_initial)
+      if (n_row_metadata_given != n_row_metadata_initial) {
+        err_msg <- sprintf(
+          "The number of rows of the given data (%1.0f) is not equal to the number of rows of the initial data (%1.0f).",
+          n_row_metadata_given, n_row_metadata_initial
+        )
+        stop(err_msg)
+      }
+
       # use of !isTRUE is intentional, as all.equal returns either TRUE or gives an error message (do not change to isFALSE)
       if (!isTRUE(all.equal(metadata_given, metadata_initial, check.attributes = FALSE))) {
         stop(paste("You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering.",
