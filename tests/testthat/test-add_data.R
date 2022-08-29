@@ -41,22 +41,30 @@ test_that("Missing columns in data throws error", {
 
   # change data
   # random col to delete
-  col <- floor(runif(1, min=1, max=dim(data)[2]))
+  col <- floor(runif(1, min = 1, max = dim(data)[2]))
   data <- data[, -col]
 
   expect_error(my_leafdown$add_data(data), "You cannot remove columns from the existing meta-data. Only add to it")
 })
 
-test_that("Missing row in data throws error", {
+test_that("Unequal number of rows as meta-data throws an error", {
   my_leafdown <- init_leafdown()
   data <- my_leafdown$curr_data
 
-  # change data
-  # random col and row for change
-  row <- floor(runif(1, min=1, max=dim(data)[1]))
-  data <- data[-row, ]
+  data_too_long <- data
+  data_too_long[nrow(data_too_long) + 1, ] <- data_too_long[1, ]
+  err_msg_too_long <- sprintf(
+    "The number of rows of the given data \\(52\\) is not equal to the number of rows of the initial data \\(51\\)"
+  )
 
-  expect_error(my_leafdown$add_data(data), "You cannot change or reorder the existing meta-data. Only add to it. Use left_joins to avoid reordering")
+  data_too_short <- data
+  data_too_short <- data_too_short[-1, ]
+  err_msg_too_short <- c(
+    "The number of rows of the given data \\(50\\) is not equal to the number of rows of the initial data \\(51\\)"
+  )
+
+  expect_error(my_leafdown$add_data(data_too_long), regexp = err_msg_too_long)
+  expect_error(my_leafdown$add_data(data_too_short), err_msg_too_short)
 })
 
 test_that("Reordering Data throws correct error", {
