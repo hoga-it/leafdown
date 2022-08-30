@@ -275,7 +275,7 @@ Leafdown <- R6::R6Class("Leafdown",
       }
 
       metadata_initial <- private$.curr_spdf@data
-      metadata_given <- data[, names(private$.curr_spdf@data)]
+      metadata_given <- data[, names(private$.curr_spdf@data), drop = FALSE]
 
       n_row_metadata_given <- nrow(metadata_given)
       n_row_metadata_initial <- nrow(metadata_initial)
