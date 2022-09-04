@@ -80,4 +80,52 @@ test_that("selection and deselection leads to correct curr_sel_data", {
 })
 
 
+test_that("(de-)activating the shape selection works", {
+  app <- ShinyDriver$new("testapps")
+
+  # select shape with id = "1"
+  selected_shape <- list(id = "1")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+  expect_true("1" %in% curr_sel_ids)
+
+  # deactivate shape selection
+  app$setInputs(deactive_shape_selection = "click")
+
+  # select shape with id = "2"
+  selected_shape <- list(id = "2")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+  expect_false("2" %in% curr_sel_ids)
+
+  # select shape with id = "1"
+  selected_shape <- list(id = "1")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+  expect_true("1" %in% curr_sel_ids)
+
+  # activate shape selection
+  app$setInputs(active_shape_selection = "click")
+
+  # select shape with id = "2"
+  selected_shape <- list(id = "2")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+  expect_true("2" %in% curr_sel_ids[[1]])
+
+  # select shape with id = "1"
+  selected_shape <- list(id = "1")
+  app$setInputs(leafdown_shape_click = selected_shape, allowInputNoBinding_ = TRUE)
+  my_leafdown <- app$getAllValues()$export$my_leafdown
+
+  curr_sel_ids <- my_leafdown$.__enclos_env__$private$.curr_sel_ids
+  expect_false("1" %in% curr_sel_ids[[1]])
+
+  app$stop()
+})
+
 
