@@ -49,6 +49,9 @@ You can find the documentation
     (e.g. graphs).
 -   Computationally efficient as drilldown is only executed for selected
     regions of interest.
+    
+Andreas' [talk](https://www.rstudio.com/conference/2022/talks/leafdown-interactive-multi-layer-maps/) at the rstudio::conf(2022) 
+provides a quick overview of the most important features of leafdown.
 
 ## Showcase - Election Map
 
