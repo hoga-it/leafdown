@@ -69,8 +69,23 @@ The healthdown app allows interactive comparison of various health
 factors at the U.S. state and county level. It was honored as “Runners
 up” in the Shiny Contest 2021.
 
-Link to healthdown: <https://hoga.shinyapps.io/healthdown/>.
+Link to healthdown: <https://hoga.shinyapps.io/healthdown/>
 
 Code: <https://github.com/hoga-it/healthdown>
 
 <img src='man/figures/healthdown_app.jpg'/>
+
+## Showcase - Weather stations
+
+This app allows interactive comparison of weather station measurements
+between states, counties and individual stations. It was primarily
+developed for Andreas’
+[talk](https://www.rstudio.com/conference/2022/talks/leafdown-interactive-multi-layer-maps/)
+at the rstudio::conf(2022), where he demonstrated the capabilities of
+the leafdown package.
+
+Link to the app: <https://hoga.shinyapps.io/leafdown_rstudio_conf_2022/>
+
+Code: <https://github.com/andreash0/leafdown_rstudio_conf_2022>
+
+<img src='man/figures/app_weather.png'/>
