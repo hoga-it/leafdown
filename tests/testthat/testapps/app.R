@@ -12,6 +12,8 @@ ui <- shiny::fluidPage(
   actionButton("drill_down", "Drill Down"),
   actionButton("drill_up", "Drill Up"),
   actionButton("print", "Print"),
+  actionButton("active_shape_selection", "Activate shape selection"),
+  actionButton("deactive_shape_selection", "Deactivate shape selection"),
   leafletOutput("leafdown"),
   p(),
 )
@@ -40,6 +42,14 @@ server <- function(input, output) {
 
   observeEvent(input$print, {
     print(my_leafdown$curr_sel_data)
+  })
+
+  observeEvent(input$deactive_shape_selection, {
+    my_leafdown$deactivate_shape_selection()
+  })
+
+  observeEvent(input$active_shape_selection, {
+    my_leafdown$activate_shape_selection()
   })
 
   output$leafdown <- renderLeaflet({

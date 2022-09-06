@@ -93,6 +93,8 @@ Leafdown <- R6::R6Class("Leafdown",
     # unselected_parents All spdf shapes from the higher level that are not selected. They will be drawn in gray.
     # (Subset of spdfs_list)
     .unselected_parents = NULL,
+    # .shape_selection_active A flag that indicates whether shape selection is active.
+    .shape_selection_active = TRUE,
 
     # Initializes the observer for the maps _shape_click events. This is needed for the shape selection.
     # Once a shape is clicked, it is added to (or removed from) \code{.curr_sel_ids}.
@@ -103,7 +105,36 @@ Leafdown <- R6::R6Class("Leafdown",
         req(clicked_id)
         self$toggle_shape_select(clicked_id)
       })
+    },
+
+    .toggle_shape_select = function(shape_id) {
+      checkmate::assert_character(shape_id, min.chars = 1)
+
+      if (!shape_id %in% private$.curr_poly_ids) {
+        stop("Please make sure the selected shape_id is in the current level")
+      }
+
+      # Ids of selected polygons before click
+      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
+      if (shape_id %in% curr_sel_ids) {
+        private$.map_proxy %>% hideGroup(shape_id)
+        # Remove id of unselected polygon
+        curr_sel_ids <- curr_sel_ids[!curr_sel_ids == shape_id]
+      } else {
+        private$.map_proxy %>% showGroup(shape_id)
+        # Add id of newly selected polygon
+        curr_sel_ids <- c(curr_sel_ids, shape_id)
+      }
+
+      # Update data with regards to currently selected polygons (after click)
+      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
+      curr_sel_data <- subset(private$.curr_data, is_selected)
+      # Update leafdown object
+      private$.curr_sel_ids[[private$.curr_map_level]] <- curr_sel_ids
+      private$.curr_sel_data(curr_sel_data) # update reactiveVal
+
     }
+
   ),
   active = list(
     #' @field curr_sel_data A \code{reactiveValue} containing a data.frame with
@@ -379,33 +410,30 @@ Leafdown <- R6::R6Class("Leafdown",
       private$.unselected_parents <- private$.unselected_parents[seq_len(private$.curr_map_level - 1)]
       private$.curr_data <- private$.curr_spdf@data
     },
+
     #' @description
-    #' Selects the shape with the given shape id, or unselects it if it was already selected.
+    #' If shape selection is active, it selects the shape with the given shape id, or unselects it if it was already
+    #' selected.
     #' @param shape_id the id of the shape to select, has to be a character and in the current map-level.
     toggle_shape_select = function(shape_id) {
       checkmate::assert_character(shape_id, min.chars = 1)
-      if (!shape_id %in% private$.curr_poly_ids) {
-        stop("Please make sure the selected shape_id is in the current level")
-      }
 
-      # Ids of selected polygons before click
-      curr_sel_ids <- private$.curr_sel_ids[[private$.curr_map_level]]
-      if (shape_id %in% curr_sel_ids) {
-        private$.map_proxy %>% hideGroup(shape_id)
-        # Remove id of unselected polygon
-        curr_sel_ids <- curr_sel_ids[!curr_sel_ids == shape_id]
-      } else {
-        private$.map_proxy %>% showGroup(shape_id)
-        # Add id of newly selected polygon
-        curr_sel_ids <- c(curr_sel_ids, shape_id)
+      if (private$.shape_selection_active) {
+        private$.toggle_shape_select(shape_id)
       }
+    },
 
-      # Update data with regards to currently selected polygons (after click)
-      is_selected <- private$.curr_poly_ids %in% curr_sel_ids
-      curr_sel_data <- subset(private$.curr_data, is_selected)
-      # Update leafdown object
-      private$.curr_sel_ids[[private$.curr_map_level]] <- curr_sel_ids
-      private$.curr_sel_data(curr_sel_data) # update reactiveVal
+    #' @description
+    #' Activates shape selection.
+    activate_shape_selection = function() {
+      private$.shape_selection_active <- TRUE
+    },
+
+    #' @description
+    #' Deactivates shape selection. Information about previously selected shapes is preserved.
+    deactivate_shape_selection = function() {
+      private$.shape_selection_active <- FALSE
     }
+
   )
 )
