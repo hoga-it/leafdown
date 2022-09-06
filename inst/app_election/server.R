@@ -3,15 +3,14 @@ library(leafdown)
 #devtools::install_github("hoga-it/leafdown")
 
 # Comment this when uploading
-states <- readRDS("../extdata/us1.RDS")
-counties <- readRDS("../extdata/us2.RDS")
+states <- readRDS("../extdata/usa1.RDS")
+counties <- readRDS("../extdata/usa2.RDS")
 
 percent <- function(x, digits = 2, format = "f", ...) {      # Create user-defined function
   paste0(formatC(x * 100, format = format, digits = digits, ...), "%")
 }
 
 create_labels <- function(data, map_level) {
-  print(names(data))
   labels <- sprintf(
     "<strong>%s</strong><br/>
     Democrats: %s<br/>
