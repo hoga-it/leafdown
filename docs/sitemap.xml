@@ -4,6 +4,12 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/Connection_to_other_elements.html</loc>
+  </url>
+  <url>
+    <loc>/articles/Connection_with_other_elements.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -14,9 +20,6 @@
   </url>
   <url>
     <loc>/articles/shiny_test_vignette.html</loc>
-  </url>
-  <url>
-    <loc>/articles/Showcase_electionapp.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>

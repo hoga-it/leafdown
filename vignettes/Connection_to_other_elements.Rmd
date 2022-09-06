@@ -1,8 +1,8 @@
 ---
-title: "Showcase - Election App"
+title: "Connection to other Shiny elements"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Showcase - Election App}
+  %\VignetteIndexEntry{Connection to other Shiny elements}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-In this article, we demonstrate how easy it is to connect Graphs with a `leafdown` map. <br>
+In this article, we demonstrate how to connect a `leafdown` map to other Shiny elements. <br>
 
 ```{r, echo=FALSE, out.width="100%"}
 knitr::include_graphics("../man/figures/app_election_map.png")

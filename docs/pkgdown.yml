@@ -2,8 +2,8 @@ pandoc: 2.11.4
 pkgdown: 2.0.0
 pkgdown_sha: ~
 articles:
+  Connection_to_other_elements: Connection_to_other_elements.html
   Introduction: Introduction.html
   Multilevel: Multilevel.html
-  Showcase_electionapp: Showcase_electionapp.html
-last_built: 2022-04-10T09:09Z
+last_built: 2022-09-06T19:29Z
 

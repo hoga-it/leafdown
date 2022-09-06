@@ -2,3 +2,16 @@ destination: docs
 template:
   params:
     bootswatch: yeti
+
+
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: Introduction
+      href: articles/Introduction.html
+    - text: Connection to Shiny elements
+      href: articles/Connection_to_other_elements.html
+    - text: More than two map levels
+      href: articles/Multilevel.html
