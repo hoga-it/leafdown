@@ -49,9 +49,6 @@ You can find the documentation
     (e.g. graphs).
 -   Computationally efficient as drilldown is only executed for selected
     regions of interest.
-    
-Andreas' [talk](https://www.rstudio.com/conference/2022/talks/leafdown-interactive-multi-layer-maps/) at the rstudio::conf(2022) 
-provides a quick overview of the most important features of leafdown.
 
 ## Showcase - Election Map
 
@@ -61,7 +58,7 @@ demo app. <br>
 This app shows the 2016 us presidential election results as well as some
 demographic information.<br> Click here for the [full demo
 app](https://pega.shinyapps.io/election16/) and here for the
-[documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html).
+[documentation](https://hoga-it.github.io/leafdown/articles/Connection_to_other_elements.html).
 <br> <br>
 
 <img src='man/figures/app_election_map.png'/>

@@ -287,7 +287,7 @@ subset(my_leafdown$curr_data, NAME_1 %in% c("Bayern", "Hessen"))
 Note that this attribute is a `reactiveValue` that allows to update graphs and other 
 elements upon a user click. For more on the connection to other elements please
 see the following 
-[tutorial](https://hoga-it.github.io/leafdown/articles/articles/articles/Connection_to_other_elements.html).
+[tutorial](https://hoga-it.github.io/leafdown/articles/Connection_to_other_elements.html).
 
 ### Drilldown
 

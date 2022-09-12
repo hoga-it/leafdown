@@ -58,7 +58,7 @@ You can find the documentation [here](https://hoga-it.github.io/leafdown/index.h
 To showcase the features of the `leafdown` package we have created a demo app. <br>
 
 This app shows the 2016 us presidential election results as well as some demographic information.<br>
-Click here for the [full demo app](https://pega.shinyapps.io/election16/) and here for the [documentation](https://hoga-it.github.io/leafdown/articles/Showcase_electionapp.html).
+Click here for the [full demo app](https://pega.shinyapps.io/election16/) and here for the [documentation](https://hoga-it.github.io/leafdown/articles/Connection_to_other_elements.html).
 <br>
 <br>
 
