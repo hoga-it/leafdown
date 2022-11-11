@@ -49,7 +49,6 @@ data_sim_y <- bind_rows(
   data_sim_y_level_2,
   data_sim_y_level_1
 )
-
 data_sim_y$y <- round(data_sim_y$y, 0)
 
 create_labels <- function(data, map_level) {
@@ -110,6 +109,7 @@ server <- function(input, output) {
     meta_data <- my_leafdown$curr_data
     curr_map_level <- my_leafdown$curr_map_level
     data_curr_map_level <- data_sim_y[data_sim_y$level == curr_map_level, ]
+
     join_col_lhs <- paste0("NAME_", seq_len(curr_map_level) - 1)
     data <- meta_data %>% left_join(data_curr_map_level, by = join_col_lhs, suffix = c("", ".y"))
 
