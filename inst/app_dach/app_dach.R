@@ -44,14 +44,10 @@ data_sim_y_level_3$level <- 3
 data_sim_y_level_2$level <- 2
 data_sim_y_level_1$level <- 1
 
-data_sim_y_level_3$area <- data_sim_y_level_3$NAME_2
-data_sim_y_level_2$area <- data_sim_y_level_2$NAME_1
-data_sim_y_level_1$area <- data_sim_y_level_1$NAME_0
-
-data_sim_y <- rbind(
-  data_sim_y_level_3[, c("area", "y", "level")],
-  data_sim_y_level_2[, c("area", "y", "level")],
-  data_sim_y_level_1[, c("area", "y", "level")]
+data_sim_y <- bind_rows(
+  data_sim_y_level_3,
+  data_sim_y_level_2,
+  data_sim_y_level_1
 )
 data_sim_y$y <- round(data_sim_y$y, 0)
 
@@ -113,8 +109,9 @@ server <- function(input, output) {
     meta_data <- my_leafdown$curr_data
     curr_map_level <- my_leafdown$curr_map_level
     data_curr_map_level <- data_sim_y[data_sim_y$level == curr_map_level, ]
-    join_col_lhs <- paste0("NAME_", curr_map_level - 1)
-    data <- meta_data %>% left_join(data_curr_map_level, by = setNames("area", join_col_lhs))
+
+    join_col_lhs <- paste0("NAME_", seq_len(curr_map_level) - 1)
+    data <- meta_data %>% left_join(data_curr_map_level, by = join_col_lhs, suffix = c("", ".y"))
 
     # add the data back to the leafdown object
     my_leafdown$add_data(data)
